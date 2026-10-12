@@ -974,6 +974,84 @@ static void guiGameShowBtSearch(void)
     }
 }
 
+/*
+ * Controller test (menu): lightbar colour and rumble of the pad connected to the menu driver (port 0).
+ */
+#define BTT_RUMBLE_FRAMES 30 // about half a second at 60 Hz
+
+static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta", "White", "Orange", "Off", NULL};
+static const u8 btLedRgb[][3] = {
+    {0, 0, 0}, {255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 200, 0}, {0, 255, 255}, {255, 0, 255}, {255, 255, 255}, {255, 90, 0}, {0, 0, 0}};
+
+static char bttStatus[96];
+static int bttLedSel, bttRumbleFrames, bttTimer;
+
+static void guiGameBtTestApplyLed(int sel)
+{
+    u8 led[4];
+
+    led[0] = btLedRgb[sel][0];
+    led[1] = btLedRgb[sel][1];
+    led[2] = btLedRgb[sel][2];
+    led[3] = sel ? 0x02 : 0x00; // bit1: colour chosen by the user, 0 = default pattern of the port
+    ds34bt_set_led(0, led);
+}
+
+static int guiGameBtTestUpdater(int modified)
+{
+    int sel = 0, status;
+
+    if (bttRumbleFrames > 0 && --bttRumbleFrames == 0)
+        ds34bt_set_rumble(0, 0, 0);
+
+    if (diaGetInt(diaPadEmuBtTest, PADCFG_BTT_LED, &sel) && sel != bttLedSel) {
+        bttLedSel = sel;
+        guiGameBtTestApplyLed(sel);
+    }
+
+    if ((++bttTimer % 20) == 0) {
+        status = ds34bt_get_status(0);
+        if (!(status & DS34BT_STATE_USB_CONFIGURED))
+            snprintf(bttStatus, sizeof(bttStatus), "Bluetooth adapter not ready.");
+        else if (status & (DS34BT_STATE_CONNECTED | DS34BT_STATE_RUNNING))
+            snprintf(bttStatus, sizeof(bttStatus), "Controller connected.");
+        else
+            snprintf(bttStatus, sizeof(bttStatus), "No controller connected. Press PS on the pad.");
+        diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_STATUS, bttStatus);
+    }
+
+    return 0;
+}
+
+static void guiGameShowBtTest(void)
+{
+    int result = -1;
+
+    bttLedSel = 0;
+    bttRumbleFrames = 0;
+    bttTimer = 19; // refresh the status line right away
+    diaSetEnum(diaPadEmuBtTest, PADCFG_BTT_LED, btLedNames);
+    diaSetInt(diaPadEmuBtTest, PADCFG_BTT_LED, 0);
+    snprintf(bttStatus, sizeof(bttStatus), "Checking...");
+    diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_STATUS, bttStatus);
+
+    while (1) {
+        result = diaExecuteDialog(diaPadEmuBtTest, result, 1, &guiGameBtTestUpdater);
+
+        if (result == UIID_BTN_OK || result == UIID_BTN_CANCEL)
+            break;
+
+        if (result == PADCFG_BTT_RUMBLE_BIG || result == PADCFG_BTT_RUMBLE_SMALL || result == PADCFG_BTT_RUMBLE_BOTH) {
+            ds34bt_set_rumble(0, (result == PADCFG_BTT_RUMBLE_SMALL) ? 0 : 255, (result == PADCFG_BTT_RUMBLE_BIG) ? 0 : 255);
+            bttRumbleFrames = BTT_RUMBLE_FRAMES;
+        }
+    }
+
+    ds34bt_set_rumble(0, 0, 0);
+    if (bttLedSel)
+        guiGameBtTestApplyLed(0); // back to the default colour
+}
+
 void guiGameShowPadEmuConfig(int forceGlobal)
 {
     const char *settingsSource[] = {_l(_STR_GLOBAL_SETTINGS), _l(_STR_PERGAME_SETTINGS), NULL};
@@ -1004,6 +1082,8 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetVisible(diaPadEmuConfig, PADCFG_PAIR_STR, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH_STR, PadEmuSettings & EnablePadEmu);
+    diaSetVisible(diaPadEmuConfig, PADCFG_BTTEST, PadEmuSettings & EnablePadEmu);
+    diaSetVisible(diaPadEmuConfig, PADCFG_BTTEST_STR, PadEmuSettings & EnablePadEmu);
 
     diaSetVisible(diaPadEmuConfig, PADCFG_BTINFO, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, PadEmuSettings & EnablePadEmu);
@@ -1033,6 +1113,9 @@ void guiGameShowPadEmuConfig(int forceGlobal)
 
         if (result == PADCFG_BTSEARCH)
             guiGameShowBtSearch();
+
+        if (result == PADCFG_BTTEST)
+            guiGameShowBtTest();
 
         if (result == PADCFG_BTINFO) {
             for (i = PADCFG_FEAT_START; i < PADCFG_FEAT_END + 1; i++)

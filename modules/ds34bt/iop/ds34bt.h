@@ -46,6 +46,7 @@ typedef struct
     u8 lrum;
     u8 rrum;
     u8 update_rum;
+    u8 led_user; // 1: lightbar colour chosen from the OPL menu, input reports must not overwrite it
     union
     {
         struct ds2report ds2;

@@ -47,7 +47,7 @@ int ds34bt_init_charging();
 int ds34bt_get_status(int port);
 int ds34bt_get_bdaddr(u8 *bdaddr);
 int ds34bt_set_rumble(int port, u8 lrum, u8 rrum);
-int ds34bt_set_led(int port, u8 *led); // rgb for ds4
+int ds34bt_set_led(int port, u8 *led); // r, g, b, flags (4 bytes): bit0 blink, bit1 keep this colour
 int ds34bt_get_data(int port, u8 *data);
 int ds34bt_reset();
 int ds34bt_get_version(hci_information_t *info);

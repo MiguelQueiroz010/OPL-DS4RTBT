@@ -621,6 +621,11 @@ struct UIItem diaPadEmuConfig[] = {
     {UI_BUTTON, PADCFG_BTSEARCH, 1, 1, -1, 0, 0, {.label = {"Search", -1}}},
     {UI_BREAK},
 
+    {UI_LABEL, PADCFG_BTTEST_STR, 1, 1, -1, -50, 0, {.label = {"Controller Test", -1}}},
+    {UI_SPACER},
+    {UI_BUTTON, PADCFG_BTTEST, 1, 1, -1, 0, 0, {.label = {"Open", -1}}},
+    {UI_BREAK},
+
     {UI_LABEL, PADCFG_PADEMU_WORKAROUND_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_WORKAROUND}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_WORKAROUND, 1, 1, _STR_HINT_PADEMU_WORKAROUND, 0, 0, {.intvalue = {1, 1}}},
@@ -669,6 +674,33 @@ struct UIItem diaPadEmuBtSearch[] = {
     {UI_LABEL, PADCFG_BTS_DBG2, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
     {UI_LABEL, PADCFG_BTS_DBG3, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+
+    {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},
+
+    // end of dialog
+    {UI_TERMINATOR}};
+
+struct UIItem diaPadEmuBtTest[] = {
+    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"Controller Test", -1}}},
+    {UI_SPLITTER},
+
+    {UI_LABEL, PADCFG_BTT_STATUS, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_BREAK},
+
+    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {"Lightbar colour", -1}}},
+    {UI_SPACER},
+    {UI_ENUM, PADCFG_BTT_LED, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
+    {UI_BREAK},
+    {UI_BREAK},
+
+    {UI_BUTTON, PADCFG_BTT_RUMBLE_BIG, 1, 1, -1, 0, 0, {.label = {"Rumble: big motor", -1}}},
+    {UI_BREAK},
+    {UI_BUTTON, PADCFG_BTT_RUMBLE_SMALL, 1, 1, -1, 0, 0, {.label = {"Rumble: small motor", -1}}},
+    {UI_BREAK},
+    {UI_BUTTON, PADCFG_BTT_RUMBLE_BOTH, 1, 1, -1, 0, 0, {.label = {"Rumble: both motors", -1}}},
+    {UI_BREAK},
     {UI_BREAK},
 
     {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},

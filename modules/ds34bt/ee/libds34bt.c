@@ -117,7 +117,7 @@ int ds34bt_set_led(int port, u8 *led)
     rpcbuf[1] = led[0];
     rpcbuf[2] = led[1];
     rpcbuf[3] = led[2];
-    rpcbuf[4] = 0;
+    rpcbuf[4] = led[3]; // bit0: blink, bit1: colour chosen by the user (kept by the driver)
 
     return (SifCallRpc(&ds34bt, DS34BT_SET_LED, 0, rpcbuf, 5, NULL, 0, NULL, NULL) == 0);
 }

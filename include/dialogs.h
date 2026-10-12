@@ -190,6 +190,13 @@ enum UI_ITEMS {
     PADCFG_BTS_DBG1,
     PADCFG_BTS_DBG2,
     PADCFG_BTS_DBG3,
+    PADCFG_BTTEST,
+    PADCFG_BTTEST_STR,
+    PADCFG_BTT_STATUS,
+    PADCFG_BTT_LED,
+    PADCFG_BTT_RUMBLE_BIG,
+    PADCFG_BTT_RUMBLE_SMALL,
+    PADCFG_BTT_RUMBLE_BOTH,
 
     PADMACRO_GLOBAL_BUTTON,
     PADMACRO_CFG_SOURCE,
@@ -222,6 +229,7 @@ extern struct UIItem diaPadEmuConfig[];
 extern struct UIItem diaPadMacroConfig[];
 extern struct UIItem diaPadEmuInfo[];
 extern struct UIItem diaPadEmuBtSearch[];
+extern struct UIItem diaPadEmuBtTest[];
 #endif
 
 extern struct UIItem diaNetConfig[];

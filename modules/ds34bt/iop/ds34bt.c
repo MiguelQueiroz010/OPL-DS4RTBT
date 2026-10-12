@@ -1523,6 +1523,7 @@ static void ds34pad_clear(int pad)
     if (pad >= MAX_PADS)
         return;
 
+    ds34pad[pad].led_user = 0;
     ds34pad[pad].hci_handle = 0x0FFF;
     ds34pad[pad].control_scid = 0;
     ds34pad[pad].interrupt_scid = 0;
@@ -2147,11 +2148,14 @@ static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
 
         size += sizeof(output_01_report);
     } else if (ds34pad[pad].type == DS4) {
-        mips_memset(led_buf, 0, PS3_01_REPORT_LEN + 2);
+        mips_memset(led_buf, 0, PS4_11_REPORT_LEN + 2);
 
-        led_buf[0] = HID_THDR_SET_REPORT_OUTPUT; // THdr
-        led_buf[1] = PS4_11_REPORT_ID;           // Report ID
-        led_buf[2] = 0x80;                       // update rate 1000Hz
+        // Output report 0x11 the way the DS4 expects it over Bluetooth (same as the Linux driver and the
+        // DualSense path): DATA|OUTPUT header on the interrupt channel, HID + CRC32 flags, CRC32 at the end.
+        // Without the CRC newer/clone pads ignore the report: no rumble and no lightbar change.
+        led_buf[0] = 0xA2;             // THdr: DATA | OUTPUT
+        led_buf[1] = PS4_11_REPORT_ID; // Report ID
+        led_buf[2] = 0xC0;             // HID report + CRC32 present, fastest update rate
         led_buf[4] = 0xFF;
 
         led_buf[7] = rrum;
@@ -2168,6 +2172,24 @@ static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
         }
 
         size += PS4_11_REPORT_LEN;
+
+        {
+            // CRC32 over 0xA2 + the report (everything but the CRC itself), stored little-endian at the end
+            u32 crc = ds5_crc32(led_buf, size - 4);
+            led_buf[size - 4] = (u8)(crc);
+            led_buf[size - 3] = (u8)(crc >> 8);
+            led_buf[size - 2] = (u8)(crc >> 16);
+            led_buf[size - 1] = (u8)(crc >> 24);
+        }
+
+        ds34pad[pad].oldled[0] = led[0];
+        ds34pad[pad].oldled[1] = led[1];
+        ds34pad[pad].oldled[2] = led[2];
+        ds34pad[pad].oldled[3] = led[3];
+        ds34pad[pad].lrum = lrum;
+        ds34pad[pad].rrum = rrum;
+
+        return HID_command(ds34pad[pad].hci_handle, ds34pad[pad].interrupt_scid, led_buf, size, pad);
     }
 
     ds34pad[pad].oldled[0] = led[0];
@@ -2369,20 +2391,22 @@ static void hid_readReport(u8 *data, int bytes, int pad)
             ds34pad[pad].data[16] = report->PressureL2; // L2
             ds34pad[pad].data[17] = report->PressureR2; // R2
 
-            if (report->PSButton) { // display battery level
-                ds34pad[pad].oldled[0] = report->Battery;
-                ds34pad[pad].oldled[1] = 0;
-                ds34pad[pad].oldled[2] = 0;
-            } else {
-                ds34pad[pad].oldled[0] = rgbled_patterns[pad][1][0];
-                ds34pad[pad].oldled[1] = rgbled_patterns[pad][1][1];
-                ds34pad[pad].oldled[2] = rgbled_patterns[pad][1][2];
-            }
+            if (!ds34pad[pad].led_user) { // colour picked in the menu stays as it is
+                if (report->PSButton) {   // display battery level
+                    ds34pad[pad].oldled[0] = report->Battery;
+                    ds34pad[pad].oldled[1] = 0;
+                    ds34pad[pad].oldled[2] = 0;
+                } else {
+                    ds34pad[pad].oldled[0] = rgbled_patterns[pad][1][0];
+                    ds34pad[pad].oldled[1] = rgbled_patterns[pad][1][1];
+                    ds34pad[pad].oldled[2] = rgbled_patterns[pad][1][2];
+                }
 
-            if (report->Power != 0xB && report->Usb_plugged) // charging
-                ds34pad[pad].oldled[3] = 1;
-            else
-                ds34pad[pad].oldled[3] = 0;
+                if (report->Power != 0xB && report->Usb_plugged) // charging
+                    ds34pad[pad].oldled[3] = 1;
+                else
+                    ds34pad[pad].oldled[3] = 0;
+            }
         }
     } else {
         DPRINTF("Unmanaged Input Report: THDR 0x%02X ", data[8]);
@@ -2423,11 +2447,18 @@ void ds34bt_set_led(u8 *led, int port)
 
     WaitSema(bt_dev.hid_sema);
 
+    // led[3]: bit0 = blink (charging), bit1 = this colour was chosen by the user: keep it (0 = back to the default pattern)
+    ds34pad[port].led_user = (led[3] & 2) ? 1 : 0;
     ds34pad[port].update_rum = 1;
     ds34pad[port].oldled[0] = led[0];
     ds34pad[port].oldled[1] = led[1];
     ds34pad[port].oldled[2] = led[2];
-    ds34pad[port].oldled[3] = led[3];
+    ds34pad[port].oldled[3] = led[3] & 1;
+    if (!ds34pad[port].led_user && ds34pad[port].type == DS4) { // default: lightbar colour of the port
+        ds34pad[port].oldled[0] = rgbled_patterns[port][1][0];
+        ds34pad[port].oldled[1] = rgbled_patterns[port][1][1];
+        ds34pad[port].oldled[2] = rgbled_patterns[port][1][2];
+    }
 
     SignalSema(bt_dev.hid_sema);
 }
