@@ -1629,11 +1629,14 @@ static int hid_LEDRumbleCommand(u8 *led, u8 lrum, u8 rrum, int pad)
 
         size += OUTPUT_01_REPORT_SIZE;
     } else if (ds34pad[pad].type == DS4) {
-        mips_memset(led_buf, 0, PS3_01_REPORT_LEN + 2);
+        mips_memset(led_buf, 0, PS4_11_REPORT_LEN + 2);
 
-        led_buf[0] = HID_THDR_SET_REPORT_OUTPUT; // THdr
-        led_buf[1] = PS4_11_REPORT_ID;           // Report ID
-        led_buf[2] = 0x80;                       // update rate 1000Hz
+        // Output report 0x11 the way the DS4 expects it over Bluetooth (same as the Linux driver and the
+        // DualSense path): DATA|OUTPUT header on the interrupt channel, HID + CRC32 flags, CRC32 at the end.
+        // Without the CRC newer/clone pads ignore the report: no rumble and no lightbar change.
+        led_buf[0] = 0xA2;            // THdr: DATA | OUTPUT
+        led_buf[1] = PS4_11_REPORT_ID; // Report ID
+        led_buf[2] = 0xC0;            // HID report + CRC32 present, fastest update rate
         led_buf[4] = 0xFF;
 
         led_buf[7] = rrum * 255;
@@ -1649,6 +1652,22 @@ static int hid_LEDRumbleCommand(u8 *led, u8 lrum, u8 rrum, int pad)
         }
 
         size += PS4_11_REPORT_LEN;
+
+        {
+            // CRC32 over 0xA2 + the report (everything but the CRC itself), stored little-endian at the end
+            u32 crc = ds5_crc32(led_buf, size - 4);
+            led_buf[size - 4] = (u8)(crc);
+            led_buf[size - 3] = (u8)(crc >> 8);
+            led_buf[size - 2] = (u8)(crc >> 16);
+            led_buf[size - 1] = (u8)(crc >> 24);
+        }
+
+        ds34pad[pad].oldled[0] = led[0];
+        ds34pad[pad].oldled[1] = led[1];
+        ds34pad[pad].oldled[2] = led[2];
+        ds34pad[pad].oldled[3] = led[3];
+
+        return HID_command(ds34pad[pad].hci_handle, ds34pad[pad].interrupt_scid, led_buf, size, pad);
     }
 
     ds34pad[pad].oldled[0] = led[0];
