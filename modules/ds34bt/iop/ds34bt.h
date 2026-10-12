@@ -168,6 +168,9 @@ enum eHCI {
 #define HCI_OCF_USER_CONFIRM_REPLY    0x2C // OGF = 0x01
 #define HCI_OCF_SET_EVENT_MASK        0x01 // OGF = 0x03
 #define HCI_OCF_WRITE_SSP_MODE        0x56 // OGF = 0x03
+#define HCI_OCF_WRITE_INQUIRY_MODE    0x45 // OGF = 0x03
+#define HCI_OCF_PIN_CODE_REPLY        0x0D // OGF = 0x01 (legacy pairing: clone pads without Simple Pairing)
+#define HCI_OCF_PIN_CODE_NEG_REPLY    0x0E // OGF = 0x01
 
 #define HCI_OPCODE(ogf, ocf) ((u16)(((ogf) << 8) | (ocf))) // ogf as in HCI_OGF_* (already shifted by 2)
 

@@ -26,6 +26,7 @@ enum eDS34BTPair {
 
 #define DS34BT_SEARCH_MAX 4
 #define DS34BT_NAME_LEN   32
+#define DS34BT_DEBUG_SIZE 32
 
 typedef struct
 {
@@ -58,3 +59,4 @@ int ds34bt_get_search(int index, int *count, u8 *bdaddr, char *name); // returns
 int ds34bt_pair(int index);
 int ds34bt_get_pair(u8 *bdaddr, u8 *key); // returns the pairing state
 int ds34bt_set_key(const u8 *bdaddr, const u8 *key); // NULL, NULL clears the table
+int ds34bt_get_debug(u8 *out);                       // DS34BT_DEBUG_SIZE bytes of driver status, 1 if read

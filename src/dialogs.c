@@ -647,7 +647,6 @@ struct UIItem diaPadEmuBtSearch[] = {
 
     {UI_LABEL, PADCFG_BTS_STATUS, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
-    {UI_BREAK},
 
     {UI_BUTTON, PADCFG_BTS_DEV0, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
@@ -660,6 +659,16 @@ struct UIItem diaPadEmuBtSearch[] = {
     {UI_BREAK},
 
     {UI_BUTTON, PADCFG_BTS_AGAIN, 1, 1, -1, 0, 0, {.label = {"Search", -1}}},
+    {UI_BREAK},
+
+    // adapter / driver debug lines (filled by guiGameBtDebugUpdate)
+    {UI_LABEL, PADCFG_BTS_DBG0, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, PADCFG_BTS_DBG1, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, PADCFG_BTS_DBG2, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, PADCFG_BTS_DBG3, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
 
     {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},

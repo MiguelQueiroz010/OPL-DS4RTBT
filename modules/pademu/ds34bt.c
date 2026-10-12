@@ -360,6 +360,25 @@ static int hci_reset();
 static bt_link_key_t bt_keys[BTKEYS_MAX];
 static int bt_keys_count = 0;
 
+// Case-insensitive prefix compare for remote names (clone pads don't always use the exact same capitalization)
+static int bt_name_starts(const u8 *name, const char *prefix)
+{
+    u8 a, b;
+
+    for (; *prefix; prefix++, name++) {
+        a = *name;
+        b = (u8)*prefix;
+        if (a >= 'A' && a <= 'Z')
+            a += 'a' - 'A';
+        if (b >= 'A' && b <= 'Z')
+            b += 'a' - 'A';
+        if (a != b)
+            return 0;
+    }
+
+    return 1;
+}
+
 void ds34bt_set_keys(const char *arg)
 {
     if (arg[0] == 'B' && arg[1] == 'T' && arg[2] == 'K')
@@ -656,11 +675,13 @@ static void HCI_event_task(int result)
                     if (i >= MAX_PADS) {
                         break;
                     }
-                    if (memcmp(hci_buf + 9, "DualSense", 9) == 0) { // "DualSense Wireless Controller" / "DualSense Edge Wireless Controller"
+                    if (bt_name_starts(hci_buf + 9, "DualSense")) { // "DualSense Wireless Controller" / "DualSense Edge Wireless Controller"
                         ds34pad[i].type = DS5;
                         ds34pad[i].isfake = 0;
                         DPRINTF("\t Type: DualSense \n");
-                    } else if (memcmp(hci_buf + 9, "Wireless Controller", 19) == 0) {
+                    } else if (bt_name_starts(hci_buf + 9, "Wireless Controller") ||
+                               btkeys_find(bt_keys, bt_keys_count, hci_buf + 3) >= 0) {
+                        // paired wirelessly -> can't be a DualShock 3; clones with another name are DualShock 4 too
                         ds34pad[i].type = DS4;
                         ds34pad[i].isfake = 0;
                         DPRINTF("\t Type: Dualshock 4 \n");

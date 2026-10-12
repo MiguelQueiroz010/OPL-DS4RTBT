@@ -359,6 +359,54 @@ static u8 identifier;
 static u8 g_press_emu;
 static u8 disable_fake = 0;
 
+/*
+ * On-screen debug info (OPL: Pad Emulator -> Wireless Pairing -> Search). Read with ds34bt_get_debug().
+ * Counters saturate at 255. Layout (also used by src/guigame.c):
+ */
+enum {
+    DBG_USB = 0,       // bt_dev.status flags (bit1 = adapter configured)
+    DBG_STAGE,         // init steps done: 1 reset, 2 bdaddr, 3 version, 4 features, 5 event mask, 6 ssp, 7 scan enable (= ready)
+    DBG_LAST_OCF,      // last Command Complete: opcode (OCF)
+    DBG_LAST_OGF,      //   OGF byte
+    DBG_LAST_STATUS,   //   status returned
+    DBG_LAST_EVENT,    // last HCI event code received
+    DBG_RESETS,        // times the adapter was reset (a high number = init loop)
+    DBG_CMDERR_STATUS, // last Command Status error: status
+    DBG_CMDERR_OCF,    //   and its opcode (low byte / OGF byte)
+    DBG_CMDERR_OGF,
+    DBG_SEARCH_STATE,
+    DBG_PAIR_STATE,
+    DBG_INQ_RESULTS,    // Inquiry Result events (standard format)
+    DBG_INQ_RSSI,       // Inquiry Result with RSSI events
+    DBG_INQ_COMPLETE,   // Inquiry Complete events
+    DBG_FOUND,          // devices in the list
+    DBG_SKIPPED,        // devices ignored by the class-of-device filter
+    DBG_UNKNOWN_EVENTS, // events the driver doesn't handle
+    DBG_UNKNOWN_CODE,   //   code of the last one
+    DBG_COD0,           // class of device of the last device seen (3 bytes)
+    DBG_COD1,
+    DBG_COD2,
+    DBG_ADDR0,          // address of the last device seen (6 bytes)
+    DBG_ADDR1,
+    DBG_ADDR2,
+    DBG_ADDR3,
+    DBG_ADDR4,
+    DBG_ADDR5,
+    DBG_EVENTS_LO, // total HCI events received (16 bit)
+    DBG_EVENTS_HI,
+    DBG_INQMODE,    // Write Inquiry Mode answer: status + 1 (0 = not sent)
+    DBG_USB_ERRORS, // failed USB event transfers
+    DBG_SIZE
+};
+
+static u8 dbg[DBG_SIZE];
+
+#define DBG_INC(i)        \
+    do {                  \
+        if (dbg[i] < 0xFF) \
+            dbg[i]++;     \
+    } while (0)
+
 static ds34bt_pad_t ds34pad[MAX_PADS];
 
 static void hci_event_cb(int resultCode, int bytes, void *arg);
@@ -387,6 +435,7 @@ typedef struct
     u8 bdaddr[6];
     u8 psrm; // page scan repetition mode
     u16 clk; // clock offset
+    u8 gamepad; // class of device says gamepad / joystick
     char name[BT_NAME_LEN];
 } bt_found_t;
 
@@ -407,6 +456,25 @@ static u8 bt_pair_got_key = 0;
 
 // commands sent from the RPC thread use their own buffer
 static u8 hci_rpc_cmd_buf[MAX_BUFFER_SIZE] __attribute((aligned(4))) = {0};
+
+// Case-insensitive prefix compare for remote names (clone pads don't always use the exact same capitalization)
+static int bt_name_starts(const u8 *name, const char *prefix)
+{
+    u8 a, b;
+
+    for (; *prefix; prefix++, name++) {
+        a = *name;
+        b = (u8)*prefix;
+        if (a >= 'A' && a <= 'Z')
+            a += 'a' - 'A';
+        if (b >= 'A' && b <= 'Z')
+            b += 'a' - 'A';
+        if (a != b)
+            return 0;
+    }
+
+    return 1;
+}
 
 static int bt_pair_in_progress(void)
 {
@@ -440,6 +508,8 @@ static int HCI_Command(int nbytes, u8 *dataptr)
 
 static int hci_reset()
 {
+    DBG_INC(DBG_RESETS);
+    dbg[DBG_STAGE] = 0;
     hci_cmd_buf[0] = HCI_OCF_RESET;
     hci_cmd_buf[1] = HCI_OGF_CTRL_BBAND;
     hci_cmd_buf[2] = 0x00; // Parameter Total Length = 0
@@ -605,6 +675,36 @@ static int hci_write_ssp_mode(void)
     return hci_command_params(hci_cmd_buf, HCI_OCF_WRITE_SSP_MODE, HCI_OGF_CTRL_BBAND, &enable, 1);
 }
 
+// Inquiry result format: 0x01 = with RSSI. Some adapters (Realtek among them) otherwise answer with
+// extended inquiry results, an event we keep masked, and then the search finds nothing at all.
+static int hci_write_inquiry_mode(void)
+{
+    static const u8 mode = 0x01;
+
+    return hci_command_params(hci_cmd_buf, HCI_OCF_WRITE_INQUIRY_MODE, HCI_OGF_CTRL_BBAND, &mode, 1);
+}
+
+// Legacy pairing (clone pads without Simple Pairing ask for a PIN): the PIN of clone DS4s is "0000"
+static int hci_pin_code_reply(u8 *bdaddr)
+{
+    u8 p[23];
+
+    mips_memset(p, 0, sizeof(p));
+    mips_memcpy(p, bdaddr, 6);
+    p[6] = 4; // PIN length
+    p[7] = '0';
+    p[8] = '0';
+    p[9] = '0';
+    p[10] = '0';
+
+    return hci_command_params(hci_cmd_buf, HCI_OCF_PIN_CODE_REPLY, HCI_OGF_LINK_CNTRL, p, sizeof(p));
+}
+
+static int hci_pin_code_neg_reply(u8 *bdaddr)
+{
+    return hci_command_params(hci_cmd_buf, HCI_OCF_PIN_CODE_NEG_REPLY, HCI_OGF_LINK_CNTRL, bdaddr, 6);
+}
+
 static int hci_link_key_reply_with(u8 *bdaddr, const u8 *key)
 {
     u8 p[22];
@@ -703,31 +803,69 @@ static int hci_inquiry_cancel(void)
     return hci_command_params(hci_cmd_buf, HCI_OCF_INQUIRY_CANCEL, HCI_OGF_LINK_CNTRL, NULL, 0);
 }
 
+// Class of device (3 bytes, little endian): cod[0] = minor class, cod[1] bits 0-4 = major class.
+// Real pads report peripheral (0x05) / gamepad, but many clone pads report "uncategorized" (0x1F),
+// "miscellaneous" (0x00) or something else entirely, so those are listed too (the name tells them apart).
+static int bt_cod_listable(const u8 *cod)
+{
+    u8 major = cod[1] & 0x1F;
+
+    return major == 0x05 || major == 0x00 || major == 0x1F;
+}
+
+static int bt_cod_is_gamepad(const u8 *cod)
+{
+    u8 minor = cod[0] & 0x3C; // peripheral minor class: 0x04 = joystick, 0x08 = gamepad
+
+    return (cod[1] & 0x1F) == 0x05 && (minor == 0x04 || minor == 0x08);
+}
+
 static void bt_found_add(u8 *bdaddr, u8 psrm, u8 *cod, u16 clk)
 {
-    int i;
+    int i, slot;
+    u8 gamepad;
 
-    // only peripherals (major device class 0x05): gamepads, joysticks...
-    if ((cod[1] & 0x1F) != 0x05)
+    // for the on-screen debug: last device that answered the inquiry, whatever its class
+    mips_memcpy(&dbg[DBG_COD0], cod, 3);
+    mips_memcpy(&dbg[DBG_ADDR0], bdaddr, 6);
+
+    if (!bt_cod_listable(cod)) {
+        DBG_INC(DBG_SKIPPED);
         return;
+    }
 
     for (i = 0; i < bt_found_count; i++) {
         if (memcmp(bt_found[i].bdaddr, bdaddr, 6) == 0)
             return; // already listed (inquiry reports the same device many times)
     }
 
-    if (bt_found_count >= BT_SEARCH_MAX)
-        return;
+    gamepad = bt_cod_is_gamepad(cod);
+    slot = bt_found_count;
 
-    mips_memcpy(bt_found[bt_found_count].bdaddr, bdaddr, 6);
-    bt_found[bt_found_count].psrm = psrm;
-    bt_found[bt_found_count].clk = clk & 0x7FFF;
-    bt_found[bt_found_count].name[0] = '\0';
-    bt_found_count++;
+    if (bt_found_count >= BT_SEARCH_MAX) {
+        // list full: a gamepad takes the place of a device that isn't one (keyboard, mouse, unknown...)
+        if (!gamepad)
+            return;
+        for (slot = 0; slot < bt_found_count; slot++) {
+            if (!bt_found[slot].gamepad)
+                break;
+        }
+        if (slot >= bt_found_count)
+            return;
+    } else {
+        bt_found_count++;
+    }
 
-    // A pad in pairing mode answers right away: stop the inquiry instead of waiting the full 10 s.
-    // The search continues with the names when the cancel completes (see HCI_OCF_INQUIRY_CANCEL).
-    if (!bt_inquiry_cancelling && bt_search_state == BT_SEARCH_INQUIRY) {
+    mips_memcpy(bt_found[slot].bdaddr, bdaddr, 6);
+    bt_found[slot].psrm = psrm;
+    bt_found[slot].clk = clk & 0x7FFF;
+    bt_found[slot].gamepad = gamepad;
+    bt_found[slot].name[0] = '\0';
+
+    // A real pad in pairing mode answers right away: stop the inquiry instead of waiting the full 10 s.
+    // Only for devices that say they are a gamepad: stopping at the first keyboard or mouse nearby would
+    // hide the pad. The search continues with the names when the cancel completes (see HCI_OCF_INQUIRY_CANCEL).
+    if (gamepad && !bt_inquiry_cancelling && bt_search_state == BT_SEARCH_INQUIRY) {
         bt_inquiry_cancelling = 1;
         hci_inquiry_cancel();
     }
@@ -783,17 +921,26 @@ static void HCI_event_task(int result)
 {
     int i, pad;
 
-    if (!result) {
+    if (result) {
+        DBG_INC(DBG_USB_ERRORS);
+    } else {
         /*  buf[0] = Event Code                            */
         /*  buf[1] = Parameter Total Length                */
         /*  buf[n] = Event Parameters based on each event  */
         DPRINTF("HCI event = 0x%02X \n", hci_buf[0]);
+        dbg[DBG_LAST_EVENT] = hci_buf[0];
+        if (++dbg[DBG_EVENTS_LO] == 0 && dbg[DBG_EVENTS_HI] < 0xFF)
+            dbg[DBG_EVENTS_HI]++;
         switch (hci_buf[0]) { // switch on event type
             case HCI_EVENT_COMMAND_COMPLETE:
                 DPRINTF("HCI Command Complete = 0x%02X \n", hci_buf[3]);
                 DPRINTF("\tReturned = 0x%02X \n", hci_buf[5]);
+                dbg[DBG_LAST_OCF] = hci_buf[3];
+                dbg[DBG_LAST_OGF] = hci_buf[4];
+                dbg[DBG_LAST_STATUS] = hci_buf[5];
                 if ((hci_buf[3] == HCI_OCF_RESET) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
                     if (hci_buf[5] == 0) {
+                        dbg[DBG_STAGE] = 1;
                         hci_read_bdaddr();
                     } else {
                         DelayThread(500);
@@ -802,6 +949,7 @@ static void HCI_event_task(int result)
                 } else if ((hci_buf[3] == HCI_OCF_READ_BDADDR) && (hci_buf[4] == HCI_OGF_INFO_PARAM)) {
                     if (hci_buf[5] == 0) {
                         mips_memcpy(bt_bdaddr, &hci_buf[6], 6);
+                        dbg[DBG_STAGE] = 2;
                         hci_read_local_version_information();
                     } else {
                         DelayThread(500);
@@ -810,6 +958,7 @@ static void HCI_event_task(int result)
                 } else if ((hci_buf[3] == HCI_OCF_READ_VERSION) && (hci_buf[4] == HCI_OGF_INFO_PARAM)) {
                     if (hci_buf[5] == 0) {
                         mips_memcpy(&bt_version, &hci_buf[6], sizeof(hci_information_t));
+                        dbg[DBG_STAGE] = 3;
                         hci_read_local_supported_features();
                     } else {
                         DelayThread(500);
@@ -818,6 +967,7 @@ static void HCI_event_task(int result)
                 } else if ((hci_buf[3] == HCI_OCF_READ_FEATURES) && (hci_buf[4] == HCI_OGF_INFO_PARAM)) {
                     if (hci_buf[5] == 0) {
                         mips_memcpy(bt_features, &hci_buf[6], sizeof(bt_features));
+                        dbg[DBG_STAGE] = 4;
                         hci_set_event_mask();
                     } else {
                         DelayThread(500);
@@ -833,13 +983,23 @@ static void HCI_event_task(int result)
                     }
                 } else if ((hci_buf[3] == HCI_OCF_SET_EVENT_MASK) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
                     // errors ignored: adapters without Simple Pairing keep working as before
+                    dbg[DBG_STAGE] = 5;
                     hci_write_ssp_mode();
                 } else if ((hci_buf[3] == HCI_OCF_WRITE_SSP_MODE) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
                     DPRINTF("DS34BT: Simple Pairing mode status 0x%02X\n", hci_buf[5]);
+                    dbg[DBG_STAGE] = 6;
                     hci_write_scan_enable(SCAN_ENABLE_NOINQ_ENPAG);
+                } else if ((hci_buf[3] == HCI_OCF_WRITE_INQUIRY_MODE) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
+                    // optional step, sent after the adapter is already usable: its answer changes nothing
+                    DPRINTF("DS34BT: Inquiry mode status 0x%02X\n", hci_buf[5]);
+                    dbg[DBG_INQMODE] = hci_buf[5] + 1;
                 } else if ((hci_buf[3] == HCI_OCF_WRITE_SCAN_ENABLE) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
                     if (hci_buf[5] == 0) {
+                        dbg[DBG_STAGE] = 7;
                         bt_dev.status |= DS34BT_STATE_USB_CONFIGURED;
+                        // Not part of the required init chain: if an adapter never answers it, it stays usable
+                        if (bt_features[3] & 0x10) // feature 28: inquiry with RSSI supported
+                            hci_write_inquiry_mode();
                     } else {
                         DelayThread(500);
                         hci_reset();
@@ -852,6 +1012,9 @@ static void HCI_event_task(int result)
                 {
                     DPRINTF("HCI Command Failed: \n");
                     DPRINTF("\t Status = 0x%02X \n", hci_buf[2]);
+                    dbg[DBG_CMDERR_STATUS] = hci_buf[2];
+                    dbg[DBG_CMDERR_OCF] = hci_buf[4];
+                    dbg[DBG_CMDERR_OGF] = hci_buf[5];
                     DPRINTF("\t Command_OpCode(OGF) = 0x%02X \n", ((hci_buf[5] & 0xFC) >> 2));
                     DPRINTF("\t Command_OpCode(OCF) = 0x%02X 0x%02X \n", (hci_buf[5] & 0x03), hci_buf[4]);
 
@@ -884,15 +1047,18 @@ static void HCI_event_task(int result)
                 break;
 
             case HCI_EVENT_INQUIRY_RESULT:
+                DBG_INC(DBG_INQ_RESULTS);
                 bt_inquiry_result(0);
                 break;
 
             case HCI_EVENT_INQUIRY_RESULT_RSSI:
+                DBG_INC(DBG_INQ_RSSI);
                 bt_inquiry_result(1);
                 break;
 
             case HCI_EVENT_INQUIRY_COMPLETE:
                 DPRINTF("HCI Inquiry Complete: %d device(s)\n", bt_found_count);
+                DBG_INC(DBG_INQ_COMPLETE);
                 if (bt_search_state == BT_SEARCH_INQUIRY) {
                     bt_search_state = BT_SEARCH_NAMES;
                     bt_name_idx = 0;
@@ -1032,11 +1198,14 @@ static void HCI_event_task(int result)
                     if (i >= MAX_PADS) {
                         break;
                     }
-                    if (memcmp(hci_buf + 9, "DualSense", 9) == 0) { // "DualSense Wireless Controller" / "DualSense Edge Wireless Controller"
+                    if (bt_name_starts(hci_buf + 9, "DualSense")) { // "DualSense Wireless Controller" / "DualSense Edge Wireless Controller"
                         ds34pad[i].type = DS5;
                         ds34pad[i].isfake = 0;
                         DPRINTF("\t Type: DualSense \n");
-                    } else if (memcmp(hci_buf + 9, "Wireless Controller", 19) == 0) {
+                    } else if (bt_name_starts(hci_buf + 9, "Wireless Controller") ||
+                               btkeys_find(bt_keys, bt_keys_count, hci_buf + 3) >= 0) {
+                        // A pad paired wirelessly can't be a DualShock 3 (those only pair over USB), so a clone with
+                        // another name ("Gamepad", "PS4 Controller", ...) is handled as a DualShock 4 as well.
                         ds34pad[i].type = DS4;
                         ds34pad[i].isfake = 0;
                         DPRINTF("\t Type: Dualshock 4 \n");
@@ -1139,6 +1308,10 @@ static void HCI_event_task(int result)
 
             case HCI_EVENT_PIN_CODE_REQUEST:
                 DPRINTF("HCI Pin Code Request Event \n");
+                if (bt_pair_in_progress() && memcmp(bt_pair_bdaddr, hci_buf + 2, 6) == 0)
+                    hci_pin_code_reply(hci_buf + 2); // clone pad without Simple Pairing: legacy PIN "0000"
+                else
+                    hci_pin_code_neg_reply(hci_buf + 2);
                 break;
 
             case HCI_EVENT_LINK_KEY_REQUEST:
@@ -1170,6 +1343,8 @@ static void HCI_event_task(int result)
 
             default:
                 DPRINTF("Unmanaged Event: 0x%02X \n", hci_buf[0]);
+                DBG_INC(DBG_UNKNOWN_EVENTS);
+                dbg[DBG_UNKNOWN_CODE] = hci_buf[0];
                 break;
         } // switch (buf[0])
     }
@@ -2210,6 +2385,16 @@ void ds34bt_init_charging()
     }
 }
 
+// Debug info for the OPL screen (see the DBG_* layout above). Works even when the adapter never got ready.
+void ds34bt_get_debug(u8 *data)
+{
+    mips_memcpy(data, dbg, DBG_SIZE);
+    data[DBG_USB] = bt_dev.status;
+    data[DBG_SEARCH_STATE] = bt_search_state;
+    data[DBG_PAIR_STATE] = bt_pair_state;
+    data[DBG_FOUND] = bt_found_count;
+}
+
 // Starts a 10 s inquiry for pads in pairing mode. Returns 1 if the search is running.
 int ds34bt_search_start(void)
 {
@@ -2353,6 +2538,7 @@ static int rpc_buf[64] __attribute((aligned(16)));
 #define DS34BT_PAIR          13
 #define DS34BT_GET_PAIR      14
 #define DS34BT_SET_KEY       15
+#define DS34BT_GET_DEBUG     16
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -2411,6 +2597,9 @@ void *rpc_sf(int cmd, void *data, int size)
             break;
         case DS34BT_SET_KEY:
             ds34bt_set_key((u8 *)data);
+            break;
+        case DS34BT_GET_DEBUG:
+            ds34bt_get_debug((u8 *)data);
             break;
         default:
             break;

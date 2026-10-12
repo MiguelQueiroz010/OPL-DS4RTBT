@@ -757,6 +757,7 @@ static bt_link_key_t btKeys[BTKEYS_MAX];
 static char btsLabels[DS34BT_SEARCH_MAX][DS34BT_NAME_LEN + 24];
 static char btsNames[DS34BT_SEARCH_MAX][DS34BT_NAME_LEN];
 static char btsStatus[128];
+static char btsDbg[4][72];
 static int btsCount, btsShown, btsPairIdx, btsPairStart, btsTimer;
 
 static int btKeysCount = 0; // copy of the saved keys: OPL frees its config (configEnd) before launching a game
@@ -825,25 +826,59 @@ static void guiGameBtSearchShowDevices(int show)
         diaSetVisible(diaPadEmuBtSearch, PADCFG_BTS_DEV0 + i, show && i < btsCount);
 }
 
+// Adapter / driver state for troubleshooting (layout of d[]: DBG_* in modules/ds34bt/iop/ds34bt.c)
+static int guiGameBtDebugUpdate(u8 *d)
+{
+    char mode[4];
+
+    if (!ds34bt_get_debug(d)) {
+        snprintf(btsDbg[0], sizeof(btsDbg[0]), "debug: ds34bt driver does not answer");
+        btsDbg[1][0] = btsDbg[2][0] = btsDbg[3][0] = '\0';
+        return 0;
+    }
+
+    if (d[30])
+        snprintf(mode, sizeof(mode), "%02X", d[30] - 1);
+    else
+        snprintf(mode, sizeof(mode), "-");
+
+    // usb flags (02 = adapter ready) | init steps done of 7 | adapter resets | usb errors | hci events | inquiry mode answer
+    snprintf(btsDbg[0], sizeof(btsDbg[0]), "USB:%02X stage:%d/7 rst:%d uerr:%d ev:%d imode:%s", d[0], d[1], d[6], d[31], d[28] | (d[29] << 8), mode);
+    // last command answer (opcode=status) | last command error | last event | events the driver ignores
+    snprintf(btsDbg[1], sizeof(btsDbg[1]), "cmd:%02X%02X=%02X err:%02X(%02X%02X) evt:%02X unk:%d/%02X", d[2], d[3], d[4], d[7], d[8], d[9], d[5], d[17], d[18]);
+    // inquiry results (plain / with RSSI) | inquiry ends | devices listed | skipped by class | class of the last device seen
+    snprintf(btsDbg[2], sizeof(btsDbg[2]), "inq:%d/%d done:%d list:%d skip:%d cod:%02X%02X%02X", d[12], d[13], d[14], d[15], d[16], d[21], d[20], d[19]);
+    snprintf(btsDbg[3], sizeof(btsDbg[3]), "last dev: %02X:%02X:%02X:%02X:%02X:%02X  search:%d pair:%d", d[27], d[26], d[25], d[24], d[23], d[22], d[10], d[11]);
+
+    return 1;
+}
+
 static void guiGameBtSearchStart(void)
 {
+    u8 d[DS34BT_DEBUG_SIZE];
+
     btsCount = 0;
     btsShown = 0;
     guiGameBtSearchShowDevices(0);
 
-    if (ds34bt_search_start())
+    if (ds34bt_search_start()) {
         snprintf(btsStatus, sizeof(btsStatus), "Searching...");
-    else
+    } else if (guiGameBtDebugUpdate(d)) {
+        snprintf(btsStatus, sizeof(btsStatus), "Bluetooth adapter not ready (init stage %d/7). See below.", d[1]);
+    } else {
         snprintf(btsStatus, sizeof(btsStatus), "Bluetooth adapter not ready.");
+    }
 }
 
 static int guiGameBtSearchUpdater(int modified)
 {
-    u8 bdaddr[6], key[16];
+    u8 bdaddr[6], key[16], btDbgRaw[DS34BT_DEBUG_SIZE];
     int state, i, count;
 
     if ((++btsTimer % 15) != 0) // poll the driver about 4 times per second
         return 0;
+
+    guiGameBtDebugUpdate(btDbgRaw);
 
     if (btsPairIdx >= 0) {
         state = ds34bt_get_pair(bdaddr, key);
@@ -901,6 +936,10 @@ static void guiGameShowBtSearch(void)
     btsPairIdx = -1;
     btsTimer = 0;
     diaSetLabel(diaPadEmuBtSearch, PADCFG_BTS_STATUS, btsStatus);
+    diaSetLabel(diaPadEmuBtSearch, PADCFG_BTS_DBG0, btsDbg[0]);
+    diaSetLabel(diaPadEmuBtSearch, PADCFG_BTS_DBG1, btsDbg[1]);
+    diaSetLabel(diaPadEmuBtSearch, PADCFG_BTS_DBG2, btsDbg[2]);
+    diaSetLabel(diaPadEmuBtSearch, PADCFG_BTS_DBG3, btsDbg[3]);
     guiGameBtSearchStart();
 
     while (1) {
