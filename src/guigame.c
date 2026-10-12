@@ -983,8 +983,11 @@ static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", 
 static const u8 btLedRgb[][3] = {
     {0, 0, 0}, {255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 200, 0}, {0, 255, 255}, {255, 0, 255}, {255, 255, 255}, {255, 90, 0}, {0, 0, 0}};
 
+// DS4 output report variants (clone pads don't all accept the same one); see hid_LEDRumble in modules/ds34bt/iop/ds34bt.c
+static const char *btModeNames[] = {"A: CRC, interrupt", "B: raw, interrupt", "C: raw, control", "D: CRC, control", "E: CRC, flags FF", NULL};
+
 static char bttStatus[96];
-static int bttLedSel, bttRumbleFrames, bttTimer;
+static int bttLedSel, bttModeSel, bttRumbleFrames, bttTimer;
 
 static void guiGameBtTestApplyLed(int sel)
 {
@@ -993,13 +996,13 @@ static void guiGameBtTestApplyLed(int sel)
     led[0] = btLedRgb[sel][0];
     led[1] = btLedRgb[sel][1];
     led[2] = btLedRgb[sel][2];
-    led[3] = sel ? 0x02 : 0x00; // bit1: colour chosen by the user, 0 = default pattern of the port
+    led[3] = (sel ? 0x02 : 0x00) | (bttModeSel << 2); // bit1: colour chosen by the user, 0 = default pattern of the port; bits 2-4: DS4 report variant
     ds34bt_set_led(0, led);
 }
 
 static int guiGameBtTestUpdater(int modified)
 {
-    int sel = 0, status;
+    int sel = 0, msel = 0, status;
 
     if (bttRumbleFrames > 0 && --bttRumbleFrames == 0)
         ds34bt_set_rumble(0, 0, 0);
@@ -1007,6 +1010,11 @@ static int guiGameBtTestUpdater(int modified)
     if (diaGetInt(diaPadEmuBtTest, PADCFG_BTT_LED, &sel) && sel != bttLedSel) {
         bttLedSel = sel;
         guiGameBtTestApplyLed(sel);
+    }
+
+    if (diaGetInt(diaPadEmuBtTest, PADCFG_BTT_MODE, &msel) && msel != bttModeSel) {
+        bttModeSel = msel;
+        guiGameBtTestApplyLed(bttLedSel);
     }
 
     if ((++bttTimer % 20) == 0) {
@@ -1028,10 +1036,13 @@ static void guiGameShowBtTest(void)
     int result = -1;
 
     bttLedSel = 0;
+    bttModeSel = 0;
     bttRumbleFrames = 0;
     bttTimer = 19; // refresh the status line right away
     diaSetEnum(diaPadEmuBtTest, PADCFG_BTT_LED, btLedNames);
     diaSetInt(diaPadEmuBtTest, PADCFG_BTT_LED, 0);
+    diaSetEnum(diaPadEmuBtTest, PADCFG_BTT_MODE, btModeNames);
+    diaSetInt(diaPadEmuBtTest, PADCFG_BTT_MODE, 0);
     snprintf(bttStatus, sizeof(bttStatus), "Checking...");
     diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_STATUS, bttStatus);
 
@@ -1048,8 +1059,10 @@ static void guiGameShowBtTest(void)
     }
 
     ds34bt_set_rumble(0, 0, 0);
-    if (bttLedSel)
-        guiGameBtTestApplyLed(0); // back to the default colour
+    if (bttLedSel || bttModeSel) {
+        bttModeSel = 0;
+        guiGameBtTestApplyLed(0); // back to the default colour and report variant
+    }
 }
 
 void guiGameShowPadEmuConfig(int forceGlobal)

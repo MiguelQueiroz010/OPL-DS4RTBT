@@ -693,6 +693,11 @@ struct UIItem diaPadEmuBtTest[] = {
     {UI_SPACER},
     {UI_ENUM, PADCFG_BTT_LED, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
     {UI_BREAK},
+
+    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {"DS4 report mode", -1}}},
+    {UI_SPACER},
+    {UI_ENUM, PADCFG_BTT_MODE, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
+    {UI_BREAK},
     {UI_BREAK},
 
     {UI_BUTTON, PADCFG_BTT_RUMBLE_BIG, 1, 1, -1, 0, 0, {.label = {"Rumble: big motor", -1}}},

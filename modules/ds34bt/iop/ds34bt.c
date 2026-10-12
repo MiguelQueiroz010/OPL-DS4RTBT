@@ -2101,6 +2101,8 @@ static int hid_initDS34(int pad)
     return HID_command(ds34pad[pad].hci_handle, ds34pad[pad].control_scid, init_buf, size, pad);
 }
 
+static u8 ds4_mode = 0; // DS4 output report variant picked in the menu Controller Test (see hid_LEDRumble)
+
 static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
 {
     u8 led_buf[PS4_11_REPORT_LEN + 2];
@@ -2148,15 +2150,20 @@ static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
 
         size += sizeof(output_01_report);
     } else if (ds34pad[pad].type == DS4) {
+        // Report variant, selectable from the menu Controller Test (clone pads don't all accept the same format):
+        //   0: CRC32, interrupt channel, flags 0x07 (Linux driver)   1: no CRC, interrupt channel
+        //   2: no CRC, control channel (old PADEMU)                  3: CRC32, control channel
+        //   4: CRC32, interrupt channel, flags 0xFF, no poll interval
+        u8 mode = ds4_mode;
+        u8 use_ctrl = (mode == 2 || mode == 3);
+        u8 use_crc = (mode == 0 || mode == 3 || mode == 4);
+
         mips_memset(led_buf, 0, PS4_11_REPORT_LEN + 2);
 
-        // Output report 0x11 the way the DS4 expects it over Bluetooth (same as the Linux driver and the
-        // DualSense path): DATA|OUTPUT header on the interrupt channel, HID + CRC32 flags, CRC32 at the end.
-        // Without the CRC newer/clone pads ignore the report: no rumble and no lightbar change.
-        led_buf[0] = 0xA2;             // THdr: DATA | OUTPUT
-        led_buf[1] = PS4_11_REPORT_ID; // Report ID
-        led_buf[2] = 0xC4;             // HID report + CRC32 present, 4 ms poll interval (same value as the Linux driver; 0 is not a valid interval)
-        led_buf[4] = 0x07;             // valid flags: rumble + lightbar colour + lightbar flash (Linux driver)
+        led_buf[0] = use_ctrl ? HID_THDR_SET_REPORT_OUTPUT : 0xA2; // THdr
+        led_buf[1] = PS4_11_REPORT_ID;                             // Report ID
+        led_buf[2] = use_crc ? ((mode == 4) ? 0xC0 : 0xC4) : 0x80; // HID report (+ CRC32 present) + poll interval
+        led_buf[4] = (mode == 0 || mode == 3) ? 0x07 : 0xFF;       // valid flags
 
         led_buf[7] = rrum;
         led_buf[8] = lrum;
@@ -2173,9 +2180,14 @@ static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
 
         size += PS4_11_REPORT_LEN;
 
-        {
+        if (use_crc) {
             // CRC32 over 0xA2 + the report (everything but the CRC itself), stored little-endian at the end
-            u32 crc = ds5_crc32(led_buf, size - 4);
+            u32 crc;
+            u8 thdr = led_buf[0];
+
+            led_buf[0] = 0xA2; // the CRC always starts with the DATA|OUTPUT byte, whatever channel is used
+            crc = ds5_crc32(led_buf, size - 4);
+            led_buf[0] = thdr;
             led_buf[size - 4] = (u8)(crc);
             led_buf[size - 3] = (u8)(crc >> 8);
             led_buf[size - 2] = (u8)(crc >> 16);
@@ -2189,7 +2201,7 @@ static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
         ds34pad[pad].lrum = lrum;
         ds34pad[pad].rrum = rrum;
 
-        return HID_command(ds34pad[pad].hci_handle, ds34pad[pad].interrupt_scid, led_buf, size, pad);
+        return HID_command(ds34pad[pad].hci_handle, use_ctrl ? ds34pad[pad].control_scid : ds34pad[pad].interrupt_scid, led_buf, size, pad);
     }
 
     ds34pad[pad].oldled[0] = led[0];
@@ -2448,6 +2460,8 @@ void ds34bt_set_led(u8 *led, int port)
     WaitSema(bt_dev.hid_sema);
 
     // led[3]: bit0 = blink (charging), bit1 = this colour was chosen by the user: keep it (0 = back to the default pattern)
+    // bits 2-4 = DS4 output report variant (Controller Test)
+    ds4_mode = (led[3] >> 2) & 7;
     ds34pad[port].led_user = (led[3] & 2) ? 1 : 0;
     ds34pad[port].update_rum = 1;
     ds34pad[port].oldled[0] = led[0];
