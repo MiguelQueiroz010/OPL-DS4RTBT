@@ -1636,8 +1636,8 @@ static int hid_LEDRumbleCommand(u8 *led, u8 lrum, u8 rrum, int pad)
         // Without the CRC newer/clone pads ignore the report: no rumble and no lightbar change.
         led_buf[0] = 0xA2;            // THdr: DATA | OUTPUT
         led_buf[1] = PS4_11_REPORT_ID; // Report ID
-        led_buf[2] = 0xC0;            // HID report + CRC32 present, fastest update rate
-        led_buf[4] = 0xFF;
+        led_buf[2] = 0xC4;            // HID report + CRC32 present, 4 ms poll interval (same value as the Linux driver; 0 is not a valid interval)
+        led_buf[4] = 0x07;            // valid flags: rumble + lightbar colour + lightbar flash (Linux driver)
 
         led_buf[7] = rrum * 255;
         led_buf[8] = lrum;
