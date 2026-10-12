@@ -19,6 +19,7 @@
 #define DS34BT_GET_PAIR      14
 #define DS34BT_SET_KEY       15
 #define DS34BT_GET_DEBUG     16
+#define DS34BT_GET_PADDEBUG  17
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -263,6 +264,20 @@ int ds34bt_get_debug(u8 *out)
         return 0;
 
     if (SifCallRpc(&ds34bt, DS34BT_GET_DEBUG, 0, NULL, 0, rpcbuf, DS34BT_DEBUG_SIZE, NULL, NULL) != 0)
+        return 0;
+
+    memcpy(out, rpcbuf, DS34BT_DEBUG_SIZE);
+
+    return 1;
+}
+
+// Pad 0 diagnostics of the iop driver: out = DS34BT_DEBUG_SIZE bytes (layout: ds34bt_get_paddebug in modules/ds34bt/iop/ds34bt.c)
+int ds34bt_get_paddebug(u8 *out)
+{
+    if (!ds34bt_inited)
+        return 0;
+
+    if (SifCallRpc(&ds34bt, DS34BT_GET_PADDEBUG, 0, NULL, 0, rpcbuf, DS34BT_DEBUG_SIZE, NULL, NULL) != 0)
         return 0;
 
     memcpy(out, rpcbuf, DS34BT_DEBUG_SIZE);

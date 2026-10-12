@@ -60,3 +60,4 @@ int ds34bt_pair(int index);
 int ds34bt_get_pair(u8 *bdaddr, u8 *key); // returns the pairing state
 int ds34bt_set_key(const u8 *bdaddr, const u8 *key); // NULL, NULL clears the table
 int ds34bt_get_debug(u8 *out);                       // DS34BT_DEBUG_SIZE bytes of driver status, 1 if read
+int ds34bt_get_paddebug(u8 *out);                    // DS34BT_DEBUG_SIZE bytes of pad 0 status (Controller Test), 1 if read

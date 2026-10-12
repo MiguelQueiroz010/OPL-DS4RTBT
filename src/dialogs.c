@@ -708,6 +708,16 @@ struct UIItem diaPadEmuBtTest[] = {
     {UI_BREAK},
     {UI_BREAK},
 
+    // pad 0 driver diagnostics (filled by guiGameBtTestDebugUpdate)
+    {UI_LABEL, PADCFG_BTT_DBG0, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, PADCFG_BTT_DBG1, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, PADCFG_BTT_DBG2, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, PADCFG_BTT_DBG3, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+
     {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},
 
     // end of dialog

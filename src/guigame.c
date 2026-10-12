@@ -987,7 +987,32 @@ static const u8 btLedRgb[][3] = {
 static const char *btModeNames[] = {"A: CRC, interrupt", "B: raw, interrupt", "C: raw, control", "D: CRC, control", "E: CRC, flags FF", NULL};
 
 static char bttStatus[96];
+static char bttDbg[4][72];
 static int bttLedSel, bttModeSel, bttRumbleFrames, bttTimer;
+
+// Pad 0 driver state for troubleshooting (layout of d[]: ds34bt_get_paddebug in modules/ds34bt/iop/ds34bt.c)
+static void guiGameBtTestDebugUpdate(void)
+{
+    u8 d[DS34BT_DEBUG_SIZE];
+    int i;
+
+    if (!ds34bt_get_paddebug(d)) {
+        snprintf(bttDbg[0], sizeof(bttDbg[0]), "debug: ds34bt driver does not answer");
+        bttDbg[1][0] = bttDbg[2][0] = bttDbg[3][0] = '\0';
+    } else {
+        // pad type (0 DS3, 1 DS4, 2 DS5) | fake flag | status flags (04 connected, 08 running) | hci handle | control and interrupt channel ids
+        snprintf(bttDbg[0], sizeof(bttDbg[0]), "pad0 type:%d fake:%d st:%02X hnd:%04X c:%04X i:%04X", d[0], d[1], d[2], d[6] | (d[7] << 8), d[8] | (d[9] << 8), d[10] | (d[11] << 8));
+        // output reports built | refused by the usb layer | last usb return code | report variant | update pending | motors
+        snprintf(bttDbg[1], sizeof(bttDbg[1]), "out:%d fail:%d rc:%02X mode:%c upd:%d rum:%02X/%02X", d[12] | (d[13] << 8), d[14], d[15], 'A' + (d[4] & 7), d[3], d[30], d[31]);
+        // reports received from the pad | last report id | last hid header | last size | control channel packets | last control byte
+        snprintf(bttDbg[2], sizeof(bttDbg[2]), "rx:%d id:%02X th:%02X len:%d ctl:%d hs:%02X", d[16] | (d[17] << 8), d[18], d[19], d[20] | (d[21] << 8), d[22] | (d[23] << 8), d[24]);
+        // calls that reached the driver from the menu | calls ignored | colour kept from menu | diagnostics build tag
+        snprintf(bttDbg[3], sizeof(bttDbg[3]), "rpc rum:%d led:%d drop:%d usr:%d diag1", d[25] | (d[26] << 8), d[27] | (d[28] << 8), d[29], d[5]);
+    }
+
+    for (i = 0; i < 4; i++)
+        diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_DBG0 + i, bttDbg[i]);
+}
 
 static void guiGameBtTestApplyLed(int sel)
 {
@@ -1026,6 +1051,7 @@ static int guiGameBtTestUpdater(int modified)
         else
             snprintf(bttStatus, sizeof(bttStatus), "No controller connected. Press PS on the pad.");
         diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_STATUS, bttStatus);
+        guiGameBtTestDebugUpdate();
     }
 
     return 0;

@@ -418,6 +418,22 @@ static u8 dbg[DBG_SIZE];
 
 static ds34bt_pad_t ds34pad[MAX_PADS];
 
+// Per-pad diagnostics for the menu Controller Test (read with ds34bt_get_paddebug, layout in that function)
+static struct {
+    u16 out_calls;   // LED/rumble output reports built for a DS4
+    u16 rx_int;      // reports received on the interrupt channel
+    u16 rx_len;      // size (bytes) of the last one
+    u16 rx_ctl;      // packets received on the control channel (HID handshakes)
+    u16 rpc_rumble;  // set_rumble calls that reached the driver
+    u16 rpc_led;     // set_led calls that reached the driver
+    u8 out_fail;     // output reports the USB layer refused
+    u8 last_rc;      // USB return code of the last output report
+    u8 last_rx_id;   // report id of the last interrupt report
+    u8 last_rx_thdr; // HID transaction header of the last interrupt report
+    u8 last_ctl;     // first HID byte of the last control channel packet (handshake result)
+    u8 rpc_dropped;  // set_rumble/set_led calls ignored (adapter not authorized)
+} pdbg[MAX_PADS];
+
 static void hci_event_cb(int resultCode, int bytes, void *arg);
 static void l2cap_event_cb(int resultCode, int bytes, void *arg);
 
@@ -1884,8 +1900,14 @@ static int L2CAP_event_task(int result, int bytes)
                 sdp_handle_request(pad);
                 pad = MAX_PADS;
             } else if (l2cap_interrupt_channel) {
+                pdbg[pad].rx_int++;
+                pdbg[pad].last_rx_thdr = l2cap_buf[8];
+                pdbg[pad].last_rx_id = l2cap_buf[9];
+                pdbg[pad].rx_len = (u16)bytes;
                 hid_readReport(l2cap_buf, bytes, pad);
             } else if (l2cap_command_channel) {
+                pdbg[pad].rx_ctl++;
+                pdbg[pad].last_ctl = l2cap_buf[8];
                 DPRINTF("HID command status 0x%02X \n", l2cap_buf[8]);
                 pad = MAX_PADS;
             }
@@ -2201,7 +2223,16 @@ static int hid_LEDRumble(u8 *led, u8 lrum, u8 rrum, int pad)
         ds34pad[pad].lrum = lrum;
         ds34pad[pad].rrum = rrum;
 
-        return HID_command(ds34pad[pad].hci_handle, use_ctrl ? ds34pad[pad].control_scid : ds34pad[pad].interrupt_scid, led_buf, size, pad);
+        {
+            int rc = HID_command(ds34pad[pad].hci_handle, use_ctrl ? ds34pad[pad].control_scid : ds34pad[pad].interrupt_scid, led_buf, size, pad);
+
+            pdbg[pad].out_calls++;
+            pdbg[pad].last_rc = (u8)rc;
+            if (rc && pdbg[pad].out_fail < 0xFF)
+                pdbg[pad].out_fail++;
+
+            return rc;
+        }
     }
 
     ds34pad[pad].oldled[0] = led[0];
@@ -2435,8 +2466,13 @@ void ds34bt_set_rumble(u8 lrum, u8 rrum, int port)
     if (port >= MAX_PADS)
         return;
 
-    if (!(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED))
+    if (!(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED)) {
+        if (pdbg[port].rpc_dropped < 0xFF)
+            pdbg[port].rpc_dropped++;
         return;
+    }
+
+    pdbg[port].rpc_rumble++;
 
     WaitSema(bt_dev.hid_sema);
 
@@ -2454,8 +2490,13 @@ void ds34bt_set_led(u8 *led, int port)
     if (port >= MAX_PADS)
         return;
 
-    if (!(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED))
+    if (!(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED)) {
+        if (pdbg[port].rpc_dropped < 0xFF)
+            pdbg[port].rpc_dropped++;
         return;
+    }
+
+    pdbg[port].rpc_led++;
 
     WaitSema(bt_dev.hid_sema);
 
@@ -2608,6 +2649,51 @@ void ds34bt_get_debug(u8 *data)
     data[DBG_FOUND] = bt_found_count;
 }
 
+// Pad 0 diagnostics for the menu Controller Test (32 bytes):
+//  0 type  1 isfake  2 status flags  3 update pending  4 DS4 report variant  5 colour kept from menu
+//  6-7 hci handle  8-9 control cid  10-11 interrupt cid  12-13 output reports built  14 refused by USB  15 last USB rc
+//  16-17 interrupt reports received  18 last report id  19 last HID header  20-21 last size
+//  22-23 control channel packets  24 last control byte (handshake)  25-26 set_rumble calls  27-28 set_led calls
+//  29 calls ignored  30-31 current motors
+void ds34bt_get_paddebug(u8 *d)
+{
+    ds34bt_pad_t *p = &ds34pad[0];
+
+    mips_memset(d, 0, 32);
+    d[0] = p->type;
+    d[1] = p->isfake;
+    d[2] = p->status;
+    d[3] = p->update_rum;
+    d[4] = ds4_mode;
+    d[5] = p->led_user;
+    d[6] = (u8)p->hci_handle;
+    d[7] = (u8)(p->hci_handle >> 8);
+    d[8] = (u8)p->control_scid;
+    d[9] = (u8)(p->control_scid >> 8);
+    d[10] = (u8)p->interrupt_scid;
+    d[11] = (u8)(p->interrupt_scid >> 8);
+    d[12] = (u8)pdbg[0].out_calls;
+    d[13] = (u8)(pdbg[0].out_calls >> 8);
+    d[14] = pdbg[0].out_fail;
+    d[15] = pdbg[0].last_rc;
+    d[16] = (u8)pdbg[0].rx_int;
+    d[17] = (u8)(pdbg[0].rx_int >> 8);
+    d[18] = pdbg[0].last_rx_id;
+    d[19] = pdbg[0].last_rx_thdr;
+    d[20] = (u8)pdbg[0].rx_len;
+    d[21] = (u8)(pdbg[0].rx_len >> 8);
+    d[22] = (u8)pdbg[0].rx_ctl;
+    d[23] = (u8)(pdbg[0].rx_ctl >> 8);
+    d[24] = pdbg[0].last_ctl;
+    d[25] = (u8)pdbg[0].rpc_rumble;
+    d[26] = (u8)(pdbg[0].rpc_rumble >> 8);
+    d[27] = (u8)pdbg[0].rpc_led;
+    d[28] = (u8)(pdbg[0].rpc_led >> 8);
+    d[29] = pdbg[0].rpc_dropped;
+    d[30] = p->lrum;
+    d[31] = p->rrum;
+}
+
 // Starts a 10 s inquiry for pads in pairing mode. Returns 1 if the search is running.
 int ds34bt_search_start(void)
 {
@@ -2752,6 +2838,7 @@ static int rpc_buf[64] __attribute((aligned(16)));
 #define DS34BT_GET_PAIR      14
 #define DS34BT_SET_KEY       15
 #define DS34BT_GET_DEBUG     16
+#define DS34BT_GET_PADDEBUG  17
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -2813,6 +2900,9 @@ void *rpc_sf(int cmd, void *data, int size)
             break;
         case DS34BT_GET_DEBUG:
             ds34bt_get_debug((u8 *)data);
+            break;
+        case DS34BT_GET_PADDEBUG:
+            ds34bt_get_paddebug((u8 *)data);
             break;
         default:
             break;
