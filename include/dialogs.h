@@ -202,6 +202,19 @@ enum UI_ITEMS {
     PADCFG_BTT_RUMBLE_BIG,
     PADCFG_BTT_RUMBLE_SMALL,
     PADCFG_BTT_RUMBLE_BOTH,
+    PADCFG_SETUP,
+    PADCFG_SETUP_STR,
+    PADSET_TOUCH_MODE,
+    PADSET_TOUCH_SENS,
+    PADSET_TOUCH_CLICK,
+    PADSET_PS_TAP,
+    PADSET_PS_HOLD,
+    PADSET_PS_TIME,
+    PADSET_REMAP,
+    PADSET_RESET,
+    PADREM_BASE, // 16 rows: one per DS2 button
+    PADREM_END = PADREM_BASE + 15,
+    PADREM_RESET,
 
     PADMACRO_GLOBAL_BUTTON,
     PADMACRO_CFG_SOURCE,
@@ -235,6 +248,8 @@ extern struct UIItem diaPadMacroConfig[];
 extern struct UIItem diaPadEmuInfo[];
 extern struct UIItem diaPadEmuBtSearch[];
 extern struct UIItem diaPadEmuBtTest[];
+extern struct UIItem diaPadEmuSetup[];
+extern struct UIItem diaPadEmuRemap[];
 #endif
 
 extern struct UIItem diaNetConfig[];

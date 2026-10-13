@@ -21,6 +21,7 @@
 #include <libds34bt.h>
 #include <libds34usb.h>
 #include "include/btkeys.h"
+#include "include/padsetup.h"
 #endif
 
 #define NEWLIB_PORT_AWARE
@@ -760,6 +761,41 @@ static char btsStatus[128];
 static char btsDbg[4][72];
 static int btsCount, btsShown, btsPairIdx, btsPairStart, btsTimer;
 
+/*
+ * Controller Setup (button remap, PS button, touchpad): stored as hex in the OPL config, handed to bt_pademu
+ * at game launch (guiGameSetupModuleArg, in-memory copy because OPL frees its config before launching).
+ */
+static padsetup_t gPadSetup;
+static int gPadSetupLoaded = 0;
+
+static void guiGameSetupLoad(void)
+{
+    char str[PADSETUP_HEX_LEN + 1];
+    config_set_t *cfg = configGetByType(CONFIG_OPL);
+
+    str[0] = '\0';
+    if (cfg)
+        configGetStrCopy(cfg, CONFIG_ITEM_PADEMU_SETUP, str, sizeof(str));
+    padsetup_from_hex(str, &gPadSetup); // default setup if missing or invalid
+    gPadSetupLoaded = 1;
+}
+
+static void guiGameSetupSave(void)
+{
+    char str[PADSETUP_HEX_LEN + 1];
+
+    padsetup_to_hex(&gPadSetup, str);
+    configSetStr(configGetByType(CONFIG_OPL), CONFIG_ITEM_PADEMU_SETUP, str);
+    saveConfig(CONFIG_OPL, 0);
+}
+
+void guiGameSetupModuleArg(unsigned char *out)
+{
+    if (!gPadSetupLoaded)
+        padsetup_default(&gPadSetup);
+    memcpy(out, &gPadSetup, PADSETUP_ARG_LEN);
+}
+
 static int btKeysCount = 0; // copy of the saved keys: OPL frees its config (configEnd) before launching a game
 
 static int guiGameBtKeysLoad(void)
@@ -774,6 +810,8 @@ static int guiGameBtKeysLoad(void)
 void guiGameBtKeysPushToDriver(void)
 {
     int n = guiGameBtKeysLoad(), i;
+
+    guiGameSetupLoad(); // Controller Setup lives in the same config: keep an in-memory copy for the game launch
 
     ds34bt_set_key(NULL, NULL);
     for (i = 0; i < n; i++)
@@ -1091,6 +1129,133 @@ static void guiGameShowBtTest(void)
     }
 }
 
+/*
+ * Controller Setup dialogs
+ */
+#define BTN16(first) first, "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left", "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square", NULL
+// index = value stored in the blob: 0 = none, 1..16 = DS2 button + 1
+static const char *setupTargetNames[] = {BTN16("None")};
+static const char *setupTouchModes[] = {"Select/Start halves (original)", "Click = button only", "Right stick: drag", "Left stick: drag", "Right stick: mouse", "Left stick: mouse", NULL};
+static const char *setupPsHold[] = {"Nothing", "Exit to OPL (IGR)", "Power off", "Screenshot (needs GSM)", NULL};
+static const char *setupPsTime[] = {"1 second", "2 seconds", "3 seconds", NULL};
+static const char *setupRemapEnum[19];
+
+static void guiGameSetupBuildRemapEnum(void)
+{
+    int i;
+
+    setupRemapEnum[0] = "Unchanged";
+    setupRemapEnum[1] = "Disabled";
+    for (i = 0; i < 16; i++)
+        setupRemapEnum[2 + i] = setupTargetNames[1 + i];
+    setupRemapEnum[18] = NULL;
+}
+
+static int guiGameSetupRemapToIndex(unsigned char v)
+{
+    if (v == 0)
+        return 0;
+    if (v == PADSETUP_TARGET_DISABLED)
+        return 1;
+    return (v >= 1 && v <= 16) ? v + 1 : 0;
+}
+
+static unsigned char guiGameSetupRemapFromIndex(int idx)
+{
+    if (idx <= 0)
+        return 0;
+    if (idx == 1)
+        return PADSETUP_TARGET_DISABLED;
+    return (unsigned char)(idx - 1);
+}
+
+static void guiGameSetupToDialog(void)
+{
+    diaSetInt(diaPadEmuSetup, PADSET_TOUCH_MODE, gPadSetup.touch_mode);
+    diaSetInt(diaPadEmuSetup, PADSET_TOUCH_SENS, gPadSetup.touch_sens);
+    diaSetInt(diaPadEmuSetup, PADSET_TOUCH_CLICK, gPadSetup.touch_click);
+    diaSetInt(diaPadEmuSetup, PADSET_PS_TAP, gPadSetup.ps_tap);
+    diaSetInt(diaPadEmuSetup, PADSET_PS_HOLD, gPadSetup.ps_hold);
+    diaSetInt(diaPadEmuSetup, PADSET_PS_TIME, gPadSetup.ps_hold_time);
+}
+
+static void guiGameSetupFromDialog(void)
+{
+    int v;
+
+    if (diaGetInt(diaPadEmuSetup, PADSET_TOUCH_MODE, &v) && v >= 0 && v < PADSETUP_TOUCH_MODE_COUNT)
+        gPadSetup.touch_mode = (unsigned char)v;
+    if (diaGetInt(diaPadEmuSetup, PADSET_TOUCH_SENS, &v) && v >= 1 && v <= 8)
+        gPadSetup.touch_sens = (unsigned char)v;
+    if (diaGetInt(diaPadEmuSetup, PADSET_TOUCH_CLICK, &v) && v >= 0 && v <= 16)
+        gPadSetup.touch_click = (unsigned char)v;
+    if (diaGetInt(diaPadEmuSetup, PADSET_PS_TAP, &v) && v >= 0 && v <= 16)
+        gPadSetup.ps_tap = (unsigned char)v;
+    if (diaGetInt(diaPadEmuSetup, PADSET_PS_HOLD, &v) && v >= 0 && v < PADSETUP_PSHOLD_COUNT)
+        gPadSetup.ps_hold = (unsigned char)v;
+    if (diaGetInt(diaPadEmuSetup, PADSET_PS_TIME, &v) && v >= 0 && v <= 2)
+        gPadSetup.ps_hold_time = (unsigned char)v;
+}
+
+static void guiGameShowPadRemap(void)
+{
+    int i, v, result = -1;
+
+    guiGameSetupBuildRemapEnum();
+    for (i = 0; i < 16; i++) {
+        diaSetEnum(diaPadEmuRemap, PADREM_BASE + i, setupRemapEnum);
+        diaSetInt(diaPadEmuRemap, PADREM_BASE + i, guiGameSetupRemapToIndex(gPadSetup.remap[i]));
+    }
+
+    while (1) {
+        result = diaExecuteDialog(diaPadEmuRemap, result, 1, NULL);
+
+        if (result == PADREM_RESET) {
+            for (i = 0; i < 16; i++)
+                diaSetInt(diaPadEmuRemap, PADREM_BASE + i, 0);
+        } else if (result == UIID_BTN_OK || result == UIID_BTN_CANCEL) {
+            break;
+        }
+    }
+
+    for (i = 0; i < 16; i++) {
+        if (diaGetInt(diaPadEmuRemap, PADREM_BASE + i, &v))
+            gPadSetup.remap[i] = guiGameSetupRemapFromIndex(v);
+    }
+}
+
+static void guiGameShowPadSetup(void)
+{
+    int result = -1;
+
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+
+    diaSetEnum(diaPadEmuSetup, PADSET_TOUCH_MODE, setupTouchModes);
+    diaSetEnum(diaPadEmuSetup, PADSET_TOUCH_CLICK, setupTargetNames);
+    diaSetEnum(diaPadEmuSetup, PADSET_PS_TAP, setupTargetNames);
+    diaSetEnum(diaPadEmuSetup, PADSET_PS_HOLD, setupPsHold);
+    diaSetEnum(diaPadEmuSetup, PADSET_PS_TIME, setupPsTime);
+    guiGameSetupToDialog();
+
+    while (1) {
+        result = diaExecuteDialog(diaPadEmuSetup, result, 1, NULL);
+
+        if (result == PADSET_REMAP) {
+            guiGameSetupFromDialog();
+            guiGameShowPadRemap();
+        } else if (result == PADSET_RESET) {
+            padsetup_default(&gPadSetup);
+            guiGameSetupToDialog();
+        } else if (result == UIID_BTN_OK || result == UIID_BTN_CANCEL) {
+            break;
+        }
+    }
+
+    guiGameSetupFromDialog();
+    guiGameSetupSave();
+}
+
 void guiGameShowPadEmuConfig(int forceGlobal)
 {
     const char *settingsSource[] = {_l(_STR_GLOBAL_SETTINGS), _l(_STR_PERGAME_SETTINGS), NULL};
@@ -1123,6 +1288,8 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH_STR, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTTEST, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTTEST_STR, PadEmuSettings & EnablePadEmu);
+    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, PadEmuSettings & EnablePadEmu);
+    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP_STR, PadEmuSettings & EnablePadEmu);
 
     diaSetVisible(diaPadEmuConfig, PADCFG_BTINFO, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, PadEmuSettings & EnablePadEmu);
@@ -1155,6 +1322,9 @@ void guiGameShowPadEmuConfig(int forceGlobal)
 
         if (result == PADCFG_BTTEST)
             guiGameShowBtTest();
+
+        if (result == PADCFG_SETUP)
+            guiGameShowPadSetup();
 
         if (result == PADCFG_BTINFO) {
             for (i = PADCFG_FEAT_START; i < PADCFG_FEAT_END + 1; i++)

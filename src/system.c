@@ -32,9 +32,11 @@
 #include <libds34bt.h>
 #include <libds34usb.h>
 #include "include/btkeys.h"
+#include "include/padsetup.h"
 #include "include/guigame.h"
 
 _Static_assert(BTKEYS_ARG_LEN <= CORE_PADEMU_BTKEYS_LEN, "PadEmuBtKeys too small");
+_Static_assert(PADSETUP_ARG_LEN == CORE_PADEMU_SETUP_LEN, "PadEmuSetup size");
 #endif
 
 #define NEWLIB_PORT_AWARE
@@ -948,6 +950,7 @@ void sysLaunchLoaderElf(const char *filename, const char *mode_str, int size_cdv
     config->PadEmuSettings = (unsigned int)(gPadEmuSettings >> 8);
     config->PadMacroSettings = (unsigned int)(gPadMacroSettings);
     guiGameBtKeysModuleArg(config->PadEmuBtKeys);
+    guiGameSetupModuleArg(config->PadEmuSetup);
 #endif
 
     config->CustomOSDConfigParam.spdifMode = PARAM.spdifMode;

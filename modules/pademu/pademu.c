@@ -12,6 +12,7 @@
 #ifdef BT
 
 #include "ds34bt.h"
+#include <padsetup.h>
 
 #define PAD_INIT            ds34bt_init
 #define PAD_GET_STATUS      ds34bt_get_status
@@ -125,7 +126,8 @@ int _start(int argc, char *argv[])
         mips_memcpy(&macro_settings, argv[1] + 4, 4);
         padMacroInit(macro_settings);
 #ifdef BT
-        ds34bt_set_keys(argv[1] + 8); // optional: link keys of pads paired wirelessly
+        ds34bt_set_setup(argv[1] + 8);  // Controller Setup blob (include/padsetup.h), PADSETUP_ARG_LEN bytes
+        ds34bt_set_keys(argv[1] + 8 + PADSETUP_ARG_LEN); // optional: link keys of pads paired wirelessly
 #endif
     }
 

@@ -23,6 +23,7 @@ void guiGameBtKeysPushToDriver(void);
 void guiGameBtKeysRequestPush(void);
 void guiGameBtKeysPushIfPending(void);
 void guiGameBtKeysModuleArg(char *out); // needs BTKEYS_ARG_LEN bytes
+void guiGameSetupModuleArg(unsigned char *out); // Controller Setup blob, PADSETUP_ARG_LEN bytes
 #endif
 
 void guiGameShowOSDLanguageConfig(int forceGlobal);
