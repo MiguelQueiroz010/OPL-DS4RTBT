@@ -343,7 +343,19 @@ static u8 GenuineMacAddress[][3] =
 static u8 hci_buf[MAX_BUFFER_SIZE] __attribute((aligned(4))) = {0};
 static u8 l2cap_buf[MAX_BUFFER_SIZE + 32] __attribute((aligned(4))) = {0};
 static u8 hci_cmd_buf[MAX_BUFFER_SIZE] __attribute((aligned(4))) = {0};
-static u8 l2cap_cmd_buf[MAX_BUFFER_SIZE + 32] __attribute((aligned(4))) = {0};
+// Bulk OUT transfers are asynchronous: the buffer must stay untouched until the transfer finishes. Several commands
+// are often sent back to back from one callback (e.g. GET_REPORT right before the first LED/rumble report), so each
+// command gets its own buffer from a small ring instead of overwriting one shared buffer.
+#define L2CAP_CMD_BUFS 4
+static u8 l2cap_cmd_bufs[L2CAP_CMD_BUFS][MAX_BUFFER_SIZE + 32] __attribute((aligned(4)));
+static u8 l2cap_cmd_idx;
+static u8 *l2cap_cmd_buf;
+
+static void l2cap_cmd_buf_next(void)
+{
+    l2cap_cmd_idx = (l2cap_cmd_idx + 1) % L2CAP_CMD_BUFS;
+    l2cap_cmd_buf = l2cap_cmd_bufs[l2cap_cmd_idx];
+}
 
 static u8 identifier = 0;
 static u8 g_press_emu = 0;
@@ -1039,6 +1051,7 @@ static void hci_event_cb(int resultCode, int bytes, void *arg)
 
 static int L2CAP_Command(u16 handle, u8 *data, u8 length)
 {
+    l2cap_cmd_buf_next();
     l2cap_cmd_buf[0] = (u8)(handle & 0xff); // HCI handle with PB,BC flag
     l2cap_cmd_buf[1] = (u8)(((handle >> 8) & 0x0f) | 0x20);
     l2cap_cmd_buf[2] = (u8)((4 + length) & 0xff); // HCI ACL total data length
@@ -1410,6 +1423,7 @@ static void l2cap_event_cb(int resultCode, int bytes, void *arg)
 
 static int HID_command(u16 handle, u16 scid, u8 *data, u8 length, int pad)
 {
+    l2cap_cmd_buf_next();
     l2cap_cmd_buf[0] = (u8)(handle & 0xff); // HCI handle with PB,BC flag
     l2cap_cmd_buf[1] = (u8)(((handle >> 8) & 0x0f) | 0x20);
     l2cap_cmd_buf[2] = (u8)((4 + length) & 0xff); // HCI ACL total data length
@@ -1569,6 +1583,11 @@ static int hid_initDS34(int pad)
     } else if (ds34pad[pad].type == DS4) {
         init_buf[0] = HID_THDR_GET_REPORT_FEATURE; // THdr
         init_buf[1] = PS4_02_REPORT_ID;            // Report ID
+        HID_command(ds34pad[pad].hci_handle, ds34pad[pad].control_scid, init_buf, size, pad);
+        // Over Bluetooth Windows and Linux read the calibration from feature 0x05 (0x02 is the USB one). Some
+        // clones only start honouring output reports (rumble/lightbar) after that handshake.
+        DelayThread(CMD_DELAY * 500);
+        init_buf[1] = 0x05;
     }
 
     return HID_command(ds34pad[pad].hci_handle, ds34pad[pad].control_scid, init_buf, size, pad);
@@ -1818,7 +1837,16 @@ static void hid_readReport(u8 *data, int bytes, int pad_idx)
             }
         }
 
-        if (pad->btn_delay > 0) {
+        if (pad->type == DS4) { // rumble is only sent when it changes: refresh it now and then while a motor is on
+            static u8 ds4_keepalive[MAX_PADS];
+
+            if ((pad->lrum || pad->rrum) && ++ds4_keepalive[pad_idx] >= 100) {
+                ds4_keepalive[pad_idx] = 0;
+                pad->update_rum = 1;
+            }
+            if (pad->btn_delay > 0 && pad->btn_delay < MAX_DELAY)
+                pad->update_rum = 1; // lightbar / battery indication changes
+        } else if (pad->btn_delay > 0) {
             pad->update_rum = 1;
         }
     } else {
@@ -1838,7 +1866,7 @@ void ds34bt_set_rumble(u8 lrum, u8 rrum, int port)
     // The game sends the motor state on every pad read (each frame). For the DualSense only send an
     // output report when it changes: each one is a 78-byte Bluetooth packet sharing the air time with
     // the input reports (the periodic keepalive in hid_readReport keeps the state in sync anyway).
-    if (ds34pad[port].type != DS5 || ds34pad[port].lrum != lrum || ds34pad[port].rrum != rrum)
+    if ((ds34pad[port].type != DS5 && ds34pad[port].type != DS4) || ds34pad[port].lrum != lrum || ds34pad[port].rrum != rrum)
         ds34pad[port].update_rum = 1;
     ds34pad[port].lrum = lrum;
     ds34pad[port].rrum = rrum;
