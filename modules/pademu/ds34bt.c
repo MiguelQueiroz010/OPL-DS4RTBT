@@ -1656,10 +1656,15 @@ static int hid_LEDRumbleCommand(u8 *led, u8 lrum, u8 rrum, int pad)
         led_buf[0] = 0xA2;            // THdr: DATA | OUTPUT
         led_buf[1] = PS4_11_REPORT_ID; // Report ID
         led_buf[2] = 0xC4;            // HID report + CRC32 present, 4 ms poll interval (same value as the Linux driver; 0 is not a valid interval)
-        led_buf[4] = 0x07;            // valid flags: rumble + lightbar colour + lightbar flash (Linux driver)
+        // valid flags: 0xFF like DS4Windows/the original OPL report (the Linux driver only sets 0x07). Some clones only
+        // apply the lightbar colour when every flag bit is set.
+        led_buf[4] = 0xFF;
 
-        led_buf[7] = rrum * 255;
-        led_buf[8] = lrum;
+        led_buf[7] = rrum ? 0xFF : 0; // small motor: on/off for the game
+        // Games use low values for light effects that a DS4 clone motor barely turns on for, so the big motor
+        // range is stretched to 96..255 (0 stays off). Tune DS4_RUMBLE_MIN to taste.
+#define DS4_RUMBLE_MIN 96
+        led_buf[8] = lrum ? (u8)(DS4_RUMBLE_MIN + (lrum * (255 - DS4_RUMBLE_MIN)) / 255) : 0;
 
         led_buf[9] = led[0];  // r
         led_buf[10] = led[1]; // g
