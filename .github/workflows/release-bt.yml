@@ -1,0 +1,67 @@
+name: Release-BT
+
+# Builds OPL with PADEMU + Bluetooth and publishes a GitHub release.
+#  - push a tag like  bt-v1.0.0  (or bt-v1.0.0-rc1)  -> release with RELEASE_NOTES_BT.md as description
+#  - or run it by hand (Actions > Release-BT > Run workflow) and give the tag name
+
+on:
+  push:
+    tags:
+      - 'bt-v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. bt-v1.0.0)'
+        required: true
+      prerelease:
+        description: 'Mark as pre-release'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    container: ghcr.io/ps2homebrew/ps2homebrew:main
+    steps:
+    - name: git checkout
+      uses: actions/checkout@v4
+
+    - run: |
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        git fetch --prune --unshallow
+
+    - name: Get version and tag
+      run: |
+        echo "OPL_VERSION=$(make oplversion)" >> $GITHUB_ENV
+        if [ -n "${{ github.event.inputs.tag }}" ]; then TAG="${{ github.event.inputs.tag }}"; else TAG="${GITHUB_REF_NAME}"; fi
+        echo "TAG=$TAG" >> $GITHUB_ENV
+
+    - name: Compile -> make clean release
+      run: make --trace clean release
+
+    - name: Name the ELF
+      run: |
+        ELF=$(ls OPNPS2LD-*.ELF | head -n 1)
+        cp "$ELF" "OPL-DualSense-BT-${TAG}.ELF"
+
+    - name: Release notes
+      run: |
+        {
+          cat RELEASE_NOTES_BT.md
+          echo
+          echo "---"
+          echo "Build: \`${OPL_VERSION}\` / commit \`${GITHUB_SHA::8}\`"
+        } > notes.md
+
+    - name: Publish release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.TAG }}
+        name: OPL DualSense/DS4 BT ${{ env.TAG }}
+        body_path: notes.md
+        prerelease: ${{ github.event.inputs.prerelease == 'true' || contains(env.TAG, '-rc') }}
+        files: |
+          OPL-DualSense-BT-${{ env.TAG }}.ELF
