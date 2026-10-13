@@ -438,6 +438,28 @@ static int clamp_stick(int v)
     return v < 0 ? 0 : (v > 255 ? 255 : v);
 }
 
+// IOP system clock >> 15: ~0.889 ms per unit, wraps after ~44 days
+static u32 ds_now(void)
+{
+    iop_sys_clock_t c;
+
+    GetSystemTime(&c);
+    return (c.hi << 17) | (c.lo >> 15);
+}
+
+// Games ignore small stick values (dead zone around the centre): any finger movement jumps over it
+static int touch_boost(int v)
+{
+    int a = v < 0 ? -v : v;
+
+    if (a == 0)
+        return 0;
+    if (a > 127)
+        a = 127;
+    a = 40 + a * 87 / 127;
+    return v < 0 ? -a : a;
+}
+
 // DS4 touchpad (modes other than Select/Start halves): called with every DS4 report
 static void pad_touch(ds34bt_pad_t *pad, const struct ds4report *r, int have_touch)
 {
@@ -476,10 +498,10 @@ static void pad_touch(ds34bt_pad_t *pad, const struct ds4report *r, int have_tou
     }
 
     // drag modes: the stick follows the finger, measured from where it touched down
-    range_x = 1100 - g_setup.touch_sens * 100; // full deflection at this distance (sensitivity 1..8: 1000..300 px)
-    range_y = range_x / 2;
-    sx = ((int)pad->touch_x - (int)pad->touch_sx) * 127 / range_x;
-    sy = ((int)pad->touch_y - (int)pad->touch_sy) * 127 / range_y;
+    range_x = 560 - g_setup.touch_sens * 60; // full deflection at this distance (sensitivity 1..8: 500..80 px)
+    range_y = range_x / 2;                   // the touchpad is half as tall as it is wide
+    sx = touch_boost(((int)pad->touch_x - (int)pad->touch_sx) * 127 / range_x);
+    sy = touch_boost(((int)pad->touch_y - (int)pad->touch_sy) * 127 / range_y);
     sx = clamp_stick(sx);
     sy = clamp_stick(sy);
 
@@ -495,8 +517,26 @@ static void pad_touch(ds34bt_pad_t *pad, const struct ds4report *r, int have_tou
 // Common post-processing of a report (after translate + macros), `have_touch` only for DS4 with touch data
 static void pad_postprocess(ds34bt_pad_t *pad, int ps_pressed, const struct ds4report *ds4, int have_touch)
 {
+    u8 was_down = pad->ps_down;
+
     pad->ps_down = ps_pressed;
     pad->ps_alone = ps_pressed && (pad->ds2.nButtonState == 0xFFFF); // before anything below changes the buttons
+
+    // PS held long enough = IGR combination. Timed here with the real clock (reports arrive all the time), so it does
+    // not depend on how often the game polls the pad.
+    if (ps_pressed) {
+        if (!was_down) {
+            pad->ps_t0 = ds_now();
+            pad->ps_rep_dirty = 0;
+        }
+        if (!pad->ps_alone)
+            pad->ps_rep_dirty = 1;
+        pad->igr_on = g_setup.ps_hold != PADSETUP_PSHOLD_NONE && !pad->ps_rep_dirty &&
+                      (u32)(ds_now() - pad->ps_t0) >= 1125u * (g_setup.ps_hold_time + 1);
+    } else {
+        pad->igr_on = 0;
+        pad->ps_rep_dirty = 0;
+    }
 
     if (ds4)
         pad_touch(pad, ds4, have_touch);
@@ -2064,7 +2104,6 @@ int ds34bt_get_data(u8 *dst, int size, int port)
 
     {
         ds34bt_pad_t *pad = &ds34pad[port];
-        int hold_polls = 60 * (g_setup.ps_hold_time + 1); // 1, 2 or 3 seconds at about one poll per frame
 
         // PS button: tap = pulse of the chosen button, hold = OPL in-game reset combination (IGR)
         if (pad->ps_down) {
@@ -2079,18 +2118,21 @@ int ds34bt_get_data(u8 *dst, int size, int port)
             pad->ps_dirty = 0;
         }
 
-        if (size >= 18) {
-            if (pad->tap_frames > 0) {
-                pad->tap_frames--;
-                ds2_press(dst, g_setup.ps_tap - 1, 255);
-            }
+        if (size >= 2 && pad->tap_frames > 0) {
+            pad->tap_frames--;
+            ds2_press(dst, g_setup.ps_tap - 1, 255);
+        }
 
+        if (size >= 6) { // the sticks are only sent in analog mode (6 bytes) or with pressures (18 bytes)
             if (g_setup.touch_mode == PADSETUP_TOUCH_RSTICK_MOUSE || g_setup.touch_mode == PADSETUP_TOUCH_LSTICK_MOUSE) {
-                int mx = pad->touch_accx * g_setup.touch_sens * 127 / 480; // full deflection at 480/sens px per poll
-                int my = pad->touch_accy * g_setup.touch_sens * 127 / 480;
+                // movement of a single pixel is finger jitter; full deflection at 160/sens px per poll
+                int ax = (pad->touch_accx > 1 || pad->touch_accx < -1) ? pad->touch_accx : 0;
+                int ay = (pad->touch_accy > 1 || pad->touch_accy < -1) ? pad->touch_accy : 0;
+                int mx = touch_boost(ax * g_setup.touch_sens * 127 / 160);
+                int my = touch_boost(ay * g_setup.touch_sens * 127 / 160);
                 int o = (g_setup.touch_mode == PADSETUP_TOUCH_RSTICK_MOUSE) ? 2 : 4;
 
-                if (pad->touch_accx != 0 || pad->touch_accy != 0) {
+                if (mx != 0 || my != 0) {
                     dst[o] = (u8)clamp_stick(mx);
                     dst[o + 1] = (u8)clamp_stick(my);
                 }
@@ -2099,7 +2141,7 @@ int ds34bt_get_data(u8 *dst, int size, int port)
             }
         }
 
-        if (!pad->ps_dirty && pad->ps_polls >= hold_polls && size >= 2 && g_setup.ps_hold != PADSETUP_PSHOLD_NONE) {
+        if (pad->igr_on && size >= 2) {
             // L1+L2+R1+R2 plus one more combination, buttons are active-low (see ee_core/src/padhook.c)
             dst[1] &= (u8)~0x0F; // L2, R2, L1, R1
             switch (g_setup.ps_hold) {

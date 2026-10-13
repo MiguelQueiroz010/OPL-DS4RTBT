@@ -54,6 +54,9 @@ typedef struct
     u8 ps_dirty;    // another button was used while PS was down: no tap / hold action for this press
     u8 ps_polls;    // game polls (about 1/frame) the PS button has been held alone, saturates at 255
     u8 tap_frames;  // polls left of the button pulse of a short PS press
+    u8 ps_rep_dirty; // report side: another button was used while PS was down
+    u8 igr_on;       // PS held long enough: report the OPL in-game reset combination to the game
+    u32 ps_t0;       // clock units (see ds_now) when the PS button went down
     u8 touch_active; // DS4 touchpad: finger 1 on the pad
     u16 touch_x, touch_y, touch_sx, touch_sy; // last / start position of the finger
     s16 touch_accx, touch_accy;               // finger movement since the game's last poll (mouse mode)
