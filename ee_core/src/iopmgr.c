@@ -120,7 +120,13 @@ static void ResetIopSpecial(const char *args, unsigned int arglen)
 #define PADEMU_ARG
 #endif
     if (config->GameMode == BDM_USB_MODE PADEMU_ARG) {
-        LoadOPLModule(OPL_MODULE_ID_USBD, 0, 11, "thpri=2,3");
+        if (config->GameMode == BDM_USB_MODE) {
+            LoadOPLModule(OPL_MODULE_ID_USBD, 0, 11, "thpri=2,3");
+        } else {
+            // PADEMU only: a single BT dongle needs a tiny USBD pool (saves ~25 KB of IOP RAM).
+            static const char usbdLiteArgs[] = "thpri=2,3\0dev=4\0ed=16\0ioreq=48\0";
+            LoadOPLModule(OPL_MODULE_ID_USBD, 0, sizeof(usbdLiteArgs), usbdLiteArgs);
+        }
     }
 
     LoadOPLModule(OPL_MODULE_ID_SIO2MAN, 0, 0, NULL);
