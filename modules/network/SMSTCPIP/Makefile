@@ -14,7 +14,7 @@ IOP_OBJS = ps2ip.o inet.o ip.o ip_addr.o ip_frag.o etharp.o tcp_in.o tcp_out.o \
 IOP_LIBS =
 
 IOP_INCS += -Iinclude -I../../iopcore/common
-IOP_CFLAGS += -DLWIP_NOASSERT
+IOP_CFLAGS += -DLWIP_NOASSERT -Os
 
 ifeq ($(INGAME_DRIVER),1)
 IOP_CFLAGS += -DINGAME_DRIVER
