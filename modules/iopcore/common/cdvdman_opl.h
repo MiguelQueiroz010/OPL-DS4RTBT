@@ -64,8 +64,7 @@ enum CDIOC_CODE {
 
 // DMA/reading alignment correction buffer. Used by CDVDMAN and CDVDFSV.
 //The minimum size is 2, as one sector may be used for buffer alignment correction.
-// 8 -> 3 saves 10 KB of IOP RAM (the game gets it back; KH2 needs it for its sound effects buffer).
-#define CDVDMAN_FS_SECTORS 3
+#define CDVDMAN_FS_SECTORS 8
 
 //Codes for use with sceCdSC()
 #define CDSC_GET_DEBUG_STATUS 0xFFFFFFF0 //Get debug status flag.

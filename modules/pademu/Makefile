@@ -1,6 +1,4 @@
 IOP_OBJS = pademu.o sys_utils.o imports.o exports.o padmacro.o ds34common.o
-# Size matters: every KB here is IOP RAM taken from the game.
-IOP_CFLAGS += -Os
 
 ifeq ($(USE_USB),1)
 IOP_BIN = usb_pademu.irx
