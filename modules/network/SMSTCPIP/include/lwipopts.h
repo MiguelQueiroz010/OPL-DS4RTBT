@@ -31,7 +31,9 @@
 a lot of data that needs to be copied, this should be set high. */
 /* Setting this too low may cause tcp_write() to fail when it tries to allocate from PBUF_RAM!
    Up to TCP_SND_BUF * 2 segments may be transmitted at once, thanks to Nagle and Delayed Ack. */
-#ifdef INGAME_DRIVER
+#if defined(INGAME_DRIVER) && defined(INGAME_UDP)
+#define MEM_SIZE 0x1000 // debug: every TTY line is a UDP packet allocated from this heap
+#elif defined(INGAME_DRIVER)
 #define MEM_SIZE 0x400
 #else
 #define MEM_SIZE (TCP_SND_BUF * 2)
@@ -86,13 +88,19 @@ a lot of data that needs to be copied, this should be set high. */
    communication between the TCP/IP stack and the sequential
    programs. */
 #ifdef INGAME_DRIVER
+#ifdef INGAME_UDP
+#define MEMP_NUM_API_MSG 10 // debug: UDPTTY sends from several threads at once
+#else
 #define MEMP_NUM_API_MSG 5
+#endif
 #endif
 
 /* MEMP_NUM_TCPIPMSG: the number of struct tcpip_msg, which is used
    for sequential API communication and incoming packets. Used in
    src/api/tcpip.c. */
-#ifdef INGAME_DRIVER
+#if defined(INGAME_DRIVER) && defined(INGAME_UDP)
+#define MEMP_NUM_TCPIP_MSG 40
+#elif defined(INGAME_DRIVER)
 #define MEMP_NUM_TCPIP_MSG 15
 #else
 #define MEMP_NUM_TCPIP_MSG 40
