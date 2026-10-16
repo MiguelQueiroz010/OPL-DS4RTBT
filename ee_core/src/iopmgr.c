@@ -21,6 +21,34 @@ extern int _iop_reboot_count;
 static int imgdrv_offset_ioprpimg = 0;
 static int imgdrv_offset_ioprpsiz = 0;
 
+#ifdef PADEMU
+// The USBD module of the PS2SDK appears to ignore its module arguments (ParseOptionInput() is handed the whole
+// "dev=4" string instead of the value), so "dev=/ed=/ioreq=" never take effect and its pool stays at the
+// default ~43 KB. Patch the initialised usbConfig in the module image instead (12 ints, see usbdpriv.h).
+static void PatchUsbdPool(void)
+{
+    static const int cfg_mini[12] = {16, 32, 64, 64, 256, 512, 4, 4, 0, 30, 36, 0};
+    static const int cfg_full[12] = {32, 64, 128, 128, 256, 512, 8, 8, 0, 30, 36, 0};
+    // devices, endpoints, TDs, isoTDs, io requests, static descriptor size, hubs, ports, -, thread prios, -
+    static const int cfg_new[12] = {4, 16, 32, 4, 32, 512, 4, 4, 0, 30, 36, 0};
+    void *ptr;
+    unsigned int size, i;
+    unsigned char *p;
+
+    if (GetOPLModInfo(OPL_MODULE_ID_USBD, &ptr, &size) != 0 || size < sizeof(cfg_new))
+        return;
+
+    p = (unsigned char *)ptr;
+    for (i = 0; i + sizeof(cfg_new) <= size; i++) {
+        if (memcmp(p + i, cfg_mini, sizeof(cfg_mini)) == 0 || memcmp(p + i, cfg_full, sizeof(cfg_full)) == 0) {
+            memcpy(p + i, cfg_new, sizeof(cfg_new));
+            FlushCache(0);
+            break;
+        }
+    }
+}
+#endif
+
 static void ResetIopSpecial(const char *args, unsigned int arglen)
 {
     USE_LOCAL_EECORE_CONFIG;
@@ -124,8 +152,10 @@ static void ResetIopSpecial(const char *args, unsigned int arglen)
             LoadOPLModule(OPL_MODULE_ID_USBD, 0, 11, "thpri=2,3");
         } else {
             // PADEMU only: a single BT dongle needs a tiny USBD pool (saves ~28 KB of IOP RAM; no isochronous transfers needed).
-            static const char usbdLiteArgs[] = "thpri=2,3\0dev=4\0ed=16\0ioreq=48\0gtd=32\0itd=4\0";
-            LoadOPLModule(OPL_MODULE_ID_USBD, 0, sizeof(usbdLiteArgs), usbdLiteArgs);
+#ifdef PADEMU
+            PatchUsbdPool();
+#endif
+            LoadOPLModule(OPL_MODULE_ID_USBD, 0, 11, "thpri=2,3");
         }
     }
 
