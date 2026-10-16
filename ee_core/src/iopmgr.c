@@ -25,6 +25,15 @@ static int imgdrv_offset_ioprpsiz = 0;
 // The USBD module of the PS2SDK appears to ignore its module arguments (ParseOptionInput() is handed the whole
 // "dev=4" string instead of the value), so "dev=/ed=/ioreq=" never take effect and its pool stays at the
 // default ~43 KB. Patch the initialised usbConfig in the module image instead (12 ints, see usbdpriv.h).
+static int SameBytes(const unsigned char *a, const unsigned char *b, unsigned int n) // ee_core has no memcmp
+{
+    while (n--) {
+        if (*a++ != *b++)
+            return 0;
+    }
+    return 1;
+}
+
 static void PatchUsbdPool(void)
 {
     static const int cfg_mini[12] = {16, 32, 64, 64, 256, 512, 4, 4, 0, 30, 36, 0};
@@ -40,7 +49,7 @@ static void PatchUsbdPool(void)
 
     p = (unsigned char *)ptr;
     for (i = 0; i + sizeof(cfg_new) <= size; i++) {
-        if (memcmp(p + i, cfg_mini, sizeof(cfg_mini)) == 0 || memcmp(p + i, cfg_full, sizeof(cfg_full)) == 0) {
+        if (SameBytes(p + i, (const unsigned char *)cfg_mini, sizeof(cfg_mini)) || SameBytes(p + i, (const unsigned char *)cfg_full, sizeof(cfg_full))) {
             memcpy(p + i, cfg_new, sizeof(cfg_new));
             FlushCache(0);
             break;
