@@ -31,7 +31,8 @@ enum {
     PADSETUP_PSHOLD_EXIT = 1,       // L1+L2+R1+R2+Start+Select: back to the OPL menu
     PADSETUP_PSHOLD_POWEROFF = 2,   // L1+L2+R1+R2+L3+R3: power off
     PADSETUP_PSHOLD_SCREENSHOT = 3, // L1+L2+R1+R2+Up: in-game screenshot (GSM/IGS)
-    PADSETUP_PSHOLD_COUNT = 4,
+    PADSETUP_PSHOLD_OVERLAY = 4,    // L1+L2+R1+R2+Down: in-game overlay (needs GSM + IGS build)
+    PADSETUP_PSHOLD_COUNT = 5,
 };
 
 // Button targets: 0 = no change/none, 1..16 = DS2 button bit number + 1 (select, l3, r3, start, up, right, down,

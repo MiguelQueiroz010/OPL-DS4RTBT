@@ -209,12 +209,35 @@ static void IGR_Thread(void *arg)
                     Pad_Data.vb_count = 0;
                 }
 
+#ifdef IGS
+                {
+                    // clear the debug border colour once the overlay combo is released
+                    static u8 ov_border_on;
+                    if (pad_pos_combo1 == IGR_COMBO_R1_L1_R2_L2 && pad_pos_combo2 == IGR_COMBO_DOWN)
+                        ov_border_on = 1;
+                    else if (ov_border_on) {
+                        ov_border_on = 0;
+                        BGCOLND(0);
+                    }
+                }
+#endif
                 // R1 + L1 + R2 + L2
                 if (pad_pos_combo1 == IGR_COMBO_R1_L1_R2_L2) {
 #ifdef IGS
                     // Down (held): in-game overlay, needs the GSM for the display registers.
-                    if ((pad_pos_combo2 == IGR_COMBO_DOWN) && config->EnableGSMOp)
-                        OverlayDraw();
+                    if (pad_pos_combo2 == IGR_COMBO_DOWN) {
+                        // Debug border colour (visible at the screen edges): blue = GSM off, green = drawn,
+                        // yellow = no display regs, magenta = bad frame buffer, red = DMA busy.
+                        if (!config->EnableGSMOp) {
+                            BGCOLND(0xFF0000);
+                        } else {
+                            OverlayDraw();
+                            BGCOLND(OverlayLastResult == OVERLAY_DRAWN      ? 0x00FF00
+                                    : OverlayLastResult == OVERLAY_NO_DISPLAY ? 0x00FFFF
+                                    : OverlayLastResult == OVERLAY_BAD_FB     ? 0xFF00FF
+                                                                              : 0x0000FF);
+                        }
+                    }
 #endif
                     // Start + Select: reset to configured exit path.
                     if (pad_pos_combo2 == IGR_COMBO_START_SELECT) {

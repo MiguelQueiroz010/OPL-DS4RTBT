@@ -6,4 +6,13 @@
 // it does nothing when the GS/DMA path is busy or the display registers are unknown.
 void OverlayDraw(void);
 
+// Result of the last OverlayDraw() call, for on-screen debugging (see padhook.c).
+enum {
+    OVERLAY_DRAWN = 0,
+    OVERLAY_NO_DISPLAY = 1, // GSM has not seen the game enable a display circuit
+    OVERLAY_BAD_FB = 2,     // unusable DISPFB (width 0 or pixel format not supported)
+    OVERLAY_DMA_BUSY = 3,   // game DMA / VIF1 busy, skipped
+};
+extern int OverlayLastResult;
+
 #endif

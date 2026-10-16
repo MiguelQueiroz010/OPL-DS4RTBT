@@ -2155,6 +2155,9 @@ int ds34bt_get_data(u8 *dst, int size, int port)
                 case PADSETUP_PSHOLD_SCREENSHOT:
                     dst[0] &= (u8)~0x10; // Up
                     break;
+                case PADSETUP_PSHOLD_OVERLAY:
+                    dst[0] &= (u8)~0x40; // Down
+                    break;
                 default:
                     break;
             }

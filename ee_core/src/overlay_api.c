@@ -30,6 +30,8 @@
 
 static u32 ov_packet[OV_QWC * 4] __attribute__((aligned(16)));
 
+int OverlayLastResult = OVERLAY_NO_DISPLAY;
+
 static u64 ov_xy(u32 x, u32 y)
 {
     return (u64)((x << 4) & 0xFFFF) | ((u64)((y << 4) & 0xFFFF) << 16);
@@ -46,23 +48,32 @@ void OverlayDraw(void)
     dispfb = GET_PMODE_EN2(pmode) ? GSMSourceGSRegs.dispfb2 : GSMSourceGSRegs.dispfb1;
 
     if (!GET_PMODE_EN1(pmode) && !GET_PMODE_EN2(pmode))
+    {
+        OverlayLastResult = OVERLAY_NO_DISPLAY;
         return; // display registers unknown (GSM has not seen the game set them yet)
+    }
 
     fbp = GET_DISPFB_FBP(dispfb);
     fbw = GET_DISPFB_FBW(dispfb);
     psm = GET_DISPFB_PSM(dispfb);
-    if (fbw == 0 || (psm != GS_PSM_CT32 && psm != GS_PSM_CT24 && psm != GS_PSM_CT16 && psm != GS_PSM_CT16S))
+    if (fbw == 0 || (psm != GS_PSM_CT32 && psm != GS_PSM_CT24 && psm != GS_PSM_CT16 && psm != GS_PSM_CT16S)) {
+        OverlayLastResult = OVERLAY_BAD_FB;
         return;
+    }
 
     // Do not wait for the game: if its DMA to VIF1/GIF is in progress, try again on the next frame.
     for (i = 0; (*GS_D1_CHCR & 0x0100) && i < OV_WAIT_LOOPS; i++)
         ;
-    if (*GS_D1_CHCR & 0x0100)
+    if (*GS_D1_CHCR & 0x0100) {
+        OverlayLastResult = OVERLAY_DMA_BUSY;
         return;
+    }
     for (i = 0; (*GS_VIF1_STAT & 0x1f000000) && i < OV_WAIT_LOOPS; i++)
         ;
-    if (*GS_VIF1_STAT & 0x1f000000)
+    if (*GS_VIF1_STAT & 0x1f000000) {
+        OverlayLastResult = OVERLAY_DMA_BUSY;
         return;
+    }
 
     p = (u32 *)UNCACHED_SEG(ov_packet);
 
@@ -105,4 +116,5 @@ void OverlayDraw(void)
     *GS_D1_MADR = (u32)ov_packet;
     *GS_D1_CHCR = 0x101;
     asm volatile("sync.l");
+    OverlayLastResult = OVERLAY_DRAWN;
 }
