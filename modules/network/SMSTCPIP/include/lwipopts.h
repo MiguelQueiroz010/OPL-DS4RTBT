@@ -97,7 +97,7 @@ a lot of data that needs to be copied, this should be set high. */
 /* ---------- Pbuf options ---------- */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
 #ifdef INGAME_DRIVER
-#define PBUF_POOL_SIZE 8
+#define PBUF_POOL_SIZE 6 // 8 -> 6 saves ~3 KB of IOP RAM; must stay >= TCP_WND / TCP_MSS + 2 (see TCP_WND below)
 #else
 #define PBUF_POOL_SIZE 25
 #endif
@@ -143,7 +143,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* TCP receive window. */
 #ifdef INGAME_DRIVER
-#define TCP_WND 10240
+#define TCP_WND (4 * TCP_MSS) // 10240 -> 5840: the receive window cannot exceed what the pbuf pool can hold
 #else
 #define TCP_WND 32768
 #endif
@@ -181,8 +181,15 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* IP reassembly and segmentation. These are orthogonal even
    if they both deal with IP fragments */
+/* In-game: TCP over a 1500 byte MTU never fragments, and the reassembly (5.8 KB) and fragmentation (1.5 KB)
+   static buffers are IOP RAM taken from the game. */
+#ifdef INGAME_DRIVER
+#define IP_REASSEMBLY 0
+#define IP_FRAG       0
+#else
 #define IP_REASSEMBLY 1
 #define IP_FRAG       1
+#endif
 
 /* ---------- ICMP options ---------- */
 #define ICMP_TTL 255
