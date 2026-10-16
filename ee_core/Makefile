@@ -14,7 +14,7 @@ EE_SRC_DIR = src/
 EE_OBJS_DIR = obj/
 
 GSMCORE_EE_OBJS = gsm_engine.o gsm_api.o dve_reg.o
-IGSCORE_EE_OBJS = igs_api.o
+IGSCORE_EE_OBJS = igs_api.o overlay_api.o
 CHEATCORE_EE_OBJS = cheat_engine.o cheat_api.o
 
 EE_OBJS = main.o syshook.o iopmgr.o modmgr.o util.o patches.o patches_asm.o \

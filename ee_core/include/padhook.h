@@ -90,6 +90,7 @@ typedef struct
 #define IGR_COMBO_START_SELECT 0xF6
 #define IGR_COMBO_R3_L3        0xF9
 #define IGR_COMBO_UP           0xEF
+#define IGR_COMBO_DOWN         0xBF // overlay (held together with R1+L1+R2+L2)
 
 #define NB_PADOPEN_PATTERN 7
 

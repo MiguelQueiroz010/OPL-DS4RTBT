@@ -31,6 +31,7 @@
 #include "gsm_api.h"
 #ifdef IGS
 #include "igs_api.h"
+#include "overlay_api.h"
 #endif
 #include "cheat_api.h"
 #include "cd_igr_rpc.h"
@@ -210,6 +211,11 @@ static void IGR_Thread(void *arg)
 
                 // R1 + L1 + R2 + L2
                 if (pad_pos_combo1 == IGR_COMBO_R1_L1_R2_L2) {
+#ifdef IGS
+                    // Down (held): in-game overlay, needs the GSM for the display registers.
+                    if ((pad_pos_combo2 == IGR_COMBO_DOWN) && config->EnableGSMOp)
+                        OverlayDraw();
+#endif
                     // Start + Select: reset to configured exit path.
                     if (pad_pos_combo2 == IGR_COMBO_START_SELECT) {
                         Pad_Data.combo_type = pad_pos_combo2;
