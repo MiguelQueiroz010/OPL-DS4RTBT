@@ -181,7 +181,8 @@ ifeq ($(DEBUG),1)
     EECORE_EXTRA_FLAGS += LOAD_DEBUG_MODULES=1
     CDVDMAN_DEBUG_FLAGS = IOPCORE_DEBUG=1
     MCEMU_DEBUG_FLAGS = IOPCORE_DEBUG=1
-    SMSTCPIP_INGAME_CFLAGS =
+    # Same small in-game lwIP as release builds (so the debug build has the real memory budget), plus UDP for UDPTTY.
+    SMSTCPIP_INGAME_CFLAGS = INGAME_DRIVER=1 INGAME_UDP=1
     ifeq ($(TTY_APPROACH),UDP)
       IOP_OBJS += udptty-ingame.o
     endif
@@ -192,7 +193,8 @@ ifeq ($(DEBUG),1)
     EE_CFLAGS += -D__INGAME_DEBUG
     EECORE_EXTRA_FLAGS += LOAD_DEBUG_MODULES=1
     CDVDMAN_DEBUG_FLAGS = IOPCORE_DEBUG=1
-    SMSTCPIP_INGAME_CFLAGS =
+    # Same small in-game lwIP as release builds (so the debug build has the real memory budget), plus UDP for UDPTTY.
+    SMSTCPIP_INGAME_CFLAGS = INGAME_DRIVER=1 INGAME_UDP=1
     ifeq ($(DECI2_DEBUG),1)
       EE_CFLAGS += -D__DECI2_DEBUG
       EECORE_EXTRA_FLAGS += DECI2_DEBUG=1

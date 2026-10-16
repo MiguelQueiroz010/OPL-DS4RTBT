@@ -39,7 +39,7 @@ static void PatchUsbdPool(void)
     static const int cfg_mini[12] = {16, 32, 64, 64, 256, 512, 4, 4, 0, 30, 36, 0};
     static const int cfg_full[12] = {32, 64, 128, 128, 256, 512, 8, 8, 0, 30, 36, 0};
     // devices, endpoints, TDs, isoTDs, io requests, static descriptor size, hubs, ports, -, thread prios, -
-    static const int cfg_new[12] = {4, 12, 16, 4, 16, 256, 2, 4, 0, 30, 36, 0};
+    static const int cfg_new[12] = {4, 10, 12, 2, 8, 256, 2, 4, 0, 30, 36, 0};
     void *ptr;
     unsigned int size, i;
     unsigned char *p;
@@ -179,7 +179,7 @@ static void ResetIopSpecial(const char *args, unsigned int arglen)
             LoadOPLModule(OPL_MODULE_ID_SMSTCPIP, 0, 0, NULL);
             LoadOPLModule(OPL_MODULE_ID_SMAP, 0, g_ipconfig_len, g_ipconfig);
 #endif
-            // SMBINIT is loaded at the very end of New_Reset_Iop(), see there.
+            LoadOPLModule(OPL_MODULE_ID_SMBINIT, 0, 0, NULL);
             break;
         case HDD_MODE:
             break;
@@ -258,13 +258,6 @@ int New_Reset_Iop(const char *arg, int arglen)
         LoadOPLModule(OPL_MODULE_ID_PADEMU, 0, args_len, args_for_pademu);
     }
 #endif
-
-    // SMBINIT only negotiates the SMB session and then unloads itself (MODULE_NO_RESIDENT_END), freeing an image that
-    // holds the DES/MD4/auth code and tables. Loaded last, that freed block sits at the end of the IOP heap and can
-    // merge with the free tail. Loaded earlier (as before), it could be left as a hole below MCEMU/PADEMU, which
-    // lowers the largest contiguous free block (KH2 needs 233 KB contiguous for its sound effects buffer).
-    if (config->GameMode == ETH_MODE)
-        LoadOPLModule(OPL_MODULE_ID_SMBINIT, 0, 0, NULL);
 
     DPRINTF("Exiting services...\n");
     SifExitIopHeap();

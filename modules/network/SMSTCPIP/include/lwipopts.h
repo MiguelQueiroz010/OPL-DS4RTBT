@@ -75,7 +75,11 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* MEMP_NUM_NETCONN: the number of struct netconns. */
 #ifdef INGAME_DRIVER
+#ifdef INGAME_UDP
+#define MEMP_NUM_NETCONN 2 // SMB (TCP) + the in-game UDPTTY debug socket
+#else
 #define MEMP_NUM_NETCONN 1
+#endif
 #endif
 
 /* MEMP_NUM_APIMSG: the number of struct api_msg, used for
@@ -217,7 +221,7 @@ a lot of data that needs to be copied, this should be set high. */
 #endif
 
 /* ---------- UDP options ---------- */
-#ifdef INGAME_DRIVER
+#if defined(INGAME_DRIVER) && !defined(INGAME_UDP)
 #define LWIP_UDP 0
 #else
 #define LWIP_UDP 1
