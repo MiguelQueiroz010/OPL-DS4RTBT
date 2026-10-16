@@ -39,7 +39,7 @@ static void PatchUsbdPool(void)
     static const int cfg_mini[12] = {16, 32, 64, 64, 256, 512, 4, 4, 0, 30, 36, 0};
     static const int cfg_full[12] = {32, 64, 128, 128, 256, 512, 8, 8, 0, 30, 36, 0};
     // devices, endpoints, TDs, isoTDs, io requests, static descriptor size, hubs, ports, -, thread prios, -
-    static const int cfg_new[12] = {4, 16, 32, 4, 32, 512, 4, 4, 0, 30, 36, 0};
+    static const int cfg_new[12] = {4, 12, 16, 4, 16, 256, 2, 4, 0, 30, 36, 0};
     void *ptr;
     unsigned int size, i;
     unsigned char *p;

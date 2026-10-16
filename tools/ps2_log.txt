@@ -12272,3 +12272,3357 @@
 [ 538.650] sceCdStatus 10
 [ 538.683] sceCdStatus 10
 [ 538.717] sceCdStatus 10
+
+===== session 2026-10-15 21:20:17 =====
+[   1.828] UDPTTY loaded!
+[   1.829] KPRTTY enabled!
+[   1.829] 	-- ID=70, ret=0
+[   1.829] [IOPTRAP]:
+[   1.831] ioptrap starts.
+[   1.833] 	-- ID=71, ret=0
+[   1.834] [PS2LINK]:
+[   1.839] initializing host
+[   1.840] Thread id: 1ab8379
+[   1.840] host: mounted
+[   1.840] IOP cmd: Starting thread
+[   1.840] IOP cmd: Server Thread Started.
+[   1.841] IOP cmd: Listening
+[   1.841] 	-- ID=72, ret=0
+[   4.643] BGM: Failed to open Ogg file smb0:THM\thm_DeckyOS-Neon-PINK\sound/bgm.ogg
+[  13.549] CONFIG No file smb0:CFG\SLUS_206.80.cfg.
+[  13.660] texDiscoverLoad(smb0:ART\SLUS_206.80_BG)
+[  15.100] texDiscoverLoad(smb0:ART\SLUS_206.80_COV)
+[  15.470] texDiscoverLoad(smb0:ART\SLPM_666.75_BG)
+[  15.718] texDiscoverLoad(smb0:ART\SLPM_666.75_COV)
+[  17.373] DVD detected.
+[  18.533] ETHSUPPORT CleanUp
+[  18.539] audsrv_adpcm_init()
+[  18.540] FNTSYS End
+[  18.547] [CLEAREFFECTS]:
+[  18.599] 	-- ID=73, ret=1
+[  18.601] SYSTEM LaunchLoaderElf loading modules
+[  18.601] IOPRP image size calculated: 56559
+[  18.602] IOPRP image size actual:     56336
+[  18.603] SYSTEM IRX 1 address start: 0x97070 end: 0x98751
+[  18.604] SYSTEM IRX 2 address start: 0x98760 end: 0xa6370
+[  18.605] SYSTEM IRX 3 address start: 0xa6370 end: 0xa6859
+[  18.605] SYSTEM IRX 4 address start: 0xa6860 end: 0xa6d49
+[  18.606] SYSTEM IRX 5 address start: 0xa6d50 end: 0xa81c9
+[  18.606] SYSTEM IRX 6 address start: 0xa81d0 end: 0xae851
+[  18.607] SYSTEM IRX 12 address start: 0xae860 end: 0xb07a1
+[  18.608] SYSTEM IRX 11 address start: 0xb07b0 end: 0xbcd3d
+[  18.609] SYSTEM IRX 13 address start: 0xbcd40 end: 0xbf461
+[  18.609] SYSTEM IRX 15 address start: 0xbf470 end: 0xc5e9d
+[  18.610] SYSTEM IRX 16 address start: 0xc5ea0 end: 0xc6ad9
+[  18.612] SYSTEM IRX 17 address start: 0xc6ae0 end: 0xc7bad
+[  18.612] SYSTEM IRX STORAGE 0x97000 - 0xc7bb0
+[  18.613] loadmodule: fname rom0:XPARAM args 12 arg SLPM_666.75
+[  18.620] loadmodule: id 74, ret 1
+[  18.622] EECoreConfig Values = 0x0030D420
+[  18.623] Game Mode Desc = ETH_MODE
+[  18.623] EnableDebug = 0
+[  18.624] Exit Path = (mc0:/APPS/OPNPS2LD.ELF)
+[  18.624] HDD Spindown = 20
+[  18.625] IP=192.168.1.200 NM=255.255.255.0 GW=192.168.1.1 mode: 0
+[  18.627] PS2RD Cheat Engine = Disabled
+[  18.627] EnforceLanguage = Disabled
+[  18.628] GSM = Disabled
+[  18.628] PADEMU = Enabled
+[  18.629] PADEMU wireless keys = 2
+[  18.630] enforceLanguage = Disabled
+[  18.630] eeloadCopy = 0x8000574C
+[  18.631] initUserMemory = 0x8000E270
+[  18.631] ModStorageStart = 0x00097000
+[  18.632] ModStorageEnd = 0x000C7BC0
+[  18.633] GameID = SLPM_666.75
+[  18.633] Compat Mask = 0x00
+[  18.634] EECORE PH COPY: 1 0x00084000 0x00302320 0x0000BE68
+[  18.635] EECORE PH CLEAR: 1 0x0008FE68 0x00003C98
+[  18.635] Starting ee_core with following argv arguments:
+[  18.636] [0] rom0:PS2LOGO
+[  18.636] [1] cdrom0:\SLPM_666.75;1
+[  18.637] Leaving OPL GUI, starting eecore = 0x00087EC0
+[  19.548] UDPTTY loaded!
+[  19.549] KPRTTY enabled!
+[  19.550] Hook_LoadModuleBuffer() modname =  freeram = 1727488
+[  19.551] Hook_StartModule() id=28 modname = LBbyEE freeram = 1724160
+[  19.551] ioptrap starts.
+[  19.554] Hook_LoadModuleBuffer() modname =  freeram = 1702144
+[  19.558] Hook_StartModule() id=29 modname = LBbyEE freeram = 1679360
+[  19.559] USB Driver (Version 1.6.0)
+[  19.562] Hook_LoadModuleBuffer() modname =  freeram = 1684992
+[  19.564] Hook_StartModule() id=30 modname = LBbyEE freeram = 1681920
+[  19.564] Hook_LoadModuleBuffer() modname =  freeram = 1677056
+[  19.566] Hook_StartModule() id=31 modname = LBbyEE freeram = 1667584
+[  22.297] loadelf: fname rom0:PS2LOGO secname all
+[  22.314] Input ELF format filename = rom0:PS2LOGO
+[  22.324] 0 01000000 000172c0 ..
+[  22.324] Loaded, rom0:PS2LOGO
+[  22.325] start address 0x1000008
+[  22.326] gp address 00000000
+[  25.522] read/write allocate memory 4000
+[  25.523] open name rom0:ROMVER flag 1 data 2eb78
+[  25.525] open fd = 2
+[  25.525] loadmodule: fname rom0:OSDSND args 0 arg
+[  25.526] Hook_LoadStartModule() modpath = rom0:OSDSND freeram = 1668352
+[  25.628] loadmodule: id 32, ret 0
+[  25.628] open name cdrom0:\SYSTEM.CNF;1 flag 5 data 2eb78
+[  25.630] cdrom_open \SYSTEM.CNF;1 mode=5 layer 0
+[  25.631] cdvdman_fs_init
+[  25.634] sceCdRead lsn=16 sectors=1 sector_size=2048 buf=00025824
+[  25.635] cdvdman_read lsn=16 sectors=1 buf=25824
+[  25.635] sceCdSync 0 sync flag = 1
+[  25.639] cdvdman_searchfile_init mediaLsnCount=2097760
+[  25.639] cdvdman_searchfile_init loader-provided mediaLsnCount=2097760
+[  25.639] sceCdLayerSearchFile \SYSTEM.CNF;1
+[  25.640] cdvdman_findfile \SYSTEM.CNF;1 layer0
+[  25.641] cdvdman_findfile cdvdman_filepath=\SYSTEM.CNF;1
+[  25.641] cdvdman_locatefile start locating \SYSTEM.CNF;1, layer=0
+[  25.642] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=00025824
+[  25.642] cdvdman_read lsn=261 sectors=1 buf=25824
+[  25.643] sceCdSync 0 sync flag = 1
+[  25.650] cdvdman_locatefile tocLBA read done
+[  25.650] cdvdman_locatefile strcmp SYSTEM.CNF;1
+[  25.651] cdvdman_locatefile strcmp SYSTEM.CNF;1 
+[  25.652] cdvdman_locatefile strcmp SYSTEM.CNF;1 SYSTEM.CNF;1
+[  25.653] cdvdman_locatefile found file! LBA=284 size=54
+[  25.653] cdvdman_findfile found \SYSTEM.CNF;1
+[  25.654] open ret=0 lsn=284 size=54
+[  25.654] open fd = 2
+[  25.655] cdrom_lseek offset=0 where=2
+[  25.655] cdrom_lseek file offset=54
+[  25.656] cdrom_lseek offset=0 where=0
+[  25.657] cdrom_lseek file offset=0
+[  25.657] cdrom_read size=256b (0s) file_position=0
+[  25.658] sceCdRead lsn=284 sectors=1 sector_size=2048 buf=000264a4
+[  25.659] cdvdman_read lsn=284 sectors=1 buf=264a4
+[  25.659] sceCdSync 0 sync flag = 1
+[  25.677] cdrom_read ret=54
+[  25.678] cdrom_close
+[  25.679] loadmodule: fname rom0:XPARAM args 12 arg SLPM_666.75
+[  25.679] Hook_LoadStartModule() modpath = rom0:XPARAM freeram = 1512448
+[  25.685] loadmodule: id 33, ret 1
+[  25.688] _spu_rev_offsetaddr 1ffff1
+[  25.688] ### addr = 2097120  size = 32
+[  25.689] _spu_rev_offsetaddr 1d9021
+[  25.690] ### addr = 968719  size = 28640
+[  26.012] sceCdSC(0xFFFFFFF5, 0x0)
+[  26.012] sceCdSC(0xFFFFFFF6, 0xE)
+[  26.014] sceCdDiskReady 0
+[  26.014] sceCdSC(0xFFFFFFF6, 0x0)
+[  26.015] sceCdSC(0xFFFFFFF6, 0x1)
+[  26.016] sceCdDiskReady 0
+[  26.016] sceCdGetError 0
+[  26.017] sceCdRead lsn=0 sectors=8 sector_size=2048 buf=000264c4
+[  26.018] cdvdman_read lsn=0 sectors=8 buf=264c4
+[  26.018] sceCdSync 0 sync flag = 1
+[  26.028] sceCdGetError 0
+[  26.028] sceCdRead lsn=7 sectors=6 sector_size=2048 buf=000264c4
+[  26.029] cdvdman_read lsn=7 sectors=6 buf=264c4
+[  26.030] sceCdSync 0 sync flag = 1
+[  26.038] sceCdSC(0xFFFFFFF6, 0x0)
+[  29.637] Get Reboot Request From EE
+[  30.295] UDPTTY loaded!
+[  30.295] KPRTTY enabled!
+[  30.296] Hook_LoadModuleBuffer() modname =  freeram = 1727488
+[  30.297] Hook_StartModule() id=28 modname = LBbyEE freeram = 1724160
+[  30.298] ioptrap starts.
+[  30.300] Hook_LoadModuleBuffer() modname =  freeram = 1702144
+[  30.305] Hook_StartModule() id=29 modname = LBbyEE freeram = 1679360
+[  30.306] USB Driver (Version 1.6.0)
+[  30.308] Hook_LoadModuleBuffer() modname =  freeram = 1684992
+[  30.310] Hook_StartModule() id=30 modname = LBbyEE freeram = 1681920
+[  30.311] Hook_LoadModuleBuffer() modname =  freeram = 1677056
+[  30.312] Hook_StartModule() id=31 modname = LBbyEE freeram = 1667584
+[  33.039] Hook_LoadModuleBuffer() modname =  freeram = 1657344
+[  33.043] Hook_StartModule() id=32 modname = LBbyEE freeram = 1635072
+[  33.044] loadelf: fname cdrom0:\SLPM_666.75;1 secname all
+[  33.044] cdrom_open \SLPM_666.75;1 mode=1 layer 0
+[  33.045] cdvdman_fs_init
+[  33.050] sceCdRead lsn=16 sectors=1 sector_size=2048 buf=00025824
+[  33.051] cdvdman_read lsn=16 sectors=1 buf=25824
+[  33.051] sceCdSync 0 sync flag = 1
+[  33.055] cdvdman_searchfile_init mediaLsnCount=2097760
+[  33.056] cdvdman_searchfile_init loader-provided mediaLsnCount=2097760
+[  33.057] sceCdLayerSearchFile \SLPM_666.75;1
+[  33.058] cdvdman_findfile \SLPM_666.75;1 layer0
+[  33.058] cdvdman_findfile cdvdman_filepath=\SLPM_666.75;1
+[  33.059] cdvdman_locatefile start locating \SLPM_666.75;1, layer=0
+[  33.060] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=00025824
+[  33.060] cdvdman_read lsn=261 sectors=1 buf=25824
+[  33.061] sceCdSync 0 sync flag = 1
+[  33.061] cdvdman_locatefile tocLBA read done
+[  33.062] cdvdman_locatefile strcmp SLPM_666.75;1
+[  33.063] cdvdman_locatefile strcmp SLPM_666.75;1 
+[  33.063] cdvdman_locatefile strcmp SLPM_666.75;1 SYSTEM.CNF;1
+[  33.064] cdvdman_locatefile strcmp SLPM_666.75;1 SLPM_666.75;1
+[  33.064] cdvdman_locatefile found file! LBA=285 size=2629364
+[  33.065] cdvdman_findfile found \SLPM_666.75;1
+[  33.066] open ret=0 lsn=285 size=2629364
+[  33.066] cdrom_read size=65536b (32s) file_position=0
+[  33.067] sceCdRead lsn=285 sectors=32 sector_size=2048 buf=001c2c00
+[  33.067] cdvdman_read lsn=285 sectors=32 buf=1c2c00
+[  33.068] sceCdSync 0 sync flag = 1
+[  33.150] cdrom_read ret=65536
+[  33.150] Input ELF format filename = cdrom0:\SLPM_666.75;1
+[  33.152] 0 00100000 0027a800 ..cdrom_read size=65536b (32s) file_position=65536
+[  33.152] sceCdRead lsn=317 sectors=32 sector_size=2048 buf=001d2c00
+[  33.153] cdvdman_read lsn=317 sectors=32 buf=1d2c00
+[  33.154] sceCdSync 0 sync flag = 1
+[  33.179] cdrom_read ret=65536
+[  33.180] .cdrom_read size=65536b (32s) file_position=131072
+[  33.181] sceCdRead lsn=349 sectors=32 sector_size=2048 buf=001c2c00
+[  33.182] cdvdman_read lsn=349 sectors=32 buf=1c2c00
+[  33.183] sceCdSync 0 sync flag = 1
+[  33.209] cdrom_read ret=65536
+[  33.209] .cdrom_read size=65536b (32s) file_position=196608
+[  33.215] sceCdRead lsn=381 sectors=32 sector_size=2048 buf=001d2c00
+[  33.216] cdvdman_read lsn=381 sectors=32 buf=1d2c00
+[  33.217] sceCdSync 0 sync flag = 1
+[  33.238] cdrom_read ret=65536
+[  33.239] .cdrom_read size=65536b (32s) file_position=262144
+[  33.239] sceCdRead lsn=413 sectors=32 sector_size=2048 buf=001c2c00
+[  33.240] cdvdman_read lsn=413 sectors=32 buf=1c2c00
+[  33.240] sceCdSync 0 sync flag = 1
+[  33.266] cdrom_read ret=65536
+[  33.267] .cdrom_read size=65536b (32s) file_position=327680
+[  33.267] sceCdRead lsn=445 sectors=32 sector_size=2048 buf=001d2c00
+[  33.267] cdvdman_read lsn=445 sectors=32 buf=1d2c00
+[  33.269] sceCdSync 0 sync flag = 1
+[  33.293] cdrom_read ret=65536
+[  33.295] .cdrom_read size=65536b (32s) file_position=393216
+[  33.295] sceCdRead lsn=477 sectors=32 sector_size=2048 buf=001c2c00
+[  33.296] cdvdman_read lsn=477 sectors=32 buf=1c2c00
+[  33.297] sceCdSync 0 sync flag = 1
+[  33.323] cdrom_read ret=65536
+[  33.324] .cdrom_read size=65536b (32s) file_position=458752
+[  33.325] sceCdRead lsn=509 sectors=32 sector_size=2048 buf=001d2c00
+[  33.326] cdvdman_read lsn=509 sectors=32 buf=1d2c00
+[  33.327] sceCdSync 0 sync flag = 1
+[  33.352] cdrom_read ret=65536
+[  33.354] .cdrom_read size=65536b (32s) file_position=524288
+[  33.354] sceCdRead lsn=541 sectors=32 sector_size=2048 buf=001c2c00
+[  33.355] cdvdman_read lsn=541 sectors=32 buf=1c2c00
+[  33.355] sceCdSync 0 sync flag = 1
+[  33.381] cdrom_read ret=65536
+[  33.382] .cdrom_read size=65536b (32s) file_position=589824
+[  33.383] sceCdRead lsn=573 sectors=32 sector_size=2048 buf=001d2c00
+[  33.384] cdvdman_read lsn=573 sectors=32 buf=1d2c00
+[  33.385] sceCdSync 0 sync flag = 1
+[  33.409] cdrom_read ret=65536
+[  33.410] .cdrom_read size=65536b (32s) file_position=655360
+[  33.410] sceCdRead lsn=605 sectors=32 sector_size=2048 buf=001c2c00
+[  33.411] cdvdman_read lsn=605 sectors=32 buf=1c2c00
+[  33.411] sceCdSync 0 sync flag = 1
+[  33.440] cdrom_read ret=65536
+[  33.440] .cdrom_read size=65536b (32s) file_position=720896
+[  33.441] sceCdRead lsn=637 sectors=32 sector_size=2048 buf=001d2c00
+[  33.442] cdvdman_read lsn=637 sectors=32 buf=1d2c00
+[  33.443] sceCdSync 0 sync flag = 1
+[  33.469] cdrom_read ret=65536
+[  33.469] .cdrom_read size=65536b (32s) file_position=786432
+[  33.477] sceCdRead lsn=669 sectors=32 sector_size=2048 buf=001c2c00
+[  33.478] cdvdman_read lsn=669 sectors=32 buf=1c2c00
+[  33.478] sceCdSync 0 sync flag = 1
+[  33.500] cdrom_read ret=65536
+[  33.501] .cdrom_read size=65536b (32s) file_position=851968
+[  33.502] sceCdRead lsn=701 sectors=32 sector_size=2048 buf=001d2c00
+[  33.503] cdvdman_read lsn=701 sectors=32 buf=1d2c00
+[  33.503] sceCdSync 0 sync flag = 1
+[  33.531] cdrom_read ret=65536
+[  33.532] .cdrom_read size=65536b (32s) file_position=917504
+[  33.533] sceCdRead lsn=733 sectors=32 sector_size=2048 buf=001c2c00
+[  33.533] cdvdman_read lsn=733 sectors=32 buf=1c2c00
+[  33.534] sceCdSync 0 sync flag = 1
+[  33.559] cdrom_read ret=65536
+[  33.560] .cdrom_read size=65536b (32s) file_position=983040
+[  33.561] sceCdRead lsn=765 sectors=32 sector_size=2048 buf=001d2c00
+[  33.562] cdvdman_read lsn=765 sectors=32 buf=1d2c00
+[  33.563] sceCdSync 0 sync flag = 1
+[  33.587] cdrom_read ret=65536
+[  33.588] .cdrom_read size=65536b (32s) file_position=1048576
+[  33.589] sceCdRead lsn=797 sectors=32 sector_size=2048 buf=001c2c00
+[  33.590] cdvdman_read lsn=797 sectors=32 buf=1c2c00
+[  33.591] sceCdSync 0 sync flag = 1
+[  33.617] cdrom_read ret=65536
+[  33.617] .cdrom_read size=65536b (32s) file_position=1114112
+[  33.618] sceCdRead lsn=829 sectors=32 sector_size=2048 buf=001d2c00
+[  33.618] cdvdman_read lsn=829 sectors=32 buf=1d2c00
+[  33.621] sceCdSync 0 sync flag = 1
+[  33.647] cdrom_read ret=65536
+[  33.647] .cdrom_read size=65536b (32s) file_position=1179648
+[  33.648] sceCdRead lsn=861 sectors=32 sector_size=2048 buf=001c2c00
+[  33.648] cdvdman_read lsn=861 sectors=32 buf=1c2c00
+[  33.649] sceCdSync 0 sync flag = 1
+[  33.675] cdrom_read ret=65536
+[  33.676] .cdrom_read size=65536b (32s) file_position=1245184
+[  33.676] sceCdRead lsn=893 sectors=32 sector_size=2048 buf=001d2c00
+[  33.677] cdvdman_read lsn=893 sectors=32 buf=1d2c00
+[  33.677] sceCdSync 0 sync flag = 1
+[  33.705] cdrom_read ret=65536
+[  33.705] .cdrom_read size=65536b (32s) file_position=1310720
+[  33.707] sceCdRead lsn=925 sectors=32 sector_size=2048 buf=001c2c00
+[  33.707] cdvdman_read lsn=925 sectors=32 buf=1c2c00
+[  33.708] sceCdSync 0 sync flag = 1
+[  33.733] cdrom_read ret=65536
+[  33.734] .cdrom_read size=65536b (32s) file_position=1376256
+[  33.734] sceCdRead lsn=957 sectors=32 sector_size=2048 buf=001d2c00
+[  33.735] cdvdman_read lsn=957 sectors=32 buf=1d2c00
+[  33.735] sceCdSync 0 sync flag = 1
+[  33.761] cdrom_read ret=65536
+[  33.763] .cdrom_read size=65536b (32s) file_position=1441792
+[  33.764] sceCdRead lsn=989 sectors=32 sector_size=2048 buf=001c2c00
+[  33.764] cdvdman_read lsn=989 sectors=32 buf=1c2c00
+[  33.765] sceCdSync 0 sync flag = 1
+[  33.790] cdrom_read ret=65536
+[  33.790] .cdrom_read size=65536b (32s) file_position=1507328
+[  33.792] sceCdRead lsn=1021 sectors=32 sector_size=2048 buf=001d2c00
+[  33.792] cdvdman_read lsn=1021 sectors=32 buf=1d2c00
+[  33.793] sceCdSync 0 sync flag = 1
+[  33.818] cdrom_read ret=65536
+[  33.818] .cdrom_read size=65536b (32s) file_position=1572864
+[  33.819] sceCdRead lsn=1053 sectors=32 sector_size=2048 buf=001c2c00
+[  33.820] cdvdman_read lsn=1053 sectors=32 buf=1c2c00
+[  33.820] sceCdSync 0 sync flag = 1
+[  33.854] cdrom_read ret=65536
+[  33.855] .cdrom_read size=65536b (32s) file_position=1638400
+[  33.856] sceCdRead lsn=1085 sectors=32 sector_size=2048 buf=001d2c00
+[  33.856] cdvdman_read lsn=1085 sectors=32 buf=1d2c00
+[  33.857] sceCdSync 0 sync flag = 1
+[  33.886] cdrom_read ret=65536
+[  33.886] .cdrom_read size=65536b (32s) file_position=1703936
+[  33.887] sceCdRead lsn=1117 sectors=32 sector_size=2048 buf=001c2c00
+[  33.887] cdvdman_read lsn=1117 sectors=32 buf=1c2c00
+[  33.888] sceCdSync 0 sync flag = 1
+[  33.916] cdrom_read ret=65536
+[  33.917] .cdrom_read size=65536b (32s) file_position=1769472
+[  33.918] sceCdRead lsn=1149 sectors=32 sector_size=2048 buf=001d2c00
+[  33.919] cdvdman_read lsn=1149 sectors=32 buf=1d2c00
+[  33.919] sceCdSync 0 sync flag = 1
+[  33.944] cdrom_read ret=65536
+[  33.945] .cdrom_read size=65536b (32s) file_position=1835008
+[  33.945] sceCdRead lsn=1181 sectors=32 sector_size=2048 buf=001c2c00
+[  33.946] cdvdman_read lsn=1181 sectors=32 buf=1c2c00
+[  33.946] sceCdSync 0 sync flag = 1
+[  33.972] cdrom_read ret=65536
+[  33.973] .cdrom_read size=65536b (32s) file_position=1900544
+[  33.981] sceCdRead lsn=1213 sectors=32 sector_size=2048 buf=001d2c00
+[  33.982] cdvdman_read lsn=1213 sectors=32 buf=1d2c00
+[  33.982] sceCdSync 0 sync flag = 1
+[  34.001] cdrom_read ret=65536
+[  34.001] .cdrom_read size=65536b (32s) file_position=1966080
+[  34.002] sceCdRead lsn=1245 sectors=32 sector_size=2048 buf=001c2c00
+[  34.003] cdvdman_read lsn=1245 sectors=32 buf=1c2c00
+[  34.004] sceCdSync 0 sync flag = 1
+[  34.033] cdrom_read ret=65536
+[  34.034] .cdrom_read size=65536b (32s) file_position=2031616
+[  34.035] sceCdRead lsn=1277 sectors=32 sector_size=2048 buf=001d2c00
+[  34.035] cdvdman_read lsn=1277 sectors=32 buf=1d2c00
+[  34.036] sceCdSync 0 sync flag = 1
+[  34.068] cdrom_read ret=65536
+[  34.069] .cdrom_read size=65536b (32s) file_position=2097152
+[  34.069] sceCdRead lsn=1309 sectors=32 sector_size=2048 buf=001c2c00
+[  34.070] cdvdman_read lsn=1309 sectors=32 buf=1c2c00
+[  34.072] sceCdSync 0 sync flag = 1
+[  34.097] cdrom_read ret=65536
+[  34.097] .cdrom_read size=65536b (32s) file_position=2162688
+[  34.099] sceCdRead lsn=1341 sectors=32 sector_size=2048 buf=001d2c00
+[  34.099] cdvdman_read lsn=1341 sectors=32 buf=1d2c00
+[  34.100] sceCdSync 0 sync flag = 1
+[  34.125] cdrom_read ret=65536
+[  34.126] .cdrom_read size=65536b (32s) file_position=2228224
+[  34.127] sceCdRead lsn=1373 sectors=32 sector_size=2048 buf=001c2c00
+[  34.128] cdvdman_read lsn=1373 sectors=32 buf=1c2c00
+[  34.128] sceCdSync 0 sync flag = 1
+[  34.154] cdrom_read ret=65536
+[  34.154] .cdrom_read size=65536b (32s) file_position=2293760
+[  34.156] sceCdRead lsn=1405 sectors=32 sector_size=2048 buf=001d2c00
+[  34.156] cdvdman_read lsn=1405 sectors=32 buf=1d2c00
+[  34.157] sceCdSync 0 sync flag = 1
+[  34.182] cdrom_read ret=65536
+[  34.182] .cdrom_read size=65536b (32s) file_position=2359296
+[  34.183] sceCdRead lsn=1437 sectors=32 sector_size=2048 buf=001c2c00
+[  34.183] cdvdman_read lsn=1437 sectors=32 buf=1c2c00
+[  34.184] sceCdSync 0 sync flag = 1
+[  34.214] cdrom_read ret=65536
+[  34.215] .cdrom_read size=65536b (32s) file_position=2424832
+[  34.216] sceCdRead lsn=1469 sectors=32 sector_size=2048 buf=001d2c00
+[  34.217] cdvdman_read lsn=1469 sectors=32 buf=1d2c00
+[  34.217] sceCdSync 0 sync flag = 1
+[  34.244] cdrom_read ret=65536
+[  34.244] .cdrom_read size=65536b (32s) file_position=2490368
+[  34.245] sceCdRead lsn=1501 sectors=32 sector_size=2048 buf=001c2c00
+[  34.246] cdvdman_read lsn=1501 sectors=32 buf=1c2c00
+[  34.246] sceCdSync 0 sync flag = 1
+[  34.273] cdrom_read ret=65536
+[  34.273] .cdrom_read size=65536b (32s) file_position=2555904
+[  34.274] sceCdRead lsn=1533 sectors=32 sector_size=2048 buf=001d2c00
+[  34.274] cdvdman_read lsn=1533 sectors=32 buf=1d2c00
+[  34.275] sceCdSync 0 sync flag = 1
+[  34.304] cdrom_read ret=65536
+[  34.304] 
+[  34.306] Loaded, cdrom0:\SLPM_666.75;1
+[  34.307] start address 0x10001c
+[  34.308] gp address 00000000
+[  34.308] cdrom_close
+[  35.785] Get Reboot Request From EE
+[  36.442] UDPTTY loaded!
+[  36.442] KPRTTY enabled!
+[  36.444] Hook_LoadModuleBuffer() modname =  freeram = 1727488
+[  36.445] Hook_StartModule() id=28 modname = LBbyEE freeram = 1724160
+[  36.445] ioptrap starts.
+[  36.448] Hook_LoadModuleBuffer() modname =  freeram = 1702144
+[  36.451] Hook_StartModule() id=29 modname = LBbyEE freeram = 1679360
+[  36.454] USB Driver (Version 1.6.0)
+[  36.456] Hook_LoadModuleBuffer() modname =  freeram = 1684992
+[  36.457] Hook_StartModule() id=30 modname = LBbyEE freeram = 1681920
+[  36.458] Hook_LoadModuleBuffer() modname =  freeram = 1677056
+[  36.460] Hook_StartModule() id=31 modname = LBbyEE freeram = 1667584
+[  39.187] Hook_LoadModuleBuffer() modname =  freeram = 1626880
+[  39.188] Hook_StartModule() id=32 modname = LBbyEE freeram = 1626368
+[  39.189] Hook_LoadModuleBuffer() modname =  freeram = 1621760
+[  39.190] Hook_StartModule() id=33 modname = LBbyEE freeram = 1616640
+[  39.191] cdrom_open \IOPRP300.IMG mode=1 layer 0
+[  39.191] cdvdman_fs_init
+[  39.196] sceCdRead lsn=16 sectors=1 sector_size=2048 buf=00025824
+[  39.196] sceCdSync 0 sync flag = 1
+[  39.197] cdvdman_read lsn=16 sectors=1 buf=25824
+[  39.202] cdvdman_searchfile_init mediaLsnCount=2097760
+[  39.202] cdvdman_searchfile_init loader-provided mediaLsnCount=2097760
+[  39.203] sceCdLayerSearchFile \IOPRP300.IMG;1
+[  39.204] cdvdman_findfile \IOPRP300.IMG;1 layer0
+[  39.204] cdvdman_findfile cdvdman_filepath=\IOPRP300.IMG;1
+[  39.205] cdvdman_locatefile start locating \IOPRP300.IMG;1, layer=0
+[  39.206] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=00025824
+[  39.206] sceCdSync 0 sync flag = 1
+[  39.207] cdvdman_read lsn=261 sectors=1 buf=25824
+[  39.207] cdvdman_locatefile tocLBA read done
+[  39.208] cdvdman_locatefile strcmp IOPRP300.IMG;1
+[  39.208] cdvdman_locatefile strcmp IOPRP300.IMG;1 
+[  39.209] cdvdman_locatefile strcmp IOPRP300.IMG;1 SYSTEM.CNF;1
+[  39.210] cdvdman_locatefile strcmp IOPRP300.IMG;1 SLPM_666.75;1
+[  39.210] cdvdman_locatefile strcmp IOPRP300.IMG;1 IOPRP300.IMG;1
+[  39.211] cdvdman_locatefile found file! LBA=1569 size=278305
+[  39.211] cdvdman_findfile found \IOPRP300.IMG;1
+[  39.212] open ret=0 lsn=1569 size=278305
+[  39.213] cdrom_lseek offset=0 where=2
+[  39.213] cdrom_lseek file offset=278305
+[  39.216] cdrom_lseek offset=0 where=0
+[  39.217] cdrom_lseek file offset=0
+[  39.217] cdrom_read size=278305b (135s) file_position=0
+[  39.218] sceCdRead lsn=1569 sectors=135 sector_size=2048 buf=0006bb20
+[  39.219] sceCdSync 0 sync flag = 1
+[  39.219] cdvdman_read lsn=1569 sectors=135 buf=6bb20
+[  39.361] sceCdRead lsn=1704 sectors=1 sector_size=2048 buf=000264a4
+[  39.362] sceCdSync 0 sync flag = 1
+[  39.363] cdvdman_read lsn=1704 sectors=1 buf=264a4
+[  39.364] cdrom_read ret=278305
+[  40.092] UDPTTY loaded!
+[  40.095] KPRTTY enabled!
+[  40.096] Hook_LoadModuleBuffer() modname =  freeram = 1693184
+[  40.096] Hook_StartModule() id=28 modname = LBbyEE freeram = 1689856
+[  40.097] ioptrap starts.
+[  40.098] Hook_LoadModuleBuffer() modname =  freeram = 1667840
+[  40.101] Hook_StartModule() id=29 modname = LBbyEE freeram = 1645056
+[  40.102] USB Driver (Version 1.6.0)
+[  40.105] Hook_LoadModuleBuffer() modname =  freeram = 1650688
+[  40.107] Hook_StartModule() id=30 modname = LBbyEE freeram = 1647616
+[  40.108] Hook_LoadModuleBuffer() modname =  freeram = 1642752
+[  40.110] Hook_StartModule() id=31 modname = LBbyEE freeram = 1633280
+[  42.841] Hook_LoadModuleBuffer() modname =  freeram = 1625088
+[  42.843] Hook_StartModule() id=32 modname = LBbyEE freeram = 1602816
+[  42.845] cdvdman_fs_init
+[  42.849] sceCdRead lsn=16 sectors=1 sector_size=2048 buf=0002b224
+[  42.850] cdvdman_read lsn=16 sectors=1 buf=2b224
+[  42.851] sceCdSync 0 sync flag = 1
+[  42.854] cdvdman_searchfile_init mediaLsnCount=2097760
+[  42.855] cdvdman_searchfile_init loader-provided mediaLsnCount=2097760
+[  42.856] loadmodule: fname cdrom0:\SIO2MAN.IRX args 0 arg
+[  42.859] Hook_LoadStartModule() modpath = cdrom0:\SIO2MAN.IRX freeram = 1630208
+[  42.859] cdrom_open \SIO2MAN.IRX mode=1 layer 0
+[  42.860] sceCdLayerSearchFile \SIO2MAN.IRX;1
+[  42.861] cdvdman_findfile \SIO2MAN.IRX;1 layer0
+[  42.861] cdvdman_findfile cdvdman_filepath=\SIO2MAN.IRX;1
+[  42.862] cdvdman_locatefile start locating \SIO2MAN.IRX;1, layer=0
+[  42.864] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  42.865] sceCdSync 0 sync flag = 1
+[  42.865] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  42.866] cdvdman_locatefile tocLBA read done
+[  42.866] cdvdman_locatefile strcmp SIO2MAN.IRX;1
+[  42.867] cdvdman_locatefile strcmp SIO2MAN.IRX;1 
+[  42.868] cdvdman_locatefile strcmp SIO2MAN.IRX;1 SYSTEM.CNF;1
+[  42.868] cdvdman_locatefile strcmp SIO2MAN.IRX;1 SLPM_666.75;1
+[  42.869] cdvdman_locatefile strcmp SIO2MAN.IRX;1 IOPRP300.IMG;1
+[  42.870] cdvdman_locatefile strcmp SIO2MAN.IRX;1 SIO2MAN.IRX;1
+[  42.871] cdvdman_locatefile found file! LBA=1705 size=6641
+[  42.871] cdvdman_findfile found \SIO2MAN.IRX;1
+[  42.872] open ret=0 lsn=1705 size=6641
+[  42.873] cdrom_lseek offset=0 where=2
+[  42.873] cdrom_lseek file offset=6641
+[  42.874] cdrom_lseek offset=0 where=0
+[  42.874] cdrom_lseek file offset=0
+[  42.875] cdrom_lseek offset=0 where=0
+[  42.876] cdrom_lseek file offset=0
+[  42.876] cdrom_read size=6641b (3s) file_position=0
+[  42.877] sceCdRead lsn=1705 sectors=3 sector_size=2048 buf=001f1200
+[  42.880] sceCdSync 0 sync flag = 1
+[  42.881] cdvdman_read lsn=1705 sectors=3 buf=1f1200
+[  42.881] sceCdRead lsn=1708 sectors=1 sector_size=2048 buf=0002bea4
+[  42.882] sceCdSync 0 sync flag = 1
+[  42.882] cdvdman_read lsn=1708 sectors=1 buf=2bea4
+[  42.883] cdrom_read ret=6641
+[  42.884] cdrom_close
+[  42.885] loadmodule: id 33, ret 1
+[  42.885] loadmodule: fname cdrom0:\SIO2D.IRX args 0 arg
+[  42.886] Hook_LoadStartModule() modpath = cdrom0:\SIO2D.IRX freeram = 1630208
+[  42.887] cdrom_open \SIO2D.IRX mode=1 layer 0
+[  42.887] sceCdLayerSearchFile \SIO2D.IRX;1
+[  42.888] cdvdman_findfile \SIO2D.IRX;1 layer0
+[  42.888] cdvdman_findfile cdvdman_filepath=\SIO2D.IRX;1
+[  42.889] cdvdman_locatefile start locating \SIO2D.IRX;1, layer=0
+[  42.890] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  42.890] sceCdSync 0 sync flag = 1
+[  42.891] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  42.892] cdvdman_locatefile tocLBA read done
+[  42.893] cdvdman_locatefile strcmp SIO2D.IRX;1
+[  42.896] cdvdman_locatefile strcmp SIO2D.IRX;1 
+[  42.896] cdvdman_locatefile strcmp SIO2D.IRX;1 SYSTEM.CNF;1
+[  42.897] cdvdman_locatefile strcmp SIO2D.IRX;1 SLPM_666.75;1
+[  42.897] cdvdman_locatefile strcmp SIO2D.IRX;1 IOPRP300.IMG;1
+[  42.898] cdvdman_locatefile strcmp SIO2D.IRX;1 SIO2MAN.IRX;1
+[  42.899] cdvdman_locatefile strcmp SIO2D.IRX;1 SIO2D.IRX;1
+[  42.899] cdvdman_locatefile found file! LBA=1709 size=11289
+[  42.900] cdvdman_findfile found \SIO2D.IRX;1
+[  42.901] open ret=0 lsn=1709 size=11289
+[  42.901] cdrom_lseek offset=0 where=2
+[  42.902] cdrom_lseek file offset=11289
+[  42.902] cdrom_lseek offset=0 where=0
+[  42.903] cdrom_lseek file offset=0
+[  42.904] cdrom_lseek offset=0 where=0
+[  42.905] cdrom_lseek file offset=0
+[  42.905] cdrom_read size=11289b (5s) file_position=0
+[  42.906] sceCdRead lsn=1709 sectors=5 sector_size=2048 buf=001eff00
+[  42.906] sceCdSync 0 sync flag = 1
+[  42.907] cdvdman_read lsn=1709 sectors=5 buf=1eff00
+[  42.908] sceCdRead lsn=1714 sectors=1 sector_size=2048 buf=0002bea4
+[  42.908] sceCdSync 0 sync flag = 1
+[  42.911] cdvdman_read lsn=1714 sectors=1 buf=2bea4
+[  42.912] cdrom_read ret=11289
+[  42.913] cdrom_close
+[  42.913] loadmodule: id 34, ret 0
+[  42.914] loadmodule: fname cdrom0:\DBCMAN.IRX args 0 arg
+[  42.915] Hook_LoadStartModule() modpath = cdrom0:\DBCMAN.IRX freeram = 1616896
+[  42.915] cdrom_open \DBCMAN.IRX mode=1 layer 0
+[  42.916] sceCdLayerSearchFile \DBCMAN.IRX;1
+[  42.917] cdvdman_findfile \DBCMAN.IRX;1 layer0
+[  42.917] cdvdman_findfile cdvdman_filepath=\DBCMAN.IRX;1
+[  42.918] cdvdman_locatefile start locating \DBCMAN.IRX;1, layer=0
+[  42.919] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  42.920] sceCdSync 0 sync flag = 1
+[  42.921] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  42.921] cdvdman_locatefile tocLBA read done
+[  42.923] cdvdman_locatefile strcmp DBCMAN.IRX;1
+[  42.923] cdvdman_locatefile strcmp DBCMAN.IRX;1 
+[  42.925] cdvdman_locatefile strcmp DBCMAN.IRX;1 SYSTEM.CNF;1
+[  42.926] cdvdman_locatefile strcmp DBCMAN.IRX;1 SLPM_666.75;1
+[  42.927] cdvdman_locatefile strcmp DBCMAN.IRX;1 IOPRP300.IMG;1
+[  42.927] cdvdman_locatefile strcmp DBCMAN.IRX;1 SIO2MAN.IRX;1
+[  42.928] cdvdman_locatefile strcmp DBCMAN.IRX;1 SIO2D.IRX;1
+[  42.929] cdvdman_locatefile strcmp DBCMAN.IRX;1 DBCMAN.IRX;1
+[  42.929] cdvdman_locatefile found file! LBA=1715 size=15653
+[  42.930] cdvdman_findfile found \DBCMAN.IRX;1
+[  42.930] open ret=0 lsn=1715 size=15653
+[  42.931] cdrom_lseek offset=0 where=2
+[  42.931] cdrom_lseek file offset=15653
+[  42.932] cdrom_lseek offset=0 where=0
+[  42.933] cdrom_lseek file offset=0
+[  42.933] cdrom_lseek offset=0 where=0
+[  42.934] cdrom_lseek file offset=0
+[  42.934] cdrom_read size=15653b (7s) file_position=0
+[  42.935] sceCdRead lsn=1715 sectors=7 sector_size=2048 buf=001ee800
+[  42.935] sceCdSync 0 sync flag = 1
+[  42.936] cdvdman_read lsn=1715 sectors=7 buf=1ee800
+[  42.937] sceCdRead lsn=1722 sectors=1 sector_size=2048 buf=0002bea4
+[  42.938] sceCdSync 0 sync flag = 1
+[  42.938] cdvdman_read lsn=1722 sectors=1 buf=2bea4
+[  42.941] cdrom_read ret=15653
+[  42.942] cdrom_close
+[  42.942] loadmodule: id 35, ret 0
+[  42.943] loadmodule: fname cdrom0:\PAD2\DS2O.IRX args 0 arg
+[  42.943] Hook_LoadStartModule() modpath = cdrom0:\PAD2\DS2O.IRX freeram = 1589760
+[  42.944] cdrom_open \PAD2\DS2O.IRX mode=1 layer 0
+[  42.945] sceCdLayerSearchFile \PAD2\DS2O.IRX;1
+[  42.945] cdvdman_findfile \PAD2\DS2O.IRX;1 layer0
+[  42.946] cdvdman_findfile cdvdman_filepath=\PAD2\DS2O.IRX;1
+[  42.946] cdvdman_locatefile start locating \PAD2\DS2O.IRX;1, layer=0
+[  42.947] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  42.948] sceCdSync 0 sync flag = 1
+[  42.948] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  42.949] cdvdman_locatefile tocLBA read done
+[  42.949] cdvdman_locatefile strcmp PAD2
+[  42.950] cdvdman_locatefile strcmp PAD2 
+[  42.950] cdvdman_locatefile strcmp PAD2 SYSTEM.CNF;1
+[  42.951] cdvdman_locatefile strcmp PAD2 SLPM_666.75;1
+[  42.952] cdvdman_locatefile strcmp PAD2 IOPRP300.IMG;1
+[  42.953] cdvdman_locatefile strcmp PAD2 SIO2MAN.IRX;1
+[  42.956] cdvdman_locatefile strcmp PAD2 SIO2D.IRX;1
+[  42.957] cdvdman_locatefile strcmp PAD2 DBCMAN.IRX;1
+[  42.957] cdvdman_locatefile strcmp PAD2 PAD2
+[  42.959] cdvdman_locatefile start locating \PAD2\DS2O.IRX;1, layer=0
+[  42.959] sceCdRead lsn=262 sectors=1 sector_size=2048 buf=0002b224
+[  42.959] sceCdSync 0 sync flag = 1
+[  42.961] cdvdman_read lsn=262 sectors=1 buf=2b224
+[  42.961] cdvdman_locatefile tocLBA read done
+[  42.962] cdvdman_locatefile strcmp DS2O.IRX;1
+[  42.962] cdvdman_locatefile strcmp DS2O.IRX;1 
+[  42.963] cdvdman_locatefile strcmp DS2O.IRX;1 DS2O.IRX;1
+[  42.964] cdvdman_locatefile found file! LBA=1723 size=10973
+[  42.964] cdvdman_findfile found \PAD2\DS2O.IRX;1
+[  42.965] open ret=0 lsn=1723 size=10973
+[  42.966] cdrom_lseek offset=0 where=2
+[  42.966] cdrom_lseek file offset=10973
+[  42.967] cdrom_lseek offset=0 where=0
+[  42.967] cdrom_lseek file offset=0
+[  42.968] cdrom_lseek offset=0 where=0
+[  42.971] cdrom_lseek file offset=0
+[  42.972] cdrom_read size=10973b (5s) file_position=0
+[  42.973] sceCdRead lsn=1723 sectors=5 sector_size=2048 buf=001ee300
+[  42.973] sceCdSync 0 sync flag = 1
+[  42.974] cdvdman_read lsn=1723 sectors=5 buf=1ee300
+[  42.974] sceCdRead lsn=1728 sectors=1 sector_size=2048 buf=0002bea4
+[  42.975] sceCdSync 0 sync flag = 1
+[  42.975] cdvdman_read lsn=1728 sectors=1 buf=2bea4
+[  42.976] cdrom_read ret=10973
+[  42.977] cdrom_close
+[  42.977] loadmodule: id 36, ret 0
+[  42.978] loadmodule: fname cdrom0:\PAD2\DS2O.IRX args 0 arg
+[  42.978] Hook_LoadStartModule() modpath = cdrom0:\PAD2\DS2O.IRX freeram = 1578752
+[  42.979] cdrom_open \PAD2\DS2O.IRX mode=1 layer 0
+[  42.980] sceCdLayerSearchFile \PAD2\DS2O.IRX;1
+[  42.981] cdvdman_findfile \PAD2\DS2O.IRX;1 layer0
+[  42.981] cdvdman_findfile cdvdman_filepath=\PAD2\DS2O.IRX;1
+[  42.982] cdvdman_locatefile start locating \PAD2\DS2O.IRX;1, layer=0
+[  42.982] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  42.983] sceCdSync 0 sync flag = 1
+[  42.984] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  42.987] cdvdman_locatefile tocLBA read done
+[  42.987] cdvdman_locatefile strcmp PAD2
+[  42.988] cdvdman_locatefile strcmp PAD2 
+[  42.988] cdvdman_locatefile strcmp PAD2 SYSTEM.CNF;1
+[  42.989] cdvdman_locatefile strcmp PAD2 SLPM_666.75;1
+[  42.989] cdvdman_locatefile strcmp PAD2 IOPRP300.IMG;1
+[  42.990] cdvdman_locatefile strcmp PAD2 SIO2MAN.IRX;1
+[  42.991] cdvdman_locatefile strcmp PAD2 SIO2D.IRX;1
+[  42.992] cdvdman_locatefile strcmp PAD2 DBCMAN.IRX;1
+[  42.992] cdvdman_locatefile strcmp PAD2 PAD2
+[  42.993] cdvdman_locatefile start locating \PAD2\DS2O.IRX;1, layer=0
+[  42.993] sceCdRead lsn=262 sectors=1 sector_size=2048 buf=0002b224
+[  42.995] sceCdSync 0 sync flag = 1
+[  42.995] cdvdman_read lsn=262 sectors=1 buf=2b224
+[  42.996] cdvdman_locatefile tocLBA read done
+[  42.996] cdvdman_locatefile strcmp DS2O.IRX;1
+[  42.997] cdvdman_locatefile strcmp DS2O.IRX;1 
+[  42.997] cdvdman_locatefile strcmp DS2O.IRX;1 DS2O.IRX;1
+[  42.998] cdvdman_locatefile found file! LBA=1723 size=10973
+[  42.999] cdvdman_findfile found \PAD2\DS2O.IRX;1
+[  43.001] open ret=0 lsn=1723 size=10973
+[  43.002] cdrom_lseek offset=0 where=2
+[  43.003] cdrom_lseek file offset=10973
+[  43.004] cdrom_lseek offset=0 where=0
+[  43.005] cdrom_lseek file offset=0
+[  43.005] cdrom_lseek offset=0 where=0
+[  43.006] cdrom_lseek file offset=0
+[  43.006] cdrom_read size=10973b (5s) file_position=0
+[  43.007] sceCdRead lsn=1723 sectors=5 sector_size=2048 buf=001edb00
+[  43.007] sceCdSync 0 sync flag = 1
+[  43.008] cdvdman_read lsn=1723 sectors=5 buf=1edb00
+[  43.008] sceCdRead lsn=1728 sectors=1 sector_size=2048 buf=0002bea4
+[  43.009] sceCdSync 0 sync flag = 1
+[  43.009] cdvdman_read lsn=1728 sectors=1 buf=2bea4
+[  43.010] cdrom_read ret=10973
+[  43.011] cdrom_close
+[  43.011] loadmodule: id 37, ret 0
+[  43.012] loadmodule: fname cdrom0:\MCMAN.IRX args 0 arg
+[  43.013] Hook_LoadStartModule() modpath = cdrom0:\MCMAN.IRX freeram = 1567744
+[  43.013] cdrom_open \MCMAN.IRX mode=1 layer 0
+[  43.016] sceCdLayerSearchFile \MCMAN.IRX;1
+[  43.017] cdvdman_findfile \MCMAN.IRX;1 layer0
+[  43.017] cdvdman_findfile cdvdman_filepath=\MCMAN.IRX;1
+[  43.018] cdvdman_locatefile start locating \MCMAN.IRX;1, layer=0
+[  43.019] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  43.019] sceCdSync 0 sync flag = 1
+[  43.020] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  43.021] cdvdman_locatefile tocLBA read done
+[  43.021] cdvdman_locatefile strcmp MCMAN.IRX;1
+[  43.022] cdvdman_locatefile strcmp MCMAN.IRX;1 
+[  43.023] cdvdman_locatefile strcmp MCMAN.IRX;1 SYSTEM.CNF;1
+[  43.023] cdvdman_locatefile strcmp MCMAN.IRX;1 SLPM_666.75;1
+[  43.025] cdvdman_locatefile strcmp MCMAN.IRX;1 IOPRP300.IMG;1
+[  43.025] cdvdman_locatefile strcmp MCMAN.IRX;1 SIO2MAN.IRX;1
+[  43.026] cdvdman_locatefile strcmp MCMAN.IRX;1 SIO2D.IRX;1
+[  43.026] cdvdman_locatefile strcmp MCMAN.IRX;1 DBCMAN.IRX;1
+[  43.027] cdvdman_locatefile strcmp MCMAN.IRX;1 PAD2
+[  43.027] cdvdman_locatefile strcmp MCMAN.IRX;1 MCMAN.IRX;1
+[  43.028] cdvdman_locatefile found file! LBA=1729 size=96181
+[  43.029] cdvdman_findfile found \MCMAN.IRX;1
+[  43.029] open ret=0 lsn=1729 size=96181
+[  43.032] cdrom_lseek offset=0 where=2
+[  43.033] cdrom_lseek file offset=96181
+[  43.033] cdrom_lseek offset=0 where=0
+[  43.034] cdrom_lseek file offset=0
+[  43.034] cdrom_lseek offset=0 where=0
+[  43.035] cdrom_lseek file offset=0
+[  43.036] cdrom_read size=96181b (46s) file_position=0
+[  43.036] sceCdRead lsn=1729 sectors=46 sector_size=2048 buf=001d8600
+[  43.037] sceCdSync 0 sync flag = 1
+[  43.038] cdvdman_read lsn=1729 sectors=46 buf=1d8600
+[  43.055] sceCdRead lsn=1775 sectors=1 sector_size=2048 buf=0002bea4
+[  43.055] sceCdSync 0 sync flag = 1
+[  43.055] cdvdman_read lsn=1775 sectors=1 buf=2bea4
+[  43.057] cdrom_read ret=96181
+[  43.058] cdrom_close
+[  43.072] loadmodule: id 38, ret 2
+[  43.073] loadmodule: fname cdrom0:\MCSERV.IRX args 0 arg
+[  43.073] Hook_LoadStartModule() modpath = cdrom0:\MCSERV.IRX freeram = 1406976
+[  43.074] cdrom_open \MCSERV.IRX mode=1 layer 0
+[  43.074] sceCdLayerSearchFile \MCSERV.IRX;1
+[  43.075] cdvdman_findfile \MCSERV.IRX;1 layer0
+[  43.077] cdvdman_findfile cdvdman_filepath=\MCSERV.IRX;1
+[  43.078] cdvdman_locatefile start locating \MCSERV.IRX;1, layer=0
+[  43.079] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  43.079] sceCdSync 0 sync flag = 1
+[  43.080] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  43.081] cdvdman_locatefile tocLBA read done
+[  43.081] cdvdman_locatefile strcmp MCSERV.IRX;1
+[  43.082] cdvdman_locatefile strcmp MCSERV.IRX;1 
+[  43.083] cdvdman_locatefile strcmp MCSERV.IRX;1 SYSTEM.CNF;1
+[  43.083] cdvdman_locatefile strcmp MCSERV.IRX;1 SLPM_666.75;1
+[  43.084] cdvdman_locatefile strcmp MCSERV.IRX;1 IOPRP300.IMG;1
+[  43.084] cdvdman_locatefile strcmp MCSERV.IRX;1 SIO2MAN.IRX;1
+[  43.085] cdvdman_locatefile strcmp MCSERV.IRX;1 SIO2D.IRX;1
+[  43.085] cdvdman_locatefile strcmp MCSERV.IRX;1 DBCMAN.IRX;1
+[  43.086] cdvdman_locatefile strcmp MCSERV.IRX;1 PAD2
+[  43.086] cdvdman_locatefile strcmp MCSERV.IRX;1 MCMAN.IRX;1
+[  43.087] cdvdman_locatefile strcmp MCSERV.IRX;1 MCSERV.IRX;1
+[  43.088] cdvdman_locatefile found file! LBA=1776 size=7385
+[  43.089] cdvdman_findfile found \MCSERV.IRX;1
+[  43.089] open ret=0 lsn=1776 size=7385
+[  43.090] cdrom_lseek offset=0 where=2
+[  43.090] cdrom_lseek file offset=7385
+[  43.094] cdrom_lseek offset=0 where=0
+[  43.095] cdrom_lseek file offset=0
+[  43.095] cdrom_lseek offset=0 where=0
+[  43.096] cdrom_lseek file offset=0
+[  43.097] cdrom_read size=7385b (3s) file_position=0
+[  43.099] sceCdRead lsn=1776 sectors=3 sector_size=2048 buf=001ee100
+[  43.099] sceCdSync 0 sync flag = 1
+[  43.100] cdvdman_read lsn=1776 sectors=3 buf=1ee100
+[  43.100] sceCdRead lsn=1779 sectors=1 sector_size=2048 buf=0002bea4
+[  43.101] sceCdSync 0 sync flag = 1
+[  43.102] cdvdman_read lsn=1779 sectors=1 buf=2bea4
+[  43.103] cdrom_read ret=7385
+[  43.104] cdrom_close
+[  43.105] loadmodule: id 39, ret 2
+[  43.107] loadmodule: fname cdrom0:\LIBSD.IRX args 0 arg
+[  43.108] Hook_LoadStartModule() modpath = cdrom0:\LIBSD.IRX freeram = 1386496
+[  43.108] cdrom_open \LIBSD.IRX mode=1 layer 0
+[  43.109] cdvdman_locatefile strcmp LIBSD.IRX;1 SLPM_666.75;1
+[  43.109] cdrom_lseek offset=0 where=0
+[  43.121] sceCdRead lsn=1794 sectors=1 sector_size=2048 buf=0002bea4
+[  43.122] sceCdSync 0 sync flag = 1
+[  43.124] cdrom_read ret=30085
+[  43.128] loadmodule: id 40, ret 0
+[  43.134] cdvdman_locatefile tocLBA read done
+[  43.139] open ret=0 lsn=1795 size=91949
+[  43.283] sceCdRead lsn=1839 sectors=1 sector_size=2048 buf=0002bea4
+[  43.283] sceCdSync 0 sync flag = 1
+[  43.285] cdvdman_read lsn=1839 sectors=1 buf=2bea4
+[  43.286] cdrom_read ret=91949
+[  43.286] cdrom_close
+[  43.334] [44mSquare-Enix SoundDriver Nov  8 2006 12:52:13 by Hitoshi Ohori[0m
+[  43.335] loadmodule: id 41, ret 2
+[  43.337] sceCdDiskReady 0
+[  43.342] sceCdLayerSearchFile \SYSTEM.CNF;1
+[  43.367] cdvdman_findfile \SYSTEM.CNF;1 layer0
+[  43.379] cdvdman_findfile cdvdman_filepath=\SYSTEM.CNF;1
+[  43.415] cdvdman_locatefile start locating \SYSTEM.CNF;1, layer=0
+[  43.426] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  43.463] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  43.472] sceCdSync 0 sync flag = 1
+[  43.477] cdvdman_locatefile tocLBA read done
+[  43.488] cdvdman_locatefile strcmp SYSTEM.CNF;1
+[  43.502] cdvdman_locatefile strcmp SYSTEM.CNF;1 
+[  43.505] cdvdman_locatefile strcmp SYSTEM.CNF;1 SYSTEM.CNF;1
+[  43.506] cdvdman_locatefile found file! LBA=284 size=54
+[  43.507] cdvdman_findfile found \SYSTEM.CNF;1
+[  43.507] sceCdDiskReady 0
+[  43.508] sceCdSC(0xFFFFFFF6, 0xE)
+[  43.508] sceCdDiskReady 0
+[  43.509] sceCdSC(0xFFFFFFF6, 0x0)
+[  43.511] sceCdSC(0xFFFFFFF6, 0x1)
+[  43.512] sceCdDiskReady 0
+[  43.513] sceCdGetError 0
+[  43.516] sceCdRead lsn=284 sectors=2 sector_size=2048 buf=0002beb4
+[  43.516] cdvdman_read lsn=284 sectors=2 buf=2beb4
+[  43.517] sceCdSync 0 sync flag = 1
+[  43.517] sceCdSC(0xFFFFFFF6, 0x0)
+[  43.518] sceCdGetError 0
+[  43.519] sceCdDiskReady 0
+[  43.519] sceCdLayerSearchFile \OVL.IDX;1
+[  43.520] cdvdman_findfile \OVL.IDX;1 layer0
+[  43.521] cdvdman_findfile cdvdman_filepath=\OVL.IDX;1
+[  43.521] cdvdman_locatefile start locating \OVL.IDX;1, layer=0
+[  43.522] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  43.523] cdvdman_locatefile tocLBA read done
+[  43.524] cdvdman_locatefile strcmp OVL.IDX;1
+[  43.524] cdvdman_locatefile strcmp OVL.IDX;1 
+[  43.525] cdvdman_locatefile strcmp OVL.IDX;1 SYSTEM.CNF;1
+[  43.525] sceCdDiskReady 0
+[  43.527] sceCdSC(0xFFFFFFF6, 0x0)
+[  43.527] sceCdGetError 0
+[  43.528] sceCdDiskReady 0
+[  43.528] sceCdLayerSearchFile \OVL.IMG;1
+[  43.529] cdvdman_findfile \OVL.IMG;1 layer0
+[  43.532] cdvdman_findfile cdvdman_filepath=\OVL.IMG;1
+[  43.533] cdvdman_locatefile start locating \OVL.IMG;1, layer=0
+[  43.533] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  43.534] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  43.535] sceCdSync 0 sync flag = 1
+[  43.545] cdvdman_locatefile tocLBA read done
+[  43.549] cdvdman_locatefile strcmp OVL.IMG;1
+[  43.550] cdvdman_locatefile strcmp OVL.IMG;1 
+[  43.552] cdvdman_locatefile strcmp OVL.IMG;1 SYSTEM.CNF;1
+[  43.554] cdvdman_locatefile strcmp OVL.IMG;1 SLPM_666.75;1
+[  43.556] cdvdman_locatefile strcmp OVL.IMG;1 SIO2D.IRX;1
+[  43.568] cdvdman_findfile \KH2.IDX;1 layer0
+[  43.574] cdvdman_locatefile tocLBA read done
+[  43.596] cdvdman_locatefile strcmp KH2.IDX;1 PAD2
+[  43.598] sceCdRead lsn=1416746 sectors=8 sector_size=2048 buf=0002bea4
+[  43.599] sceCdGetError 0
+[  43.602] sceCdRead lsn=1416754 sectors=8 sector_size=2048 buf=0002bea4
+[  43.606] cdvdman_read lsn=1416754 sectors=8 buf=2bea4
+[  43.608] sceCdSync 0 sync flag = 1
+[  43.717] sceCdGetError 0
+[  43.717] sceCdRead lsn=1416762 sectors=8 sector_size=2048 buf=0002bea4
+[  43.719] cdvdman_read lsn=1416762 sectors=8 buf=2bea4
+[  43.719] sceCdSync 0 sync flag = 1
+[  43.725] sceCdGetError 0
+[  43.725] sceCdRead lsn=1416770 sectors=8 sector_size=2048 buf=0002bea4
+[  43.726] cdvdman_read lsn=1416770 sectors=8 buf=2bea4
+[  43.726] sceCdSync 0 sync flag = 1
+[  43.733] sceCdGetError 0
+[  43.734] sceCdRead lsn=1416778 sectors=8 sector_size=2048 buf=0002bea4
+[  43.734] cdvdman_read lsn=1416778 sectors=8 buf=2bea4
+[  43.735] sceCdSync 0 sync flag = 1
+[  43.741] sceCdGetError 0
+[  43.743] sceCdRead lsn=1416786 sectors=1 sector_size=2048 buf=0002bea4
+[  43.743] cdvdman_read lsn=1416786 sectors=1 buf=2bea4
+[  43.744] sceCdSync 0 sync flag = 1
+[  43.746] sceCdSC(0xFFFFFFF6, 0x0)
+[  43.747] sceCdGetError 0
+[  43.747] sceCdDiskReady 0
+[  43.748] sceCdLayerSearchFile \KH2.IMG;1
+[  43.749] cdvdman_findfile \KH2.IMG;1 layer0
+[  43.749] cdvdman_findfile cdvdman_filepath=\KH2.IMG;1
+[  43.750] cdvdman_locatefile start locating \KH2.IMG;1, layer=0
+[  43.750] sceCdRead lsn=261 sectors=1 sector_size=2048 buf=0002b224
+[  43.751] cdvdman_read lsn=261 sectors=1 buf=2b224
+[  43.751] sceCdSync 0 sync flag = 1
+[  43.752] cdvdman_locatefile tocLBA read done
+[  43.753] cdvdman_locatefile strcmp KH2.IMG;1
+[  43.753] cdvdman_locatefile strcmp KH2.IMG;1 
+[  43.754] cdvdman_locatefile strcmp KH2.IMG;1 SYSTEM.CNF;1
+[  43.755] cdvdman_locatefile strcmp KH2.IMG;1 SLPM_666.75;1
+[  43.755] cdvdman_locatefile strcmp KH2.IMG;1 IOPRP300.IMG;1
+[  43.756] cdvdman_locatefile strcmp KH2.IMG;1 SIO2MAN.IRX;1
+[  43.756] cdvdman_locatefile strcmp KH2.IMG;1 SIO2D.IRX;1
+[  43.757] cdvdman_locatefile strcmp KH2.IMG;1 DBCMAN.IRX;1
+[  43.758] cdvdman_locatefile strcmp KH2.IMG;1 PAD2
+[  43.759] cdvdman_locatefile strcmp KH2.IMG;1 MCMAN.IRX;1
+[  43.759] cdvdman_locatefile strcmp KH2.IMG;1 MCSERV.IRX;1
+[  43.762] cdvdman_locatefile strcmp KH2.IMG;1 LIBSD.IRX;1
+[  43.763] cdvdman_locatefile strcmp KH2.IMG;1 LIBSSL.IRX;1
+[  43.763] cdvdman_locatefile strcmp KH2.IMG;1 KH2.IDX;1
+[  43.764] cdvdman_locatefile strcmp KH2.IMG;1 OVL.IDX;1
+[  43.765] cdvdman_locatefile strcmp KH2.IMG;1 OVL.IMG;1
+[  43.765] cdvdman_locatefile strcmp KH2.IMG;1 KH2.IMG;1
+[  43.766] cdvdman_locatefile found file! LBA=1840 size=-1397239808
+[  43.767] cdvdman_findfile found \KH2.IMG;1
+[  44.228] sceCdDiskReady 0
+[  44.228] sceCdSC(0xFFFFFFF6, 0xE)
+[  44.229] sceCdDiskReady 0
+[  44.230] sceCdSC(0xFFFFFFF6, 0x0)
+[  44.230] sceCdSC(0xFFFFFFF6, 0x1)
+[  44.231] sceCdDiskReady 0
+[  44.232] sceCdGetError 0
+[  44.232] sceCdRead lsn=1292617 sectors=8 sector_size=2048 buf=0002bea4
+[  44.233] cdvdman_read lsn=1292617 sectors=8 buf=2bea4
+[  44.233] sceCdSync 0 sync flag = 1
+[  44.354] sceCdGetError 0
+[  44.355] sceCdRead lsn=1292625 sectors=8 sector_size=2048 buf=0002bea4
+[  44.356] cdvdman_read lsn=1292625 sectors=8 buf=2bea4
+[  44.357] sceCdSync 0 sync flag = 1
+[  44.449] sceCdGetError 0
+[  44.449] sceCdRead lsn=1292633 sectors=8 sector_size=2048 buf=0002bea4
+[  44.451] cdvdman_read lsn=1292633 sectors=8 buf=2bea4
+[  44.451] sceCdSync 0 sync flag = 1
+[  44.459] sceCdGetError 0
+[  44.459] sceCdRead lsn=1292641 sectors=8 sector_size=2048 buf=0002bea4
+[  44.460] cdvdman_read lsn=1292641 sectors=8 buf=2bea4
+[  44.461] sceCdSync 0 sync flag = 1
+[  44.467] sceCdGetError 0
+[  44.467] sceCdRead lsn=1292649 sectors=8 sector_size=2048 buf=0002bea4
+[  44.468] cdvdman_read lsn=1292649 sectors=8 buf=2bea4
+[  44.468] sceCdSync 0 sync flag = 1
+[  44.476] sceCdGetError 0
+[  44.476] sceCdRead lsn=1292657 sectors=8 sector_size=2048 buf=0002bea4
+[  44.478] cdvdman_read lsn=1292657 sectors=8 buf=2bea4
+[  44.478] sceCdSync 0 sync flag = 1
+[  44.484] sceCdGetError 0
+[  44.484] sceCdRead lsn=1292665 sectors=8 sector_size=2048 buf=0002bea4
+[  44.485] cdvdman_read lsn=1292665 sectors=8 buf=2bea4
+[  44.486] sceCdSync 0 sync flag = 1
+[  44.494] sceCdGetError 0
+[  44.494] sceCdRead lsn=1292673 sectors=8 sector_size=2048 buf=0002bea4
+[  44.495] cdvdman_read lsn=1292673 sectors=8 buf=2bea4
+[  44.495] sceCdSync 0 sync flag = 1
+[  44.501] sceCdGetError 0
+[  44.501] sceCdRead lsn=1292681 sectors=8 sector_size=2048 buf=0002bea4
+[  44.502] cdvdman_read lsn=1292681 sectors=8 buf=2bea4
+[  44.503] sceCdSync 0 sync flag = 1
+[  44.509] sceCdGetError 0
+[  44.509] sceCdRead lsn=1292689 sectors=8 sector_size=2048 buf=0002bea4
+[  44.510] cdvdman_read lsn=1292689 sectors=8 buf=2bea4
+[  44.510] sceCdSync 0 sync flag = 1
+[  44.517] sceCdGetError 0
+[  44.518] sceCdRead lsn=1292697 sectors=8 sector_size=2048 buf=0002bea4
+[  44.518] cdvdman_read lsn=1292697 sectors=8 buf=2bea4
+[  44.519] sceCdSync 0 sync flag = 1
+[  44.618] sceCdGetError 0
+[  44.618] sceCdRead lsn=1292705 sectors=2 sector_size=2048 buf=0002bea4
+[  44.619] cdvdman_read lsn=1292705 sectors=2 buf=2bea4
+[  44.620] sceCdSync 0 sync flag = 1
+[  44.621] sceCdSC(0xFFFFFFF6, 0x0)
+[  44.622] sceCdGetError 0
+[  44.622] sceCdDiskReady 0
+[  44.623] sceCdSC(0xFFFFFFF6, 0xE)
+[  44.623] sceCdDiskReady 0
+[  44.624] sceCdSC(0xFFFFFFF6, 0x0)
+[  44.625] sceCdSC(0xFFFFFFF6, 0x1)
+[  44.625] sceCdDiskReady 0
+[  44.626] sceCdGetError 0
+[  44.627] sceCdRead lsn=6868 sectors=8 sector_size=2048 buf=0002bea4
+[  44.628] cdvdman_read lsn=6868 sectors=8 buf=2bea4
+[  44.628] sceCdSync 0 sync flag = 1
+[  44.746] sceCdGetError 0
+[  44.746] sceCdRead lsn=6876 sectors=5 sector_size=2048 buf=0002bea4
+[  44.748] cdvdman_read lsn=6876 sectors=5 buf=2bea4
+[  44.748] sceCdSync 0 sync flag = 1
+[  44.839] sceCdSC(0xFFFFFFF6, 0x0)
+[  44.840] sceCdGetError 0
+[  44.841] sceCdDiskReady 0
+[  44.842] sceCdSC(0xFFFFFFF6, 0xE)
+[  44.847] sceCdDiskReady 0
+[  44.848] sceCdSC(0xFFFFFFF6, 0x0)
+[  44.848] sceCdSC(0xFFFFFFF6, 0x1)
+[  44.849] sceCdDiskReady 0
+[  44.849] sceCdGetError 0
+[  44.850] sceCdRead lsn=211670 sectors=8 sector_size=2048 buf=0002bea4
+[  44.851] cdvdman_read lsn=211670 sectors=8 buf=2bea4
+[  44.851] sceCdSync 0 sync flag = 1
+[  44.961] sceCdGetError 0
+[  44.961] sceCdRead lsn=211678 sectors=8 sector_size=2048 buf=0002bea4
+[  44.963] cdvdman_read lsn=211678 sectors=8 buf=2bea4
+[  44.963] sceCdSync 0 sync flag = 1
+[  45.049] sceCdGetError 0
+[  45.049] sceCdRead lsn=211686 sectors=8 sector_size=2048 buf=0002bea4
+[  45.050] cdvdman_read lsn=211686 sectors=8 buf=2bea4
+[  45.051] sceCdSync 0 sync flag = 1
+[  45.057] sceCdGetError 0
+[  45.058] sceCdRead lsn=211694 sectors=8 sector_size=2048 buf=0002bea4
+[  45.059] cdvdman_read lsn=211694 sectors=8 buf=2bea4
+[  45.059] sceCdSync 0 sync flag = 1
+[  45.066] sceCdGetError 0
+[  45.067] sceCdRead lsn=211702 sectors=8 sector_size=2048 buf=0002bea4
+[  45.067] cdvdman_read lsn=211702 sectors=8 buf=2bea4
+[  45.068] sceCdSync 0 sync flag = 1
+[  45.074] sceCdGetError 0
+[  45.075] sceCdRead lsn=211710 sectors=8 sector_size=2048 buf=0002bea4
+[  45.075] cdvdman_read lsn=211710 sectors=8 buf=2bea4
+[  45.076] sceCdSync 0 sync flag = 1
+[  45.083] sceCdGetError 0
+[  45.083] sceCdRead lsn=211718 sectors=6 sector_size=2048 buf=0002bea4
+[  45.084] cdvdman_read lsn=211718 sectors=6 buf=2bea4
+[  45.084] sceCdSync 0 sync flag = 1
+[  45.089] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.090] sceCdGetError 0
+[  45.091] sceCdDiskReady 0
+[  45.091] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.093] sceCdDiskReady 0
+[  45.095] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.095] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.095] sceCdDiskReady 0
+[  45.096] sceCdGetError 0
+[  45.096] sceCdRead lsn=233791 sectors=8 sector_size=2048 buf=0002bea4
+[  45.097] cdvdman_read lsn=233791 sectors=8 buf=2bea4
+[  45.098] sceCdSync 0 sync flag = 1
+[  45.201] sceCdGetError 0
+[  45.201] sceCdRead lsn=233799 sectors=8 sector_size=2048 buf=0002bea4
+[  45.204] cdvdman_read lsn=233799 sectors=8 buf=2bea4
+[  45.204] sceCdSync 0 sync flag = 1
+[  45.283] sceCdGetError 0
+[  45.285] sceCdRead lsn=233807 sectors=8 sector_size=2048 buf=0002bea4
+[  45.285] cdvdman_read lsn=233807 sectors=8 buf=2bea4
+[  45.286] sceCdSync 0 sync flag = 1
+[  45.292] sceCdGetError 0
+[  45.292] sceCdRead lsn=233815 sectors=8 sector_size=2048 buf=0002bea4
+[  45.293] cdvdman_read lsn=233815 sectors=8 buf=2bea4
+[  45.294] sceCdSync 0 sync flag = 1
+[  45.300] sceCdGetError 0
+[  45.300] sceCdRead lsn=233823 sectors=4 sector_size=2048 buf=0002bea4
+[  45.301] cdvdman_read lsn=233823 sectors=4 buf=2bea4
+[  45.301] sceCdSync 0 sync flag = 1
+[  45.305] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.305] sceCdGetError 0
+[  45.311] sceCdDiskReady 0
+[  45.311] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.312] sceCdDiskReady 0
+[  45.313] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.314] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.314] sceCdDiskReady 0
+[  45.315] sceCdGetError 0
+[  45.315] sceCdRead lsn=197384 sectors=1 sector_size=2048 buf=0002bea4
+[  45.316] cdvdman_read lsn=197384 sectors=1 buf=2bea4
+[  45.317] sceCdSync 0 sync flag = 1
+[  45.400] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.400] sceCdGetError 0
+[  45.401] sceCdDiskReady 0
+[  45.402] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.403] sceCdDiskReady 0
+[  45.404] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.404] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.405] sceCdDiskReady 0
+[  45.405] sceCdGetError 0
+[  45.406] sceCdRead lsn=751580 sectors=1 sector_size=2048 buf=0002bea4
+[  45.406] cdvdman_read lsn=751580 sectors=1 buf=2bea4
+[  45.407] sceCdSync 0 sync flag = 1
+[  45.445] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.445] sceCdGetError 0
+[  45.446] sceCdDiskReady 0
+[  45.447] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.447] sceCdDiskReady 0
+[  45.448] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.449] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.449] sceCdDiskReady 0
+[  45.450] sceCdGetError 0
+[  45.451] sceCdRead lsn=743101 sectors=3 sector_size=2048 buf=0002bea4
+[  45.451] cdvdman_read lsn=743101 sectors=3 buf=2bea4
+[  45.452] sceCdSync 0 sync flag = 1
+[  45.505] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.505] sceCdGetError 0
+[  45.507] sceCdDiskReady 0
+[  45.507] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.508] sceCdDiskReady 0
+[  45.508] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.509] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.509] sceCdDiskReady 0
+[  45.510] sceCdGetError 0
+[  45.511] sceCdRead lsn=664641 sectors=2 sector_size=2048 buf=0002bea4
+[  45.511] cdvdman_read lsn=664641 sectors=2 buf=2bea4
+[  45.512] sceCdSync 0 sync flag = 1
+[  45.557] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.558] sceCdGetError 0
+[  45.560] sceCdDiskReady 0
+[  45.560] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.561] sceCdDiskReady 0
+[  45.562] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.562] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.566] sceCdDiskReady 0
+[  45.566] sceCdGetError 0
+[  45.567] sceCdRead lsn=214277 sectors=1 sector_size=2048 buf=0002bea4
+[  45.567] cdvdman_read lsn=214277 sectors=1 buf=2bea4
+[  45.568] sceCdSync 0 sync flag = 1
+[  45.606] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.607] sceCdGetError 0
+[  45.608] sceCdDiskReady 0
+[  45.608] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.609] sceCdDiskReady 0
+[  45.609] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.610] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.610] sceCdDiskReady 0
+[  45.611] sceCdGetError 0
+[  45.612] sceCdRead lsn=1300343 sectors=8 sector_size=2048 buf=0002bea4
+[  45.612] cdvdman_read lsn=1300343 sectors=8 buf=2bea4
+[  45.613] sceCdSync 0 sync flag = 1
+[  45.700] sceCdGetError 0
+[  45.700] sceCdRead lsn=1300351 sectors=8 sector_size=2048 buf=0002bea4
+[  45.702] cdvdman_read lsn=1300351 sectors=8 buf=2bea4
+[  45.703] sceCdSync 0 sync flag = 1
+[  45.832] sceCdGetError 0
+[  45.834] sceCdRead lsn=1300359 sectors=8 sector_size=2048 buf=0002bea4
+[  45.834] cdvdman_read lsn=1300359 sectors=8 buf=2bea4
+[  45.835] sceCdSync 0 sync flag = 1
+[  45.843] sceCdGetError 0
+[  45.843] sceCdRead lsn=1300367 sectors=4 sector_size=2048 buf=0002bea4
+[  45.844] cdvdman_read lsn=1300367 sectors=4 buf=2bea4
+[  45.845] sceCdSync 0 sync flag = 1
+[  45.848] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.849] sceCdGetError 0
+[  45.856] sceCdDiskReady 0
+[  45.857] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.857] sceCdDiskReady 0
+[  45.858] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.859] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.859] sceCdDiskReady 0
+[  45.860] sceCdGetError 0
+[  45.861] sceCdRead lsn=344734 sectors=4 sector_size=2048 buf=0002bea4
+[  45.862] cdvdman_read lsn=344734 sectors=4 buf=2bea4
+[  45.863] sceCdSync 0 sync flag = 1
+[  45.919] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.920] sceCdGetError 0
+[  45.921] sceCdDiskReady 0
+[  45.922] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.922] sceCdDiskReady 0
+[  45.924] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.924] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.925] sceCdDiskReady 0
+[  45.927] sceCdGetError 0
+[  45.927] sceCdRead lsn=1295037 sectors=1 sector_size=2048 buf=0002bea4
+[  45.928] cdvdman_read lsn=1295037 sectors=1 buf=2bea4
+[  45.928] sceCdSync 0 sync flag = 1
+[  45.976] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.978] sceCdGetError 0
+[  45.978] sceCdDiskReady 0
+[  45.979] sceCdSC(0xFFFFFFF6, 0xE)
+[  45.979] sceCdDiskReady 0
+[  45.980] sceCdSC(0xFFFFFFF6, 0x0)
+[  45.981] sceCdSC(0xFFFFFFF6, 0x1)
+[  45.981] sceCdDiskReady 0
+[  45.982] sceCdGetError 0
+[  45.983] sceCdRead lsn=563311 sectors=8 sector_size=2048 buf=0002bea4
+[  45.983] cdvdman_read lsn=563311 sectors=8 buf=2bea4
+[  45.984] sceCdSync 0 sync flag = 1
+[  46.063] sceCdGetError 0
+[  46.063] sceCdRead lsn=563319 sectors=8 sector_size=2048 buf=0002bea4
+[  46.064] cdvdman_read lsn=563319 sectors=8 buf=2bea4
+[  46.065] sceCdSync 0 sync flag = 1
+[  46.122] sceCdGetError 0
+[  46.122] sceCdRead lsn=563327 sectors=8 sector_size=2048 buf=0002bea4
+[  46.124] cdvdman_read lsn=563327 sectors=8 buf=2bea4
+[  46.125] sceCdSync 0 sync flag = 1
+[  46.130] sceCdGetError 0
+[  46.130] sceCdRead lsn=563335 sectors=8 sector_size=2048 buf=0002bea4
+[  46.130] cdvdman_read lsn=563335 sectors=8 buf=2bea4
+[  46.132] sceCdSync 0 sync flag = 1
+[  46.138] sceCdGetError 0
+[  46.140] sceCdRead lsn=563343 sectors=4 sector_size=2048 buf=0002bea4
+[  46.140] cdvdman_read lsn=563343 sectors=4 buf=2bea4
+[  46.141] sceCdSync 0 sync flag = 1
+[  46.144] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.144] sceCdGetError 0
+[  46.147] sceCdDiskReady 0
+[  46.148] sceCdSC(0xFFFFFFF6, 0xE)
+[  46.148] sceCdDiskReady 0
+[  46.149] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.149] sceCdSC(0xFFFFFFF6, 0x1)
+[  46.150] sceCdDiskReady 0
+[  46.150] sceCdGetError 0
+[  46.151] sceCdRead lsn=1052287 sectors=1 sector_size=2048 buf=0002bea4
+[  46.151] cdvdman_read lsn=1052287 sectors=1 buf=2bea4
+[  46.152] sceCdSync 0 sync flag = 1
+[  46.282] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.283] sceCdGetError 0
+[  46.337] NO. ID  BANK     NO     ADRS   SIZE SPU
+[  46.337] System(035f00:031900) SE(fffffffc/fffffffc:100%) BGM(0: -1:  0%,1: -1:  0%)
+[  46.338] sceCdDiskReady 0
+[  46.339] sceCdSC(0xFFFFFFF6, 0xE)
+[  46.340] sceCdDiskReady 0
+[  46.340] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.341] sceCdSC(0xFFFFFFF6, 0x1)
+[  46.341] sceCdDiskReady 0
+[  46.342] sceCdGetError 0
+[  46.343] sceCdRead lsn=1050660 sectors=8 sector_size=2048 buf=0002bea4
+[  46.343] cdvdman_read lsn=1050660 sectors=8 buf=2bea4
+[  46.344] sceCdSync 0 sync flag = 1
+[  46.351] sceCdStatus 6
+[  46.385] sceCdStatus 6
+[  46.418] sceCdStatus 6
+[  46.427] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.428] sceCdGetError 0
+[  46.439] sceCdDiskReady 0
+[  46.440] sceCdSC(0xFFFFFFF6, 0xE)
+[  46.440] sceCdDiskReady 0
+[  46.441] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.442] sceCdSC(0xFFFFFFF6, 0x1)
+[  46.442] sceCdDiskReady 0
+[  46.443] sceCdGetError 0
+[  46.444] sceCdRead lsn=618337 sectors=6 sector_size=2048 buf=0002bea4
+[  46.445] cdvdman_read lsn=618337 sectors=6 buf=2bea4
+[  46.446] sceCdSync 0 sync flag = 1
+[  46.452] sceCdStatus 6
+[  46.485] sceCdStatus 6
+[  46.519] sceCdStatus 6
+[  46.552] sceCdStatus 6
+[  46.566] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.567] sceCdGetError 0
+[  46.577] sceCdDiskReady 0
+[  46.577] sceCdSC(0xFFFFFFF6, 0xE)
+[  46.578] sceCdDiskReady 0
+[  46.578] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.580] sceCdSC(0xFFFFFFF6, 0x1)
+[  46.580] sceCdDiskReady 0
+[  46.581] sceCdGetError 0
+[  46.581] sceCdRead lsn=1340890 sectors=8 sector_size=2048 buf=0002bea4
+[  46.582] cdvdman_read lsn=1340890 sectors=8 buf=2bea4
+[  46.583] sceCdSync 0 sync flag = 1
+[  46.585] sceCdStatus 6
+[  46.618] sceCdStatus 6
+[  46.652] sceCdStatus 6
+[  46.660] sceCdGetError 0
+[  46.660] sceCdRead lsn=1340898 sectors=8 sector_size=2048 buf=0002bea4
+[  46.661] cdvdman_read lsn=1340898 sectors=8 buf=2bea4
+[  46.661] sceCdSync 0 sync flag = 1
+[  46.685] sceCdStatus 6
+[  46.718] sceCdStatus 6
+[  46.751] sceCdStatus 10
+[  46.752] sceCdGetError 0
+[  46.753] sceCdRead lsn=1340906 sectors=8 sector_size=2048 buf=0002bea4
+[  46.755] cdvdman_read lsn=1340906 sectors=8 buf=2bea4
+[  46.755] sceCdSync 0 sync flag = 1
+[  46.764] sceCdGetError 0
+[  46.765] sceCdRead lsn=1340914 sectors=8 sector_size=2048 buf=0002bea4
+[  46.765] cdvdman_read lsn=1340914 sectors=8 buf=2bea4
+[  46.766] sceCdSync 0 sync flag = 1
+[  46.773] sceCdGetError 0
+[  46.773] sceCdRead lsn=1340922 sectors=8 sector_size=2048 buf=0002bea4
+[  46.774] cdvdman_read lsn=1340922 sectors=8 buf=2bea4
+[  46.775] sceCdSync 0 sync flag = 1
+[  46.782] sceCdGetError 0
+[  46.783] sceCdRead lsn=1340930 sectors=8 sector_size=2048 buf=0002bea4
+[  46.784] cdvdman_read lsn=1340930 sectors=8 buf=2bea4
+[  46.785] sceCdSync 0 sync flag = 1
+[  46.787] sceCdStatus 6
+[  46.792] sceCdGetError 0
+[  46.794] sceCdRead lsn=1340938 sectors=8 sector_size=2048 buf=0002bea4
+[  46.794] cdvdman_read lsn=1340938 sectors=8 buf=2bea4
+[  46.795] sceCdSync 0 sync flag = 1
+[  46.803] sceCdGetError 0
+[  46.804] sceCdRead lsn=1340946 sectors=8 sector_size=2048 buf=0002bea4
+[  46.804] cdvdman_read lsn=1340946 sectors=8 buf=2bea4
+[  46.805] sceCdSync 0 sync flag = 1
+[  46.812] sceCdGetError 0
+[  46.813] sceCdRead lsn=1340954 sectors=8 sector_size=2048 buf=0002bea4
+[  46.813] cdvdman_read lsn=1340954 sectors=8 buf=2bea4
+[  46.815] sceCdSync 0 sync flag = 1
+[  46.821] sceCdStatus 6
+[  46.821] sceCdGetError 0
+[  46.822] sceCdRead lsn=1340962 sectors=8 sector_size=2048 buf=0002bea4
+[  46.823] cdvdman_read lsn=1340962 sectors=8 buf=2bea4
+[  46.825] sceCdSync 0 sync flag = 1
+[  46.831] sceCdGetError 0
+[  46.831] sceCdRead lsn=1340970 sectors=8 sector_size=2048 buf=0002bea4
+[  46.832] cdvdman_read lsn=1340970 sectors=8 buf=2bea4
+[  46.833] sceCdSync 0 sync flag = 1
+[  46.840] sceCdGetError 0
+[  46.840] sceCdRead lsn=1340978 sectors=8 sector_size=2048 buf=0002bea4
+[  46.841] cdvdman_read lsn=1340978 sectors=8 buf=2bea4
+[  46.842] sceCdSync 0 sync flag = 1
+[  46.849] sceCdGetError 0
+[  46.849] sceCdRead lsn=1340986 sectors=8 sector_size=2048 buf=0002bea4
+[  46.850] cdvdman_read lsn=1340986 sectors=8 buf=2bea4
+[  46.851] sceCdSync 0 sync flag = 1
+[  46.854] sceCdStatus 6
+[  46.859] sceCdGetError 0
+[  46.859] sceCdRead lsn=1340994 sectors=8 sector_size=2048 buf=0002bea4
+[  46.861] cdvdman_read lsn=1340994 sectors=8 buf=2bea4
+[  46.862] sceCdSync 0 sync flag = 1
+[  46.869] sceCdGetError 0
+[  46.872] sceCdRead lsn=1341002 sectors=5 sector_size=2048 buf=0002bea4
+[  46.872] cdvdman_read lsn=1341002 sectors=5 buf=2bea4
+[  46.873] sceCdSync 0 sync flag = 1
+[  46.878] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.878] sceCdGetError 0
+[  46.885] sceCdStatus 10
+[  46.894] sceCdDiskReady 0
+[  46.894] sceCdSC(0xFFFFFFF6, 0xE)
+[  46.895] sceCdDiskReady 0
+[  46.895] sceCdSC(0xFFFFFFF6, 0x0)
+[  46.896] sceCdSC(0xFFFFFFF6, 0x1)
+[  46.896] sceCdDiskReady 0
+[  46.897] sceCdGetError 0
+[  46.898] sceCdRead lsn=236260 sectors=8 sector_size=2048 buf=0002bea4
+[  46.899] cdvdman_read lsn=236260 sectors=8 buf=2bea4
+[  46.899] sceCdSync 0 sync flag = 1
+[  46.918] sceCdStatus 6
+[  46.952] sceCdStatus 6
+[  46.983] sceCdGetError 0
+[  46.984] sceCdRead lsn=236268 sectors=3 sector_size=2048 buf=0002bea4
+[  46.985] cdvdman_read lsn=236268 sectors=3 buf=2bea4
+[  46.986] sceCdStatus 6
+[  46.986] sceCdSync 0 sync flag = 1
+[  47.018] sceCdStatus 6
+[  47.050] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.051] sceCdGetError 0
+[  47.052] sceCdStatus 10
+[  47.065] sceCdDiskReady 0
+[  47.065] sceCdSC(0xFFFFFFF6, 0xE)
+[  47.066] sceCdDiskReady 0
+[  47.066] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.067] sceCdSC(0xFFFFFFF6, 0x1)
+[  47.068] sceCdDiskReady 0
+[  47.068] sceCdGetError 0
+[  47.069] sceCdRead lsn=340805 sectors=3 sector_size=2048 buf=0002bea4
+[  47.071] cdvdman_read lsn=340805 sectors=3 buf=2bea4
+[  47.072] sceCdSync 0 sync flag = 1
+[  47.131] sceCdStatus 6
+[  47.150] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.151] sceCdGetError 0
+[  47.151] sceCdDiskReady 0
+[  47.152] sceCdSC(0xFFFFFFF6, 0xE)
+[  47.153] sceCdDiskReady 0
+[  47.153] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.154] sceCdSC(0xFFFFFFF6, 0x1)
+[  47.154] sceCdDiskReady 0
+[  47.155] sceCdGetError 0
+[  47.155] sceCdRead lsn=773687 sectors=8 sector_size=2048 buf=0002bea4
+[  47.156] cdvdman_read lsn=773687 sectors=8 buf=2bea4
+[  47.157] sceCdSync 0 sync flag = 1
+[  47.164] sceCdStatus 6
+[  47.199] sceCdStatus 6
+[  47.227] sceCdGetError 0
+[  47.228] sceCdRead lsn=773695 sectors=8 sector_size=2048 buf=0002bea4
+[  47.229] cdvdman_read lsn=773695 sectors=8 buf=2bea4
+[  47.229] sceCdSync 0 sync flag = 1
+[  47.231] sceCdStatus 6
+[  47.265] sceCdStatus 6
+[  47.297] sceCdStatus 6
+[  47.331] sceCdStatus 6
+[  47.364] sceCdStatus 10
+[  47.365] sceCdGetError 0
+[  47.366] sceCdRead lsn=773703 sectors=8 sector_size=2048 buf=0002bea4
+[  47.366] cdvdman_read lsn=773703 sectors=8 buf=2bea4
+[  47.367] sceCdSync 0 sync flag = 1
+[  47.374] sceCdGetError 0
+[  47.375] sceCdRead lsn=773711 sectors=8 sector_size=2048 buf=0002bea4
+[  47.375] cdvdman_read lsn=773711 sectors=8 buf=2bea4
+[  47.375] sceCdSync 0 sync flag = 1
+[  47.384] sceCdGetError 0
+[  47.385] sceCdRead lsn=773719 sectors=8 sector_size=2048 buf=0002bea4
+[  47.385] cdvdman_read lsn=773719 sectors=8 buf=2bea4
+[  47.386] sceCdSync 0 sync flag = 1
+[  47.393] sceCdGetError 0
+[  47.394] sceCdRead lsn=773727 sectors=8 sector_size=2048 buf=0002bea4
+[  47.395] cdvdman_read lsn=773727 sectors=8 buf=2bea4
+[  47.396] sceCdSync 0 sync flag = 1
+[  47.397] sceCdStatus 6
+[  47.403] sceCdGetError 0
+[  47.403] sceCdRead lsn=773735 sectors=8 sector_size=2048 buf=0002bea4
+[  47.404] cdvdman_read lsn=773735 sectors=8 buf=2bea4
+[  47.405] sceCdSync 0 sync flag = 1
+[  47.412] sceCdGetError 0
+[  47.413] sceCdRead lsn=773743 sectors=8 sector_size=2048 buf=0002bea4
+[  47.413] cdvdman_read lsn=773743 sectors=8 buf=2bea4
+[  47.414] sceCdSync 0 sync flag = 1
+[  47.421] sceCdGetError 0
+[  47.421] sceCdRead lsn=773751 sectors=8 sector_size=2048 buf=0002bea4
+[  47.422] cdvdman_read lsn=773751 sectors=8 buf=2bea4
+[  47.425] sceCdSync 0 sync flag = 1
+[  47.429] sceCdGetError 0
+[  47.430] sceCdRead lsn=773759 sectors=8 sector_size=2048 buf=0002bea4
+[  47.431] cdvdman_read lsn=773759 sectors=8 buf=2bea4
+[  47.431] sceCdStatus 6
+[  47.432] sceCdSync 0 sync flag = 1
+[  47.440] sceCdGetError 0
+[  47.441] sceCdRead lsn=773767 sectors=8 sector_size=2048 buf=0002bea4
+[  47.441] cdvdman_read lsn=773767 sectors=8 buf=2bea4
+[  47.442] sceCdSync 0 sync flag = 1
+[  47.454] sceCdGetError 0
+[  47.454] sceCdRead lsn=773775 sectors=8 sector_size=2048 buf=0002bea4
+[  47.455] cdvdman_read lsn=773775 sectors=8 buf=2bea4
+[  47.457] sceCdSync 0 sync flag = 1
+[  47.463] sceCdGetError 0
+[  47.463] sceCdRead lsn=773783 sectors=8 sector_size=2048 buf=0002bea4
+[  47.464] cdvdman_read lsn=773783 sectors=8 buf=2bea4
+[  47.464] sceCdStatus 6
+[  47.466] sceCdSync 0 sync flag = 1
+[  47.472] sceCdGetError 0
+[  47.473] sceCdRead lsn=773791 sectors=7 sector_size=2048 buf=0002bea4
+[  47.483] cdvdman_read lsn=773791 sectors=7 buf=2bea4
+[  47.485] sceCdSync 0 sync flag = 1
+[  47.497] sceCdStatus 6
+[  47.531] sceCdStatus 6
+[  47.559] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.559] sceCdGetError 0
+[  47.564] sceCdStatus 10
+[  47.597] sceCdStatus 10
+[  47.616] sceCdDiskReady 0
+[  47.617] sceCdSC(0xFFFFFFF6, 0xE)
+[  47.617] sceCdDiskReady 0
+[  47.618] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.618] sceCdSC(0xFFFFFFF6, 0x1)
+[  47.619] sceCdDiskReady 0
+[  47.620] sceCdGetError 0
+[  47.621] sceCdRead lsn=1575951 sectors=8 sector_size=2048 buf=0002bea4
+[  47.621] cdvdman_read lsn=1575951 sectors=8 buf=2bea4
+[  47.622] sceCdSync 0 sync flag = 1
+[  47.631] sceCdStatus 6
+[  47.664] sceCdStatus 6
+[  47.697] sceCdStatus 6
+[  47.725] sceCdGetError 0
+[  47.725] sceCdRead lsn=1575959 sectors=5 sector_size=2048 buf=0002bea4
+[  47.727] cdvdman_read lsn=1575959 sectors=5 buf=2bea4
+[  47.727] sceCdSync 0 sync flag = 1
+[  47.731] sceCdStatus 6
+[  47.764] sceCdStatus 6
+[  47.786] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.786] sceCdGetError 0
+[  47.797] sceCdStatus 10
+[  47.832] sceCdStatus 10
+[  47.864] sceCdStatus 10
+[  47.883] sceCdDiskReady 0
+[  47.884] sceCdSC(0xFFFFFFF6, 0xE)
+[  47.885] sceCdDiskReady 0
+[  47.885] sceCdSC(0xFFFFFFF6, 0x0)
+[  47.886] sceCdSC(0xFFFFFFF6, 0x1)
+[  47.887] sceCdDiskReady 0
+[  47.887] sceCdGetError 0
+[  47.888] sceCdRead lsn=673928 sectors=8 sector_size=2048 buf=0002bea4
+[  47.889] cdvdman_read lsn=673928 sectors=8 buf=2bea4
+[  47.889] sceCdSync 0 sync flag = 1
+[  47.897] sceCdStatus 6
+[  47.931] sceCdStatus 6
+[  47.964] sceCdStatus 6
+[  47.997] sceCdStatus 6
+[  48.005] sceCdGetError 0
+[  48.005] sceCdRead lsn=673936 sectors=8 sector_size=2048 buf=0002bea4
+[  48.006] cdvdman_read lsn=673936 sectors=8 buf=2bea4
+[  48.006] sceCdSync 0 sync flag = 1
+[  48.031] sceCdStatus 6
+[  48.048] sceCdGetError 0
+[  48.048] sceCdRead lsn=673944 sectors=8 sector_size=2048 buf=0002bea4
+[  48.049] cdvdman_read lsn=673944 sectors=8 buf=2bea4
+[  48.051] sceCdSync 0 sync flag = 1
+[  48.060] sceCdGetError 0
+[  48.060] sceCdRead lsn=673952 sectors=8 sector_size=2048 buf=0002bea4
+[  48.061] cdvdman_read lsn=673952 sectors=8 buf=2bea4
+[  48.062] sceCdSync 0 sync flag = 1
+[  48.064] sceCdStatus 6
+[  48.069] sceCdGetError 0
+[  48.071] sceCdRead lsn=673960 sectors=8 sector_size=2048 buf=0002bea4
+[  48.072] cdvdman_read lsn=673960 sectors=8 buf=2bea4
+[  48.073] sceCdSync 0 sync flag = 1
+[  48.079] sceCdGetError 0
+[  48.079] sceCdRead lsn=673968 sectors=8 sector_size=2048 buf=0002bea4
+[  48.080] cdvdman_read lsn=673968 sectors=8 buf=2bea4
+[  48.080] sceCdSync 0 sync flag = 1
+[  48.088] sceCdGetError 0
+[  48.088] sceCdRead lsn=673976 sectors=8 sector_size=2048 buf=0002bea4
+[  48.088] cdvdman_read lsn=673976 sectors=8 buf=2bea4
+[  48.089] sceCdSync 0 sync flag = 1
+[  48.096] sceCdGetError 0
+[  48.097] sceCdRead lsn=673984 sectors=8 sector_size=2048 buf=0002bea4
+[  48.098] sceCdStatus 10
+[  48.098] cdvdman_read lsn=673984 sectors=8 buf=2bea4
+[  48.099] sceCdSync 0 sync flag = 1
+[  48.131] sceCdStatus 6
+[  48.164] sceCdStatus 6
+[  48.184] sceCdGetError 0
+[  48.184] sceCdRead lsn=673992 sectors=8 sector_size=2048 buf=0002bea4
+[  48.185] cdvdman_read lsn=673992 sectors=8 buf=2bea4
+[  48.185] sceCdSync 0 sync flag = 1
+[  48.192] sceCdGetError 0
+[  48.194] sceCdRead lsn=674000 sectors=8 sector_size=2048 buf=0002bea4
+[  48.194] cdvdman_read lsn=674000 sectors=8 buf=2bea4
+[  48.194] sceCdSync 0 sync flag = 1
+[  48.197] sceCdStatus 6
+[  48.203] sceCdGetError 0
+[  48.204] sceCdRead lsn=674008 sectors=8 sector_size=2048 buf=0002bea4
+[  48.204] cdvdman_read lsn=674008 sectors=8 buf=2bea4
+[  48.205] sceCdSync 0 sync flag = 1
+[  48.212] sceCdGetError 0
+[  48.213] sceCdRead lsn=674016 sectors=8 sector_size=2048 buf=0002bea4
+[  48.213] cdvdman_read lsn=674016 sectors=8 buf=2bea4
+[  48.214] sceCdSync 0 sync flag = 1
+[  48.221] sceCdGetError 0
+[  48.221] sceCdRead lsn=674024 sectors=8 sector_size=2048 buf=0002bea4
+[  48.222] cdvdman_read lsn=674024 sectors=8 buf=2bea4
+[  48.223] sceCdSync 0 sync flag = 1
+[  48.230] sceCdGetError 0
+[  48.231] sceCdStatus 10
+[  48.231] sceCdRead lsn=674032 sectors=8 sector_size=2048 buf=0002bea4
+[  48.232] cdvdman_read lsn=674032 sectors=8 buf=2bea4
+[  48.232] sceCdSync 0 sync flag = 1
+[  48.240] sceCdGetError 0
+[  48.240] sceCdRead lsn=674040 sectors=8 sector_size=2048 buf=0002bea4
+[  48.241] cdvdman_read lsn=674040 sectors=8 buf=2bea4
+[  48.243] sceCdSync 0 sync flag = 1
+[  48.249] sceCdGetError 0
+[  48.249] sceCdRead lsn=674048 sectors=8 sector_size=2048 buf=0002bea4
+[  48.250] cdvdman_read lsn=674048 sectors=8 buf=2bea4
+[  48.254] sceCdSync 0 sync flag = 1
+[  48.258] sceCdGetError 0
+[  48.259] sceCdRead lsn=674056 sectors=8 sector_size=2048 buf=0002bea4
+[  48.259] cdvdman_read lsn=674056 sectors=8 buf=2bea4
+[  48.260] sceCdSync 0 sync flag = 1
+[  48.264] sceCdStatus 6
+[  48.269] sceCdGetError 0
+[  48.269] sceCdRead lsn=674064 sectors=8 sector_size=2048 buf=0002bea4
+[  48.271] cdvdman_read lsn=674064 sectors=8 buf=2bea4
+[  48.272] sceCdSync 0 sync flag = 1
+[  48.279] sceCdGetError 0
+[  48.279] sceCdRead lsn=674072 sectors=8 sector_size=2048 buf=0002bea4
+[  48.280] cdvdman_read lsn=674072 sectors=8 buf=2bea4
+[  48.285] sceCdSync 0 sync flag = 1
+[  48.289] sceCdGetError 0
+[  48.290] sceCdRead lsn=674080 sectors=8 sector_size=2048 buf=0002bea4
+[  48.290] cdvdman_read lsn=674080 sectors=8 buf=2bea4
+[  48.291] sceCdSync 0 sync flag = 1
+[  48.297] sceCdStatus 10
+[  48.298] sceCdGetError 0
+[  48.299] sceCdRead lsn=674088 sectors=8 sector_size=2048 buf=0002bea4
+[  48.299] cdvdman_read lsn=674088 sectors=8 buf=2bea4
+[  48.299] sceCdSync 0 sync flag = 1
+[  48.307] sceCdGetError 0
+[  48.308] sceCdRead lsn=674096 sectors=8 sector_size=2048 buf=0002bea4
+[  48.308] cdvdman_read lsn=674096 sectors=8 buf=2bea4
+[  48.309] sceCdSync 0 sync flag = 1
+[  48.316] sceCdGetError 0
+[  48.317] sceCdRead lsn=674104 sectors=8 sector_size=2048 buf=0002bea4
+[  48.317] cdvdman_read lsn=674104 sectors=8 buf=2bea4
+[  48.322] sceCdSync 0 sync flag = 1
+[  48.329] sceCdGetError 0
+[  48.330] sceCdRead lsn=674112 sectors=8 sector_size=2048 buf=0002bea4
+[  48.330] cdvdman_read lsn=674112 sectors=8 buf=2bea4
+[  48.331] sceCdStatus 6
+[  48.332] sceCdSync 0 sync flag = 1
+[  48.339] sceCdGetError 0
+[  48.339] sceCdRead lsn=674120 sectors=8 sector_size=2048 buf=0002bea4
+[  48.351] cdvdman_read lsn=674120 sectors=8 buf=2bea4
+[  48.351] sceCdSync 0 sync flag = 1
+[  48.352] sceCdGetError 0
+[  48.355] sceCdRead lsn=674128 sectors=8 sector_size=2048 buf=0002bea4
+[  48.355] cdvdman_read lsn=674128 sectors=8 buf=2bea4
+[  48.356] sceCdSync 0 sync flag = 1
+[  48.360] sceCdGetError 0
+[  48.360] sceCdRead lsn=674136 sectors=8 sector_size=2048 buf=0002bea4
+[  48.362] cdvdman_read lsn=674136 sectors=8 buf=2bea4
+[  48.362] sceCdSync 0 sync flag = 1
+[  48.365] sceCdStatus 6
+[  48.369] sceCdGetError 0
+[  48.370] sceCdRead lsn=674144 sectors=8 sector_size=2048 buf=0002bea4
+[  48.371] cdvdman_read lsn=674144 sectors=8 buf=2bea4
+[  48.371] sceCdSync 0 sync flag = 1
+[  48.378] sceCdGetError 0
+[  48.379] sceCdRead lsn=674152 sectors=8 sector_size=2048 buf=0002bea4
+[  48.379] cdvdman_read lsn=674152 sectors=8 buf=2bea4
+[  48.380] sceCdSync 0 sync flag = 1
+[  48.388] sceCdGetError 0
+[  48.389] sceCdRead lsn=674160 sectors=8 sector_size=2048 buf=0002bea4
+[  48.390] cdvdman_read lsn=674160 sectors=8 buf=2bea4
+[  48.390] sceCdSync 0 sync flag = 1
+[  48.397] sceCdStatus 10
+[  48.398] sceCdGetError 0
+[  48.399] sceCdRead lsn=674168 sectors=8 sector_size=2048 buf=0002bea4
+[  48.400] cdvdman_read lsn=674168 sectors=8 buf=2bea4
+[  48.400] sceCdSync 0 sync flag = 1
+[  48.408] sceCdGetError 0
+[  48.408] sceCdRead lsn=674176 sectors=8 sector_size=2048 buf=0002bea4
+[  48.409] cdvdman_read lsn=674176 sectors=8 buf=2bea4
+[  48.410] sceCdSync 0 sync flag = 1
+[  48.417] sceCdGetError 0
+[  48.417] sceCdRead lsn=674184 sectors=8 sector_size=2048 buf=0002bea4
+[  48.418] cdvdman_read lsn=674184 sectors=8 buf=2bea4
+[  48.419] sceCdSync 0 sync flag = 1
+[  48.426] sceCdGetError 0
+[  48.427] sceCdRead lsn=674192 sectors=8 sector_size=2048 buf=0002bea4
+[  48.427] cdvdman_read lsn=674192 sectors=8 buf=2bea4
+[  48.427] sceCdSync 0 sync flag = 1
+[  48.431] sceCdStatus 6
+[  48.436] sceCdGetError 0
+[  48.437] sceCdRead lsn=674200 sectors=8 sector_size=2048 buf=0002bea4
+[  48.437] cdvdman_read lsn=674200 sectors=8 buf=2bea4
+[  48.438] sceCdSync 0 sync flag = 1
+[  48.446] sceCdGetError 0
+[  48.446] sceCdRead lsn=674208 sectors=8 sector_size=2048 buf=0002bea4
+[  48.446] cdvdman_read lsn=674208 sectors=8 buf=2bea4
+[  48.447] sceCdSync 0 sync flag = 1
+[  48.454] sceCdGetError 0
+[  48.455] sceCdRead lsn=674216 sectors=8 sector_size=2048 buf=0002bea4
+[  48.456] cdvdman_read lsn=674216 sectors=8 buf=2bea4
+[  48.457] sceCdSync 0 sync flag = 1
+[  48.464] sceCdStatus 6
+[  48.465] sceCdGetError 0
+[  48.465] sceCdRead lsn=674224 sectors=8 sector_size=2048 buf=0002bea4
+[  48.466] cdvdman_read lsn=674224 sectors=8 buf=2bea4
+[  48.471] sceCdSync 0 sync flag = 1
+[  48.474] sceCdGetError 0
+[  48.475] sceCdRead lsn=674232 sectors=8 sector_size=2048 buf=0002bea4
+[  48.476] cdvdman_read lsn=674232 sectors=8 buf=2bea4
+[  48.476] sceCdSync 0 sync flag = 1
+[  48.483] sceCdGetError 0
+[  48.483] sceCdRead lsn=674240 sectors=8 sector_size=2048 buf=0002bea4
+[  48.484] cdvdman_read lsn=674240 sectors=8 buf=2bea4
+[  48.488] sceCdSync 0 sync flag = 1
+[  48.492] sceCdGetError 0
+[  48.492] sceCdRead lsn=674248 sectors=8 sector_size=2048 buf=0002bea4
+[  48.493] cdvdman_read lsn=674248 sectors=8 buf=2bea4
+[  48.494] sceCdSync 0 sync flag = 1
+[  48.499] sceCdStatus 6
+[  48.502] sceCdGetError 0
+[  48.502] sceCdRead lsn=674256 sectors=8 sector_size=2048 buf=0002bea4
+[  48.503] cdvdman_read lsn=674256 sectors=8 buf=2bea4
+[  48.504] sceCdSync 0 sync flag = 1
+[  48.512] sceCdGetError 0
+[  48.512] sceCdRead lsn=674264 sectors=8 sector_size=2048 buf=0002bea4
+[  48.512] cdvdman_read lsn=674264 sectors=8 buf=2bea4
+[  48.513] sceCdSync 0 sync flag = 1
+[  48.522] sceCdGetError 0
+[  48.522] sceCdRead lsn=674272 sectors=8 sector_size=2048 buf=0002bea4
+[  48.523] cdvdman_read lsn=674272 sectors=8 buf=2bea4
+[  48.524] sceCdSync 0 sync flag = 1
+[  48.531] sceCdStatus 6
+[  48.532] sceCdGetError 0
+[  48.532] sceCdRead lsn=674280 sectors=8 sector_size=2048 buf=0002bea4
+[  48.533] cdvdman_read lsn=674280 sectors=8 buf=2bea4
+[  48.533] sceCdSync 0 sync flag = 1
+[  48.543] sceCdGetError 0
+[  48.543] sceCdRead lsn=674288 sectors=8 sector_size=2048 buf=0002bea4
+[  48.544] cdvdman_read lsn=674288 sectors=8 buf=2bea4
+[  48.544] sceCdSync 0 sync flag = 1
+[  48.552] sceCdGetError 0
+[  48.554] sceCdRead lsn=674296 sectors=8 sector_size=2048 buf=0002bea4
+[  48.555] cdvdman_read lsn=674296 sectors=8 buf=2bea4
+[  48.555] sceCdSync 0 sync flag = 1
+[  48.562] sceCdGetError 0
+[  48.562] sceCdRead lsn=674304 sectors=8 sector_size=2048 buf=0002bea4
+[  48.563] cdvdman_read lsn=674304 sectors=8 buf=2bea4
+[  48.563] sceCdSync 0 sync flag = 1
+[  48.566] sceCdStatus 6
+[  48.571] sceCdGetError 0
+[  48.572] sceCdRead lsn=674312 sectors=8 sector_size=2048 buf=0002bea4
+[  48.574] cdvdman_read lsn=674312 sectors=8 buf=2bea4
+[  48.575] sceCdSync 0 sync flag = 1
+[  48.583] sceCdGetError 0
+[  48.583] sceCdRead lsn=674320 sectors=8 sector_size=2048 buf=0002bea4
+[  48.584] cdvdman_read lsn=674320 sectors=8 buf=2bea4
+[  48.585] sceCdSync 0 sync flag = 1
+[  48.593] sceCdGetError 0
+[  48.593] sceCdRead lsn=674328 sectors=8 sector_size=2048 buf=0002bea4
+[  48.594] cdvdman_read lsn=674328 sectors=8 buf=2bea4
+[  48.594] sceCdSync 0 sync flag = 1
+[  48.599] sceCdStatus 6
+[  48.602] sceCdGetError 0
+[  48.602] sceCdRead lsn=674336 sectors=8 sector_size=2048 buf=0002bea4
+[  48.603] cdvdman_read lsn=674336 sectors=8 buf=2bea4
+[  48.603] sceCdSync 0 sync flag = 1
+[  48.610] sceCdGetError 0
+[  48.611] sceCdRead lsn=674344 sectors=8 sector_size=2048 buf=0002bea4
+[  48.613] cdvdman_read lsn=674344 sectors=8 buf=2bea4
+[  48.613] sceCdSync 0 sync flag = 1
+[  48.620] sceCdGetError 0
+[  48.620] sceCdRead lsn=674352 sectors=8 sector_size=2048 buf=0002bea4
+[  48.621] cdvdman_read lsn=674352 sectors=8 buf=2bea4
+[  48.621] sceCdSync 0 sync flag = 1
+[  48.628] sceCdGetError 0
+[  48.629] sceCdRead lsn=674360 sectors=8 sector_size=2048 buf=0002bea4
+[  48.630] cdvdman_read lsn=674360 sectors=8 buf=2bea4
+[  48.630] sceCdSync 0 sync flag = 1
+[  48.633] sceCdStatus 6
+[  48.638] sceCdGetError 0
+[  48.639] sceCdRead lsn=674368 sectors=8 sector_size=2048 buf=0002bea4
+[  48.639] cdvdman_read lsn=674368 sectors=8 buf=2bea4
+[  48.640] sceCdSync 0 sync flag = 1
+[  48.647] sceCdGetError 0
+[  48.648] sceCdRead lsn=674376 sectors=8 sector_size=2048 buf=0002bea4
+[  48.648] cdvdman_read lsn=674376 sectors=8 buf=2bea4
+[  48.649] sceCdSync 0 sync flag = 1
+[  48.657] sceCdGetError 0
+[  48.658] sceCdRead lsn=674384 sectors=8 sector_size=2048 buf=0002bea4
+[  48.659] cdvdman_read lsn=674384 sectors=8 buf=2bea4
+[  48.660] sceCdSync 0 sync flag = 1
+[  48.664] sceCdStatus 6
+[  48.669] sceCdGetError 0
+[  48.669] sceCdRead lsn=674392 sectors=8 sector_size=2048 buf=0002bea4
+[  48.670] cdvdman_read lsn=674392 sectors=8 buf=2bea4
+[  48.671] sceCdSync 0 sync flag = 1
+[  48.677] sceCdGetError 0
+[  48.677] sceCdRead lsn=674400 sectors=8 sector_size=2048 buf=0002bea4
+[  48.678] cdvdman_read lsn=674400 sectors=8 buf=2bea4
+[  48.678] sceCdSync 0 sync flag = 1
+[  48.686] sceCdGetError 0
+[  48.687] sceCdRead lsn=674408 sectors=8 sector_size=2048 buf=0002bea4
+[  48.689] cdvdman_read lsn=674408 sectors=8 buf=2bea4
+[  48.690] sceCdSync 0 sync flag = 1
+[  48.697] sceCdStatus 6
+[  48.699] sceCdGetError 0
+[  48.699] sceCdRead lsn=674416 sectors=8 sector_size=2048 buf=0002bea4
+[  48.700] cdvdman_read lsn=674416 sectors=8 buf=2bea4
+[  48.701] sceCdSync 0 sync flag = 1
+[  48.708] sceCdGetError 0
+[  48.709] sceCdRead lsn=674424 sectors=8 sector_size=2048 buf=0002bea4
+[  48.709] cdvdman_read lsn=674424 sectors=8 buf=2bea4
+[  48.713] sceCdSync 0 sync flag = 1
+[  48.717] sceCdGetError 0
+[  48.718] sceCdRead lsn=674432 sectors=8 sector_size=2048 buf=0002bea4
+[  48.719] cdvdman_read lsn=674432 sectors=8 buf=2bea4
+[  48.719] sceCdSync 0 sync flag = 1
+[  48.729] sceCdGetError 0
+[  48.730] sceCdRead lsn=674440 sectors=8 sector_size=2048 buf=0002bea4
+[  48.730] cdvdman_read lsn=674440 sectors=8 buf=2bea4
+[  48.731] sceCdStatus 6
+[  48.738] sceCdSync 0 sync flag = 0
+[  48.738] sceCdGetError 0
+[  48.743] sceCdRead lsn=674448 sectors=8 sector_size=2048 buf=0002bea4
+[  48.743] cdvdman_read lsn=674448 sectors=8 buf=2bea4
+[  48.744] sceCdSync 0 sync flag = 1
+[  48.748] sceCdGetError 0
+[  48.749] sceCdRead lsn=674456 sectors=8 sector_size=2048 buf=0002bea4
+[  48.750] cdvdman_read lsn=674456 sectors=8 buf=2bea4
+[  48.750] sceCdSync 0 sync flag = 1
+[  48.760] sceCdGetError 0
+[  48.760] sceCdRead lsn=674464 sectors=8 sector_size=2048 buf=0002bea4
+[  48.761] cdvdman_read lsn=674464 sectors=8 buf=2bea4
+[  48.762] sceCdSync 0 sync flag = 1
+[  48.765] sceCdStatus 6
+[  48.769] sceCdGetError 0
+[  48.770] sceCdRead lsn=674472 sectors=8 sector_size=2048 buf=0002bea4
+[  48.771] cdvdman_read lsn=674472 sectors=8 buf=2bea4
+[  48.771] sceCdSync 0 sync flag = 1
+[  48.778] sceCdGetError 0
+[  48.779] sceCdRead lsn=674480 sectors=8 sector_size=2048 buf=0002bea4
+[  48.780] cdvdman_read lsn=674480 sectors=8 buf=2bea4
+[  48.781] sceCdSync 0 sync flag = 1
+[  48.792] sceCdGetError 0
+[  48.793] sceCdRead lsn=674488 sectors=8 sector_size=2048 buf=0002bea4
+[  48.793] cdvdman_read lsn=674488 sectors=8 buf=2bea4
+[  48.794] sceCdSync 0 sync flag = 1
+[  48.799] sceCdStatus 6
+[  48.802] sceCdGetError 0
+[  48.802] sceCdRead lsn=674496 sectors=8 sector_size=2048 buf=0002bea4
+[  48.804] cdvdman_read lsn=674496 sectors=8 buf=2bea4
+[  48.804] sceCdSync 0 sync flag = 1
+[  48.810] sceCdGetError 0
+[  48.811] sceCdRead lsn=674504 sectors=8 sector_size=2048 buf=0002bea4
+[  48.811] cdvdman_read lsn=674504 sectors=8 buf=2bea4
+[  48.812] sceCdSync 0 sync flag = 1
+[  48.820] sceCdGetError 0
+[  48.820] sceCdRead lsn=674512 sectors=8 sector_size=2048 buf=0002bea4
+[  48.821] cdvdman_read lsn=674512 sectors=8 buf=2bea4
+[  48.821] sceCdSync 0 sync flag = 1
+[  48.831] sceCdStatus 6
+[  48.833] sceCdGetError 0
+[  48.834] sceCdRead lsn=674520 sectors=8 sector_size=2048 buf=0002bea4
+[  48.834] cdvdman_read lsn=674520 sectors=8 buf=2bea4
+[  48.835] sceCdSync 0 sync flag = 1
+[  48.842] sceCdGetError 0
+[  48.843] sceCdRead lsn=674528 sectors=8 sector_size=2048 buf=0002bea4
+[  48.844] cdvdman_read lsn=674528 sectors=8 buf=2bea4
+[  48.844] sceCdSync 0 sync flag = 1
+[  48.852] sceCdGetError 0
+[  48.852] sceCdRead lsn=674536 sectors=8 sector_size=2048 buf=0002bea4
+[  48.853] cdvdman_read lsn=674536 sectors=8 buf=2bea4
+[  48.853] sceCdSync 0 sync flag = 1
+[  48.861] sceCdGetError 0
+[  48.862] sceCdRead lsn=674544 sectors=8 sector_size=2048 buf=0002bea4
+[  48.862] cdvdman_read lsn=674544 sectors=8 buf=2bea4
+[  48.863] sceCdSync 0 sync flag = 1
+[  48.865] sceCdStatus 6
+[  48.872] sceCdGetError 0
+[  48.872] sceCdRead lsn=674552 sectors=8 sector_size=2048 buf=0002bea4
+[  48.873] cdvdman_read lsn=674552 sectors=8 buf=2bea4
+[  48.874] sceCdSync 0 sync flag = 1
+[  48.880] sceCdGetError 0
+[  48.880] sceCdRead lsn=674560 sectors=8 sector_size=2048 buf=0002bea4
+[  48.881] cdvdman_read lsn=674560 sectors=8 buf=2bea4
+[  48.881] sceCdSync 0 sync flag = 1
+[  48.889] sceCdGetError 0
+[  48.889] sceCdRead lsn=674568 sectors=8 sector_size=2048 buf=0002bea4
+[  48.890] cdvdman_read lsn=674568 sectors=8 buf=2bea4
+[  48.890] sceCdSync 0 sync flag = 1
+[  48.899] sceCdStatus 6
+[  48.899] sceCdGetError 0
+[  48.900] sceCdRead lsn=674576 sectors=8 sector_size=2048 buf=0002bea4
+[  48.900] cdvdman_read lsn=674576 sectors=8 buf=2bea4
+[  48.908] sceCdSync 0 sync flag = 1
+[  48.909] sceCdGetError 0
+[  48.910] sceCdRead lsn=674584 sectors=8 sector_size=2048 buf=0002bea4
+[  48.912] cdvdman_read lsn=674584 sectors=8 buf=2bea4
+[  48.913] sceCdSync 0 sync flag = 1
+[  48.922] sceCdGetError 0
+[  48.923] sceCdRead lsn=674592 sectors=8 sector_size=2048 buf=0002bea4
+[  48.924] cdvdman_read lsn=674592 sectors=8 buf=2bea4
+[  48.924] sceCdSync 0 sync flag = 1
+[  48.931] sceCdStatus 6
+[  48.932] sceCdGetError 0
+[  48.933] sceCdRead lsn=674600 sectors=8 sector_size=2048 buf=0002bea4
+[  48.934] cdvdman_read lsn=674600 sectors=8 buf=2bea4
+[  48.935] sceCdSync 0 sync flag = 1
+[  48.942] sceCdGetError 0
+[  48.942] sceCdRead lsn=674608 sectors=8 sector_size=2048 buf=0002bea4
+[  48.943] cdvdman_read lsn=674608 sectors=8 buf=2bea4
+[  48.946] sceCdSync 0 sync flag = 1
+[  48.950] sceCdGetError 0
+[  48.951] sceCdRead lsn=674616 sectors=8 sector_size=2048 buf=0002bea4
+[  48.951] cdvdman_read lsn=674616 sectors=8 buf=2bea4
+[  48.952] sceCdSync 0 sync flag = 1
+[  48.961] sceCdGetError 0
+[  48.962] sceCdRead lsn=674624 sectors=8 sector_size=2048 buf=0002bea4
+[  48.963] cdvdman_read lsn=674624 sectors=8 buf=2bea4
+[  48.965] sceCdSync 0 sync flag = 1
+[  48.965] sceCdStatus 6
+[  48.971] sceCdGetError 0
+[  48.972] sceCdRead lsn=674632 sectors=8 sector_size=2048 buf=0002bea4
+[  48.973] cdvdman_read lsn=674632 sectors=8 buf=2bea4
+[  48.974] sceCdSync 0 sync flag = 1
+[  48.979] sceCdGetError 0
+[  48.980] sceCdRead lsn=674640 sectors=8 sector_size=2048 buf=0002bea4
+[  48.980] cdvdman_read lsn=674640 sectors=8 buf=2bea4
+[  48.981] sceCdSync 0 sync flag = 1
+[  48.988] sceCdGetError 0
+[  48.989] sceCdRead lsn=674648 sectors=8 sector_size=2048 buf=0002bea4
+[  48.989] cdvdman_read lsn=674648 sectors=8 buf=2bea4
+[  48.992] sceCdSync 0 sync flag = 1
+[  48.998] sceCdStatus 10
+[  48.998] sceCdGetError 0
+[  48.999] sceCdRead lsn=674656 sectors=8 sector_size=2048 buf=0002bea4
+[  48.999] cdvdman_read lsn=674656 sectors=8 buf=2bea4
+[  49.000] sceCdSync 0 sync flag = 1
+[  49.008] sceCdGetError 0
+[  49.009] sceCdRead lsn=674664 sectors=8 sector_size=2048 buf=0002bea4
+[  49.009] cdvdman_read lsn=674664 sectors=8 buf=2bea4
+[  49.013] sceCdSync 0 sync flag = 1
+[  49.017] sceCdGetError 0
+[  49.018] sceCdRead lsn=674672 sectors=8 sector_size=2048 buf=0002bea4
+[  49.018] cdvdman_read lsn=674672 sectors=8 buf=2bea4
+[  49.019] sceCdSync 0 sync flag = 1
+[  49.026] sceCdGetError 0
+[  49.027] sceCdRead lsn=674680 sectors=8 sector_size=2048 buf=0002bea4
+[  49.027] cdvdman_read lsn=674680 sectors=8 buf=2bea4
+[  49.028] sceCdSync 0 sync flag = 1
+[  49.031] sceCdStatus 6
+[  49.037] sceCdGetError 0
+[  49.037] sceCdRead lsn=674688 sectors=8 sector_size=2048 buf=0002bea4
+[  49.038] cdvdman_read lsn=674688 sectors=8 buf=2bea4
+[  49.040] sceCdSync 0 sync flag = 1
+[  49.046] sceCdGetError 0
+[  49.046] sceCdRead lsn=674696 sectors=8 sector_size=2048 buf=0002bea4
+[  49.046] cdvdman_read lsn=674696 sectors=8 buf=2bea4
+[  49.048] sceCdSync 0 sync flag = 1
+[  49.054] sceCdGetError 0
+[  49.055] sceCdRead lsn=674704 sectors=8 sector_size=2048 buf=0002bea4
+[  49.055] cdvdman_read lsn=674704 sectors=8 buf=2bea4
+[  49.056] sceCdSync 0 sync flag = 1
+[  49.063] sceCdGetError 0
+[  49.064] sceCdRead lsn=674712 sectors=8 sector_size=2048 buf=0002bea4
+[  49.064] sceCdStatus 10
+[  49.065] cdvdman_read lsn=674712 sectors=8 buf=2bea4
+[  49.065] sceCdSync 0 sync flag = 1
+[  49.075] sceCdGetError 0
+[  49.075] sceCdRead lsn=674720 sectors=8 sector_size=2048 buf=0002bea4
+[  49.076] cdvdman_read lsn=674720 sectors=8 buf=2bea4
+[  49.076] sceCdSync 0 sync flag = 1
+[  49.083] sceCdGetError 0
+[  49.083] sceCdRead lsn=674728 sectors=8 sector_size=2048 buf=0002bea4
+[  49.084] cdvdman_read lsn=674728 sectors=8 buf=2bea4
+[  49.085] sceCdSync 0 sync flag = 1
+[  49.092] sceCdGetError 0
+[  49.092] sceCdRead lsn=674736 sectors=8 sector_size=2048 buf=0002bea4
+[  49.093] cdvdman_read lsn=674736 sectors=8 buf=2bea4
+[  49.094] sceCdSync 0 sync flag = 1
+[  49.099] sceCdStatus 6
+[  49.103] sceCdGetError 0
+[  49.103] sceCdRead lsn=674744 sectors=8 sector_size=2048 buf=0002bea4
+[  49.105] cdvdman_read lsn=674744 sectors=8 buf=2bea4
+[  49.106] sceCdSync 0 sync flag = 1
+[  49.112] sceCdGetError 0
+[  49.112] sceCdRead lsn=674752 sectors=8 sector_size=2048 buf=0002bea4
+[  49.113] cdvdman_read lsn=674752 sectors=8 buf=2bea4
+[  49.113] sceCdSync 0 sync flag = 1
+[  49.120] sceCdGetError 0
+[  49.121] sceCdRead lsn=674760 sectors=8 sector_size=2048 buf=0002bea4
+[  49.121] cdvdman_read lsn=674760 sectors=8 buf=2bea4
+[  49.122] sceCdSync 0 sync flag = 1
+[  49.129] sceCdGetError 0
+[  49.129] sceCdRead lsn=674768 sectors=8 sector_size=2048 buf=0002bea4
+[  49.130] cdvdman_read lsn=674768 sectors=8 buf=2bea4
+[  49.132] sceCdStatus 6
+[  49.138] sceCdSync 0 sync flag = 0
+[  49.139] sceCdGetError 0
+[  49.139] sceCdRead lsn=674776 sectors=8 sector_size=2048 buf=0002bea4
+[  49.140] cdvdman_read lsn=674776 sectors=8 buf=2bea4
+[  49.140] sceCdSync 0 sync flag = 1
+[  49.149] sceCdGetError 0
+[  49.149] sceCdRead lsn=674784 sectors=8 sector_size=2048 buf=0002bea4
+[  49.149] cdvdman_read lsn=674784 sectors=8 buf=2bea4
+[  49.150] sceCdSync 0 sync flag = 1
+[  49.164] sceCdStatus 6
+[  49.194] sceCdGetError 0
+[  49.195] sceCdRead lsn=674792 sectors=8 sector_size=2048 buf=0002bea4
+[  49.195] cdvdman_read lsn=674792 sectors=8 buf=2bea4
+[  49.196] sceCdSync 0 sync flag = 1
+[  49.198] sceCdStatus 6
+[  49.206] sceCdGetError 0
+[  49.208] sceCdRead lsn=674800 sectors=8 sector_size=2048 buf=0002bea4
+[  49.208] cdvdman_read lsn=674800 sectors=8 buf=2bea4
+[  49.209] sceCdSync 0 sync flag = 1
+[  49.215] sceCdGetError 0
+[  49.215] sceCdRead lsn=674808 sectors=8 sector_size=2048 buf=0002bea4
+[  49.216] cdvdman_read lsn=674808 sectors=8 buf=2bea4
+[  49.216] sceCdSync 0 sync flag = 1
+[  49.227] sceCdGetError 0
+[  49.228] sceCdRead lsn=674816 sectors=8 sector_size=2048 buf=0002bea4
+[  49.228] cdvdman_read lsn=674816 sectors=8 buf=2bea4
+[  49.229] sceCdSync 0 sync flag = 1
+[  49.231] sceCdStatus 6
+[  49.241] sceCdGetError 0
+[  49.241] sceCdRead lsn=674824 sectors=8 sector_size=2048 buf=0002bea4
+[  49.242] cdvdman_read lsn=674824 sectors=8 buf=2bea4
+[  49.249] sceCdGetError 0
+[  49.249] sceCdRead lsn=674832 sectors=8 sector_size=2048 buf=0002bea4
+[  49.260] sceCdGetError 0
+[  49.261] sceCdRead lsn=674840 sectors=8 sector_size=2048 buf=0002bea4
+[  49.262] sceCdSync 0 sync flag = 1
+[  49.270] sceCdGetError 0
+[  49.280] sceCdGetError 0
+[  49.281] sceCdRead lsn=674856 sectors=8 sector_size=2048 buf=0002bea4
+[  49.289] sceCdGetError 0
+[  49.289] sceCdRead lsn=674864 sectors=8 sector_size=2048 buf=0002bea4
+[  49.297] sceCdStatus 6
+[  49.299] sceCdRead lsn=674872 sectors=8 sector_size=2048 buf=0002bea4
+[  49.308] sceCdGetError 0
+[  49.319] sceCdGetError 0
+[  49.319] sceCdRead lsn=674888 sectors=8 sector_size=2048 buf=0002bea4
+[  49.320] sceCdSync 0 sync flag = 1
+[  49.327] sceCdGetError 0
+[  49.331] sceCdStatus 6
+[  49.338] sceCdGetError 0
+[  49.346] sceCdGetError 0
+[  49.347] cdvdman_read lsn=674912 sectors=8 buf=2bea4
+[  49.352] sceCdSync 0 sync flag = 1
+[  49.364] sceCdStatus 10
+[  49.365] sceCdGetError 0
+[  49.374] sceCdGetError 0
+[  49.374] sceCdRead lsn=674936 sectors=8 sector_size=2048 buf=0002bea4
+[  49.383] sceCdGetError 0
+[  49.387] sceCdSync 0 sync flag = 1
+[  49.395] sceCdGetError 0
+[  49.396] sceCdRead lsn=674952 sectors=8 sector_size=2048 buf=0002bea4
+[  49.405] sceCdGetError 0
+[  49.406] cdvdman_read lsn=674960 sectors=8 buf=2bea4
+[  49.414] sceCdGetError 0
+[  49.416] sceCdSync 0 sync flag = 1
+[  49.424] sceCdGetError 0
+[  49.431] sceCdStatus 6
+[  49.432] sceCdGetError 0
+[  49.441] sceCdGetError 0
+[  49.443] sceCdSync 0 sync flag = 1
+[  49.452] sceCdGetError 0
+[  49.461] sceCdGetError 0
+[  49.462] sceCdRead lsn=675008 sectors=8 sector_size=2048 buf=0002bea4
+[  49.465] sceCdStatus 6
+[  49.471] sceCdGetError 0
+[  49.479] sceCdGetError 0
+[  49.480] sceCdRead lsn=675024 sectors=8 sector_size=2048 buf=0002bea4
+[  49.488] sceCdGetError 0
+[  49.497] sceCdStatus 10
+[  49.498] sceCdGetError 0
+[  49.507] sceCdGetError 0
+[  49.507] sceCdRead lsn=675048 sectors=8 sector_size=2048 buf=0002bea4
+[  49.516] sceCdGetError 0
+[  49.525] sceCdGetError 0
+[  49.525] sceCdRead lsn=675064 sectors=8 sector_size=2048 buf=0002bea4
+[  49.532] sceCdStatus 6
+[  49.534] sceCdGetError 0
+[  49.540] sceCdSync 0 sync flag = 1
+[  49.544] sceCdRead lsn=675080 sectors=8 sector_size=2048 buf=0002bea4
+[  49.553] sceCdGetError 0
+[  49.561] sceCdGetError 0
+[  49.561] sceCdRead lsn=675096 sectors=8 sector_size=2048 buf=0002bea4
+[  49.565] sceCdStatus 6
+[  49.571] sceCdGetError 0
+[  49.581] sceCdGetError 0
+[  49.582] sceCdSync 0 sync flag = 1
+[  49.591] sceCdGetError 0
+[  49.592] sceCdSync 0 sync flag = 1
+[  49.599] sceCdStatus 6
+[  49.606] sceCdSync 0 sync flag = 1
+[  49.609] sceCdGetError 0
+[  49.618] sceCdGetError 0
+[  49.619] sceCdRead lsn=675144 sectors=6 sector_size=2048 buf=0002bea4
+[  49.626] sceCdSC(0xFFFFFFF6, 0x0)
+[  49.631] sceCdStatus 10
+[  49.664] sceCdStatus 10
+[  49.701] sceCdStatus 10
+[  49.730] sceCdDiskReady 0
+[  49.731] sceCdSC(0xFFFFFFF6, 0xE)
+[  49.731] sceCdStatus 10
+[  49.731] sceCdDiskReady 0
+[  49.732] sceCdSC(0xFFFFFFF6, 0x0)
+[  49.733] sceCdSC(0xFFFFFFF6, 0x1)
+[  49.733] sceCdDiskReady 0
+[  49.734] sceCdGetError 0
+[  49.734] sceCdRead lsn=1046464 sectors=4 sector_size=2048 buf=0002bea4
+[  49.735] cdvdman_read lsn=1046464 sectors=4 buf=2bea4
+[  49.736] sceCdSync 0 sync flag = 1
+[  49.759] sceCdSC(0xFFFFFFF6, 0x0)
+[  49.760] sceCdGetError 0
+[  49.761] sceCdDiskReady 0
+[  49.762] sceCdSC(0xFFFFFFF6, 0xE)
+[  49.762] sceCdDiskReady 0
+[  49.763] sceCdSC(0xFFFFFFF6, 0x0)
+[  49.764] sceCdSC(0xFFFFFFF6, 0x1)
+[  49.764] sceCdDiskReady 0
+[  49.765] sceCdGetError 0
+[  49.765] sceCdRead lsn=1163661 sectors=8 sector_size=2048 buf=0002bea4
+[  49.766] cdvdman_read lsn=1163661 sectors=8 buf=2bea4
+[  49.766] sceCdStatus 6
+[  49.795] sceCdGetError 0
+[  49.795] sceCdRead lsn=1163669 sectors=2 sector_size=2048 buf=0002bea4
+[  49.796] cdvdman_read lsn=1163669 sectors=2 buf=2bea4
+[  49.797] sceCdSync 0 sync flag = 1
+[  49.798] sceCdStatus 6
+[  49.800] sceCdSC(0xFFFFFFF6, 0x0)
+[  49.801] sceCdGetError 0
+[  49.831] sceCdStatus 10
+[  49.864] sceCdStatus 10
+[  49.900] sceCdStatus 10
+[  49.932] sceCdStatus 10
+[  49.964] sceCdStatus 10
+[  49.997] sceCdStatus 10
+[  50.031] sceCdStatus 10
+[  50.064] sceCdStatus 10
+[  50.097] sceCdStatus 10
+[  50.131] sceCdStatus 10
+[  50.164] sceCdStatus 10
+[  50.197] sceCdStatus 10
+[  50.231] sceCdStatus 10
+[  50.264] sceCdStatus 10
+[  50.298] sceCdStatus 10
+[  50.331] sceCdStatus 10
+[  50.364] sceCdStatus 10
+[  50.397] sceCdStatus 10
+[  50.431] sceCdStatus 10
+[  50.464] sceCdStatus 10
+[  50.498] sceCdStatus 10
+[  50.531] sceCdStatus 10
+[  50.564] sceCdStatus 10
+[  50.600] sceCdStatus 10
+[  50.632] sceCdStatus 10
+[  50.664] sceCdStatus 10
+[  50.699] sceCdStatus 10
+[  50.731] sceCdStatus 10
+[  50.770] sceCdStatus 10
+[  50.797] sceCdStatus 10
+[  50.835] sceCdStatus 10
+[  50.864] sceCdStatus 10
+[  50.898] sceCdStatus 10
+[  50.931] sceCdStatus 10
+[  50.964] sceCdStatus 10
+[  50.998] sceCdStatus 10
+[  51.031] sceCdStatus 10
+[  51.064] sceCdStatus 10
+[  51.098] sceCdStatus 10
+[  51.131] sceCdStatus 10
+[  51.164] sceCdStatus 10
+[  51.198] sceCdStatus 10
+[  51.231] sceCdStatus 10
+[  51.264] sceCdStatus 10
+[  51.298] sceCdStatus 10
+[  51.331] sceCdStatus 10
+[  51.364] sceCdStatus 10
+[  51.397] sceCdStatus 10
+[  51.431] sceCdStatus 10
+[  51.464] sceCdStatus 10
+[  51.497] sceCdStatus 10
+[  51.531] sceCdStatus 10
+[  51.564] sceCdStatus 10
+[  51.598] sceCdStatus 10
+[  51.631] sceCdStatus 10
+[  51.664] sceCdStatus 10
+[  51.697] sceCdStatus 10
+[  51.731] sceCdStatus 10
+[  51.764] sceCdStatus 10
+[  51.797] sceCdStatus 10
+[  51.831] sceCdStatus 10
+[  51.864] sceCdStatus 10
+[  51.897] sceCdStatus 10
+[  51.931] sceCdStatus 10
+[  51.939] sceCdApplySCmd cmd=80
+[  51.942] sceCdApplySCmd cmd=81
+[  51.945] sceCdApplySCmd cmd=82
+[  51.947] sceCdApplySCmd cmd=83
+[  51.950] sceCdApplySCmd cmd=8f
+[  51.952] sceCdApplySCmd cmd=84
+[  51.955] sceCdApplySCmd cmd=85
+[  51.958] sceCdApplySCmd cmd=86
+[  51.961] sceCdApplySCmd cmd=87
+[  51.963] sceCdApplySCmd cmd=8f
+[  51.964] sceCdStatus 10
+[  51.967] sceCdApplySCmd cmd=88
+[  51.997] sceCdStatus 10
+[  52.031] sceCdStatus 10
+[  52.064] sceCdStatus 10
+[  52.098] sceCdStatus 10
+[  52.131] sceCdStatus 10
+[  52.164] sceCdStatus 10
+[  52.198] sceCdStatus 10
+[  52.231] sceCdStatus 10
+[  52.264] sceCdStatus 10
+[  52.298] sceCdStatus 10
+[  52.331] sceCdStatus 10
+[  52.364] sceCdStatus 10
+[  52.397] sceCdStatus 10
+[  52.431] sceCdStatus 10
+[  52.464] sceCdStatus 10
+[  52.498] sceCdStatus 10
+[  52.531] sceCdStatus 10
+[  52.564] sceCdStatus 10
+[  52.598] sceCdStatus 10
+[  52.631] sceCdStatus 10
+[  52.656] sceCdDiskReady 0
+[  52.657] sceCdSC(0xFFFFFFF6, 0xE)
+[  52.658] sceCdDiskReady 0
+[  52.658] sceCdSC(0xFFFFFFF6, 0x0)
+[  52.660] sceCdSC(0xFFFFFFF6, 0x1)
+[  52.660] sceCdDiskReady 0
+[  52.660] sceCdGetError 0
+[  52.661] sceCdRead lsn=1148024 sectors=8 sector_size=2048 buf=0002bea4
+[  52.663] cdvdman_read lsn=1148024 sectors=8 buf=2bea4
+[  52.664] sceCdSync 0 sync flag = 1
+[  52.664] sceCdStatus 6
+[  52.698] sceCdStatus 6
+[  52.731] sceCdStatus 6
+[  52.764] sceCdStatus 6
+[  52.798] sceCdStatus 6
+[  52.832] sceCdStatus 6
+[  52.865] sceCdStatus 6
+[  52.904] sceCdStatus 6
+[  52.931] sceCdStatus 6
+[  52.964] sceCdStatus 6
+[  52.998] sceCdStatus 6
+[  53.031] sceCdStatus 6
+[  53.064] sceCdStatus 6
+[  53.098] sceCdStatus 6
+[  53.131] sceCdStatus 6
+[  53.164] sceCdStatus 6
+[  53.198] sceCdStatus 6
+[  53.231] sceCdStatus 6
+[  53.264] sceCdStatus 6
+[  53.298] sceCdStatus 6
+[  53.331] sceCdStatus 6
+[  53.364] sceCdStatus 6
+[  53.398] sceCdStatus 6
+[  53.431] sceCdStatus 6
+[  53.464] sceCdStatus 6
+[  53.498] sceCdStatus 6
+[  53.531] sceCdStatus 6
+[  53.564] sceCdStatus 6
+[  53.598] sceCdStatus 6
+[  53.631] sceCdStatus 6
+[  53.664] sceCdStatus 6
+[  53.698] sceCdStatus 6
+[  53.731] sceCdStatus 6
+[  53.764] sceCdStatus 6
+[  53.798] sceCdStatus 6
+[  53.831] sceCdStatus 6
+[  53.864] sceCdStatus 6
+[  53.898] sceCdStatus 6
+[  53.929] sceCdGetError 0
+[  53.929] sceCdRead lsn=1148032 sectors=8 sector_size=2048 buf=0002bea4
+[  53.931] cdvdman_read lsn=1148032 sectors=8 buf=2bea4
+[  53.931] sceCdSync 0 sync flag = 1
+[  53.932] sceCdStatus 6
+[  53.961] sceCdSC(0xFFFFFFF6, 0x0)
+[  53.961] sceCdGetError 0
+[  53.964] sceCdStatus 10
+[  53.991] sceCdDiskReady 0
+[  53.992] sceCdSC(0xFFFFFFF6, 0xE)
+[  53.992] sceCdDiskReady 0
+[  53.993] sceCdSC(0xFFFFFFF6, 0x0)
+[  53.994] sceCdSC(0xFFFFFFF6, 0x1)
+[  53.995] sceCdDiskReady 0
+[  53.996] sceCdGetError 0
+[  53.996] sceCdRead lsn=1148040 sectors=8 sector_size=2048 buf=0002bea4
+[  53.997] cdvdman_read lsn=1148040 sectors=8 buf=2bea4
+[  53.997] sceCdSync 0 sync flag = 1
+[  53.998] sceCdStatus 6
+[  54.004] sceCdGetError 0
+[  54.004] sceCdRead lsn=1148048 sectors=8 sector_size=2048 buf=0002bea4
+[  54.005] cdvdman_read lsn=1148048 sectors=8 buf=2bea4
+[  54.005] sceCdSync 0 sync flag = 1
+[  54.013] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.013] sceCdGetError 0
+[  54.031] sceCdStatus 10
+[  54.062] sceCdDiskReady 0
+[  54.062] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.063] sceCdDiskReady 0
+[  54.064] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.064] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.065] sceCdDiskReady 0
+[  54.066] sceCdGetError 0
+[  54.067] sceCdRead lsn=1148056 sectors=8 sector_size=2048 buf=0002bea4
+[  54.067] cdvdman_read lsn=1148056 sectors=8 buf=2bea4
+[  54.068] sceCdSync 0 sync flag = 1
+[  54.069] sceCdStatus 6
+[  54.072] sceCdGetError 0
+[  54.073] sceCdRead lsn=1148064 sectors=8 sector_size=2048 buf=0002bea4
+[  54.074] cdvdman_read lsn=1148064 sectors=8 buf=2bea4
+[  54.074] sceCdSync 0 sync flag = 1
+[  54.080] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.080] sceCdGetError 0
+[  54.098] sceCdStatus 10
+[  54.124] sceCdDiskReady 0
+[  54.125] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.126] sceCdDiskReady 0
+[  54.127] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.128] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.128] sceCdDiskReady 0
+[  54.129] sceCdGetError 0
+[  54.129] sceCdRead lsn=1148072 sectors=8 sector_size=2048 buf=0002bea4
+[  54.130] cdvdman_read lsn=1148072 sectors=8 buf=2bea4
+[  54.131] sceCdSync 0 sync flag = 1
+[  54.132] sceCdStatus 6
+[  54.138] sceCdGetError 0
+[  54.139] sceCdRead lsn=1148080 sectors=8 sector_size=2048 buf=0002bea4
+[  54.139] cdvdman_read lsn=1148080 sectors=8 buf=2bea4
+[  54.140] sceCdSync 0 sync flag = 1
+[  54.147] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.148] sceCdGetError 0
+[  54.166] sceCdStatus 10
+[  54.198] sceCdStatus 10
+[  54.231] sceCdStatus 10
+[  54.264] sceCdStatus 10
+[  54.298] sceCdStatus 10
+[  54.331] sceCdStatus 10
+[  54.364] sceCdStatus 10
+[  54.398] sceCdStatus 10
+[  54.431] sceCdStatus 10
+[  54.464] sceCdStatus 10
+[  54.498] sceCdStatus 10
+[  54.531] sceCdStatus 10
+[  54.564] sceCdStatus 10
+[  54.598] sceCdStatus 10
+[  54.631] sceCdStatus 10
+[  54.665] sceCdStatus 10
+[  54.700] sceCdStatus 10
+[  54.725] sceCdDiskReady 0
+[  54.725] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.726] sceCdDiskReady 0
+[  54.726] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.727] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.728] sceCdDiskReady 0
+[  54.728] sceCdGetError 0
+[  54.729] sceCdRead lsn=1148088 sectors=8 sector_size=2048 buf=0002bea4
+[  54.729] cdvdman_read lsn=1148088 sectors=8 buf=2bea4
+[  54.730] sceCdSync 0 sync flag = 1
+[  54.731] sceCdStatus 6
+[  54.737] sceCdGetError 0
+[  54.737] sceCdRead lsn=1148096 sectors=8 sector_size=2048 buf=0002bea4
+[  54.737] cdvdman_read lsn=1148096 sectors=8 buf=2bea4
+[  54.738] sceCdSync 0 sync flag = 1
+[  54.746] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.747] sceCdGetError 0
+[  54.764] sceCdStatus 10
+[  54.792] sceCdDiskReady 0
+[  54.792] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.795] sceCdDiskReady 0
+[  54.795] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.796] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.797] sceCdDiskReady 0
+[  54.797] sceCdGetError 0
+[  54.798] sceCdRead lsn=1148104 sectors=8 sector_size=2048 buf=0002bea4
+[  54.798] cdvdman_read lsn=1148104 sectors=8 buf=2bea4
+[  54.799] sceCdSync 0 sync flag = 1
+[  54.799] sceCdStatus 6
+[  54.803] sceCdGetError 0
+[  54.804] sceCdRead lsn=1148112 sectors=8 sector_size=2048 buf=0002bea4
+[  54.804] cdvdman_read lsn=1148112 sectors=8 buf=2bea4
+[  54.805] sceCdSync 0 sync flag = 1
+[  54.813] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.813] sceCdGetError 0
+[  54.833] sceCdStatus 10
+[  54.857] sceCdDiskReady 0
+[  54.858] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.860] sceCdDiskReady 0
+[  54.860] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.861] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.861] sceCdDiskReady 0
+[  54.862] sceCdGetError 0
+[  54.863] sceCdRead lsn=1148120 sectors=8 sector_size=2048 buf=0002bea4
+[  54.863] cdvdman_read lsn=1148120 sectors=8 buf=2bea4
+[  54.864] sceCdSync 0 sync flag = 1
+[  54.864] sceCdStatus 6
+[  54.870] sceCdGetError 0
+[  54.871] sceCdRead lsn=1148128 sectors=8 sector_size=2048 buf=0002bea4
+[  54.871] cdvdman_read lsn=1148128 sectors=8 buf=2bea4
+[  54.872] sceCdSync 0 sync flag = 1
+[  54.880] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.880] sceCdGetError 0
+[  54.898] sceCdStatus 10
+[  54.928] sceCdDiskReady 0
+[  54.928] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.929] sceCdDiskReady 0
+[  54.930] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.931] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.931] sceCdDiskReady 0
+[  54.932] sceCdGetError 0
+[  54.932] sceCdRead lsn=1148136 sectors=8 sector_size=2048 buf=0002bea4
+[  54.933] cdvdman_read lsn=1148136 sectors=8 buf=2bea4
+[  54.934] sceCdSync 0 sync flag = 1
+[  54.934] sceCdStatus 6
+[  54.936] sceCdGetError 0
+[  54.937] sceCdRead lsn=1148144 sectors=8 sector_size=2048 buf=0002bea4
+[  54.937] cdvdman_read lsn=1148144 sectors=8 buf=2bea4
+[  54.938] sceCdSync 0 sync flag = 1
+[  54.946] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.947] sceCdGetError 0
+[  54.964] sceCdStatus 10
+[  54.994] sceCdDiskReady 0
+[  54.995] sceCdSC(0xFFFFFFF6, 0xE)
+[  54.996] sceCdDiskReady 0
+[  54.997] sceCdSC(0xFFFFFFF6, 0x0)
+[  54.997] sceCdSC(0xFFFFFFF6, 0x1)
+[  54.998] sceCdDiskReady 0
+[  54.998] sceCdGetError 0
+[  54.999] sceCdRead lsn=1148152 sectors=8 sector_size=2048 buf=0002bea4
+[  55.000] cdvdman_read lsn=1148152 sectors=8 buf=2bea4
+[  55.000] sceCdSync 0 sync flag = 1
+[  55.001] sceCdStatus 6
+[  55.004] sceCdGetError 0
+[  55.004] sceCdRead lsn=1148160 sectors=8 sector_size=2048 buf=0002bea4
+[  55.005] cdvdman_read lsn=1148160 sectors=8 buf=2bea4
+[  55.006] sceCdSync 0 sync flag = 1
+[  55.013] sceCdSC(0xFFFFFFF6, 0x0)
+[  55.014] sceCdGetError 0
+[  55.031] sceCdStatus 10
+[  55.065] sceCdStatus 10
+[  55.098] sceCdStatus 10
+[  55.133] sceCdStatus 10
+[  55.165] sceCdStatus 10
+[  55.198] sceCdStatus 10
+[  55.234] sceCdStatus 10
+[  55.264] sceCdStatus 10
+[  55.292] sceCdDiskReady 0
+[  55.293] sceCdSC(0xFFFFFFF6, 0xE)
+[  55.293] sceCdDiskReady 0
+[  55.294] sceCdSC(0xFFFFFFF6, 0x0)
+[  55.296] sceCdSC(0xFFFFFFF6, 0x1)
+[  55.297] sceCdDiskReady 0
+[  55.299] sceCdGetError 0
+[  55.300] sceCdRead lsn=1148168 sectors=8 sector_size=2048 buf=0002bea4
+[  55.301] cdvdman_read lsn=1148168 sectors=8 buf=2bea4
+[  55.303] sceCdSync 0 sync flag = 1
+[  55.305] sceCdStatus 6
+[  55.305] sceCdGetError 0
+[  55.305] sceCdRead lsn=1148176 sectors=8 sector_size=2048 buf=0002bea4
+[  55.306] cdvdman_read lsn=1148176 sectors=8 buf=2bea4
+[  55.306] sceCdSync 0 sync flag = 1
+[  55.314] sceCdSC(0xFFFFFFF6, 0x0)
+[  55.314] sceCdGetError 0
+[  55.331] sceCdStatus 10
+[  55.364] sceCdStatus 10
+[  55.398] sceCdStatus 10
+[  55.433] sceCdStatus 10
+[  55.464] sceCdStatus 10
+[  55.498] sceCdStatus 10
+[  55.531] sceCdStatus 10
+[  55.564] sceCdStatus 10
+[  55.598] sceCdStatus 10
+[  55.631] sceCdStatus 10
+[  55.666] sceCdStatus 10
+[  55.698] sceCdStatus 10
+[  55.731] sceCdStatus 10
+[  55.764] sceCdStatus 10
+[  55.798] sceCdStatus 10
+[  55.831] sceCdStatus 10
+[  55.864] sceCdStatus 10
+[  55.895] sceCdDiskReady 0
+[  55.895] sceCdSC(0xFFFFFFF6, 0xE)
+[  55.896] sceCdDiskReady 0
+[  55.897] sceCdSC(0xFFFFFFF6, 0x0)
+[  55.898] sceCdSC(0xFFFFFFF6, 0x1)
+[  55.899] sceCdDiskReady 0
+[  55.899] sceCdGetError 0
+[  55.900] sceCdRead lsn=1148184 sectors=8 sector_size=2048 buf=0002bea4
+[  55.900] cdvdman_read lsn=1148184 sectors=8 buf=2bea4
+[  55.901] sceCdSync 0 sync flag = 1
+[  55.902] sceCdStatus 6
+[  55.905] sceCdGetError 0
+[  55.906] sceCdRead lsn=1148192 sectors=8 sector_size=2048 buf=0002bea4
+[  55.907] cdvdman_read lsn=1148192 sectors=8 buf=2bea4
+[  55.910] sceCdSync 0 sync flag = 1
+[  55.915] sceCdSC(0xFFFFFFF6, 0x0)
+[  55.915] sceCdGetError 0
+[  55.931] sceCdStatus 10
+[  55.964] sceCdStatus 10
+[  55.998] sceCdStatus 10
+[  56.032] sceCdStatus 10
+[  56.064] sceCdStatus 10
+[  56.098] sceCdStatus 10
+[  56.131] sceCdStatus 10
+[  56.164] sceCdStatus 10
+[  56.198] sceCdStatus 10
+[  56.231] sceCdStatus 10
+[  56.264] sceCdStatus 10
+[  56.298] sceCdStatus 10
+[  56.331] sceCdStatus 10
+[  56.364] sceCdStatus 10
+[  56.398] sceCdStatus 10
+[  56.432] sceCdStatus 10
+[  56.464] sceCdStatus 10
+[  56.495] sceCdDiskReady 0
+[  56.495] sceCdSC(0xFFFFFFF6, 0xE)
+[  56.497] sceCdDiskReady 0
+[  56.498] sceCdSC(0xFFFFFFF6, 0x0)
+[  56.498] sceCdSC(0xFFFFFFF6, 0x1)
+[  56.499] sceCdDiskReady 0
+[  56.499] sceCdGetError 0
+[  56.500] sceCdRead lsn=1148200 sectors=8 sector_size=2048 buf=0002bea4
+[  56.500] cdvdman_read lsn=1148200 sectors=8 buf=2bea4
+[  56.501] sceCdSync 0 sync flag = 1
+[  56.502] sceCdStatus 6
+[  56.505] sceCdGetError 0
+[  56.505] sceCdRead lsn=1148208 sectors=8 sector_size=2048 buf=0002bea4
+[  56.505] cdvdman_read lsn=1148208 sectors=8 buf=2bea4
+[  56.506] sceCdSync 0 sync flag = 1
+[  56.515] sceCdSC(0xFFFFFFF6, 0x0)
+[  56.516] sceCdGetError 0
+[  56.531] sceCdStatus 10
+[  56.564] sceCdStatus 10
+[  56.598] sceCdStatus 10
+[  56.631] sceCdStatus 10
+[  56.664] sceCdStatus 10
+[  56.699] sceCdStatus 10
+[  56.731] sceCdStatus 10
+[  56.764] sceCdStatus 10
+[  56.798] sceCdStatus 10
+[  56.831] sceCdStatus 10
+[  56.864] sceCdStatus 10
+[  56.898] sceCdStatus 10
+[  56.931] sceCdStatus 10
+[  56.964] sceCdStatus 10
+[  56.999] sceCdStatus 10
+[  57.031] sceCdStatus 10
+[  57.064] sceCdStatus 10
+[  57.094] sceCdDiskReady 0
+[  57.094] sceCdSC(0xFFFFFFF6, 0xE)
+[  57.096] sceCdDiskReady 0
+[  57.096] sceCdSC(0xFFFFFFF6, 0x0)
+[  57.097] sceCdSC(0xFFFFFFF6, 0x1)
+[  57.097] sceCdDiskReady 0
+[  57.098] sceCdGetError 0
+[  57.098] sceCdRead lsn=1148216 sectors=8 sector_size=2048 buf=0002bea4
+[  57.099] cdvdman_read lsn=1148216 sectors=8 buf=2bea4
+[  57.100] sceCdSync 0 sync flag = 1
+[  57.100] sceCdStatus 6
+[  57.105] sceCdGetError 0
+[  57.105] sceCdRead lsn=1148224 sectors=8 sector_size=2048 buf=0002bea4
+[  57.106] cdvdman_read lsn=1148224 sectors=8 buf=2bea4
+[  57.107] sceCdSync 0 sync flag = 1
+[  57.115] sceCdSC(0xFFFFFFF6, 0x0)
+[  57.116] sceCdGetError 0
+[  57.131] sceCdStatus 10
+[  57.164] sceCdStatus 10
+[  57.198] sceCdStatus 10
+[  57.234] sceCdStatus 10
+[  57.264] sceCdStatus 10
+[  57.299] sceCdStatus 10
+[  57.331] sceCdStatus 10
+[  57.364] sceCdStatus 10
+[  57.398] sceCdStatus 10
+[  57.431] sceCdStatus 10
+[  57.464] sceCdStatus 10
+[  57.498] sceCdStatus 10
+[  57.531] sceCdStatus 10
+[  57.564] sceCdStatus 10
+[  57.598] sceCdStatus 10
+[  57.631] sceCdStatus 10
+[  57.665] sceCdStatus 10
+[  57.696] sceCdDiskReady 0
+[  57.696] sceCdSC(0xFFFFFFF6, 0xE)
+[  57.698] sceCdDiskReady 0
+[  57.699] sceCdSC(0xFFFFFFF6, 0x0)
+[  57.699] sceCdSC(0xFFFFFFF6, 0x1)
+[  57.700] sceCdDiskReady 0
+[  57.701] sceCdGetError 0
+[  57.702] sceCdRead lsn=1148232 sectors=8 sector_size=2048 buf=0002bea4
+[  57.703] sceCdStatus 6
+[  57.703] cdvdman_read lsn=1148232 sectors=8 buf=2bea4
+[  57.704] sceCdSync 0 sync flag = 1
+[  57.706] sceCdGetError 0
+[  57.706] sceCdRead lsn=1148240 sectors=8 sector_size=2048 buf=0002bea4
+[  57.707] cdvdman_read lsn=1148240 sectors=8 buf=2bea4
+[  57.707] sceCdSync 0 sync flag = 1
+[  57.715] sceCdSC(0xFFFFFFF6, 0x0)
+[  57.716] sceCdGetError 0
+[  57.731] sceCdStatus 10
+[  57.764] sceCdStatus 10
+[  57.798] sceCdStatus 10
+[  57.831] sceCdStatus 10
+[  57.864] sceCdStatus 10
+[  57.898] sceCdStatus 10
+[  57.931] sceCdStatus 10
+[  57.964] sceCdStatus 10
+[  57.998] sceCdStatus 10
+[  58.031] sceCdStatus 10
+[  58.065] sceCdStatus 10
+[  58.098] sceCdStatus 10
+[  58.131] sceCdStatus 10
+[  58.164] sceCdStatus 10
+[  58.198] sceCdStatus 10
+[  58.231] sceCdStatus 10
+[  58.264] sceCdStatus 10
+[  58.295] sceCdDiskReady 0
+[  58.296] sceCdSC(0xFFFFFFF6, 0xE)
+[  58.297] sceCdDiskReady 0
+[  58.297] sceCdSC(0xFFFFFFF6, 0x0)
+[  58.298] sceCdSC(0xFFFFFFF6, 0x1)
+[  58.299] sceCdDiskReady 0
+[  58.299] sceCdGetError 0
+[  58.300] sceCdStatus 10
+[  58.300] sceCdRead lsn=1148248 sectors=8 sector_size=2048 buf=0002bea4
+[  58.301] cdvdman_read lsn=1148248 sectors=8 buf=2bea4
+[  58.303] sceCdSync 0 sync flag = 1
+[  58.308] sceCdGetError 0
+[  58.308] sceCdRead lsn=1148256 sectors=8 sector_size=2048 buf=0002bea4
+[  58.308] cdvdman_read lsn=1148256 sectors=8 buf=2bea4
+[  58.309] sceCdSync 0 sync flag = 1
+[  58.317] sceCdSC(0xFFFFFFF6, 0x0)
+[  58.318] sceCdGetError 0
+[  58.331] sceCdStatus 10
+[  58.364] sceCdStatus 10
+[  58.398] sceCdStatus 10
+[  58.431] sceCdStatus 10
+[  58.465] sceCdStatus 10
+[  58.498] sceCdStatus 10
+[  58.531] sceCdStatus 10
+[  58.566] sceCdStatus 10
+[  58.598] sceCdStatus 10
+[  58.631] sceCdStatus 10
+[  58.664] sceCdStatus 10
+[  58.698] sceCdStatus 10
+[  58.731] sceCdStatus 10
+[  58.764] sceCdStatus 10
+[  58.798] sceCdStatus 10
+[  58.831] sceCdStatus 10
+[  58.866] sceCdStatus 10
+[  58.898] sceCdStatus 10
+[  58.931] sceCdStatus 10
+[  58.965] sceCdStatus 10
+[  58.998] sceCdStatus 10
+[  59.031] sceCdStatus 10
+[  59.064] sceCdStatus 10
+[  59.098] sceCdStatus 10
+[  59.131] sceCdStatus 10
+[  59.166] sceCdStatus 10
+[  59.198] sceCdStatus 10
+[  59.231] sceCdStatus 10
+[  59.264] sceCdStatus 10
+[  59.298] sceCdStatus 10
+[  59.331] sceCdStatus 10
+[  59.364] sceCdStatus 10
+[  59.398] sceCdStatus 10
+[  59.431] sceCdStatus 10
+[  59.464] sceCdStatus 10
+[  59.498] sceCdStatus 10
+[  59.530] sceCdDiskReady 0
+[  59.530] sceCdSC(0xFFFFFFF6, 0xE)
+[  59.531] sceCdDiskReady 0
+[  59.532] sceCdStatus 10
+[  59.533] sceCdSC(0xFFFFFFF6, 0x0)
+[  59.533] sceCdSC(0xFFFFFFF6, 0x1)
+[  59.534] sceCdDiskReady 0
+[  59.535] sceCdGetError 0
+[  59.535] sceCdRead lsn=1148264 sectors=8 sector_size=2048 buf=0002bea4
+[  59.536] cdvdman_read lsn=1148264 sectors=8 buf=2bea4
+[  59.537] sceCdSync 0 sync flag = 1
+[  59.544] sceCdGetError 0
+[  59.546] sceCdRead lsn=1148272 sectors=8 sector_size=2048 buf=0002bea4
+[  59.546] cdvdman_read lsn=1148272 sectors=8 buf=2bea4
+[  59.547] sceCdSync 0 sync flag = 1
+[  59.555] sceCdSC(0xFFFFFFF6, 0x0)
+[  59.555] sceCdGetError 0
+[  59.564] sceCdStatus 10
+[  59.596] sceCdDiskReady 0
+[  59.597] sceCdSC(0xFFFFFFF6, 0xE)
+[  59.598] sceCdDiskReady 0
+[  59.599] sceCdStatus 10
+[  59.599] sceCdSC(0xFFFFFFF6, 0x0)
+[  59.600] sceCdSC(0xFFFFFFF6, 0x1)
+[  59.600] sceCdDiskReady 0
+[  59.602] sceCdGetError 0
+[  59.603] sceCdRead lsn=1148280 sectors=8 sector_size=2048 buf=0002bea4
+[  59.604] cdvdman_read lsn=1148280 sectors=8 buf=2bea4
+[  59.605] sceCdSync 0 sync flag = 1
+[  59.613] sceCdGetError 0
+[  59.613] sceCdRead lsn=1148288 sectors=8 sector_size=2048 buf=0002bea4
+[  59.614] cdvdman_read lsn=1148288 sectors=8 buf=2bea4
+[  59.617] sceCdSync 0 sync flag = 1
+[  59.622] sceCdSC(0xFFFFFFF6, 0x0)
+[  59.622] sceCdGetError 0
+[  59.631] sceCdStatus 10
+[  59.664] sceCdStatus 10
+[  59.698] sceCdStatus 10
+[  59.733] sceCdStatus 10
+[  59.765] sceCdStatus 10
+[  59.798] sceCdStatus 10
+[  59.831] sceCdStatus 10
+[  59.864] sceCdStatus 10
+[  59.898] sceCdStatus 10
+[  59.931] sceCdStatus 10
+[  59.964] sceCdStatus 10
+[  59.999] sceCdStatus 10
+[  60.031] sceCdStatus 10
+[  60.064] sceCdStatus 10
+[  60.098] sceCdDiskReady 0
+[  60.099] sceCdSC(0xFFFFFFF6, 0xE)
+[  60.100] sceCdStatus 10
+[  60.101] sceCdDiskReady 0
+[  60.103] sceCdSC(0xFFFFFFF6, 0x0)
+[  60.105] sceCdSC(0xFFFFFFF6, 0x1)
+[  60.105] sceCdDiskReady 0
+[  60.107] sceCdGetError 0
+[  60.107] sceCdRead lsn=1148296 sectors=8 sector_size=2048 buf=0002bea4
+[  60.108] cdvdman_read lsn=1148296 sectors=8 buf=2bea4
+[  60.108] sceCdSync 0 sync flag = 1
+[  60.110] sceCdGetError 0
+[  60.110] sceCdRead lsn=1148304 sectors=8 sector_size=2048 buf=0002bea4
+[  60.110] cdvdman_read lsn=1148304 sectors=8 buf=2bea4
+[  60.111] sceCdSync 0 sync flag = 1
+[  60.119] sceCdSC(0xFFFFFFF6, 0x0)
+[  60.119] sceCdGetError 0
+[  60.131] sceCdStatus 10
+[  60.164] sceCdStatus 10
+[  60.198] sceCdStatus 10
+[  60.232] sceCdStatus 10
+[  60.265] sceCdStatus 10
+[  60.298] sceCdStatus 10
+[  60.331] sceCdStatus 10
+[  60.364] sceCdStatus 10
+[  60.398] sceCdStatus 10
+[  60.433] sceCdStatus 10
+[  60.464] sceCdStatus 10
+[  60.498] sceCdStatus 10
+[  60.531] sceCdStatus 10
+[  60.564] sceCdStatus 10
+[  60.598] sceCdStatus 10
+[  60.631] sceCdStatus 10
+[  60.664] sceCdStatus 10
+[  60.698] sceCdStatus 10
+[  60.733] sceCdStatus 10
+[  60.733] sceCdDiskReady 0
+[  60.735] sceCdSC(0xFFFFFFF6, 0xE)
+[  60.736] sceCdDiskReady 0
+[  60.736] sceCdSC(0xFFFFFFF6, 0x0)
+[  60.737] sceCdSC(0xFFFFFFF6, 0x1)
+[  60.737] sceCdDiskReady 0
+[  60.738] sceCdGetError 0
+[  60.738] sceCdRead lsn=1148312 sectors=8 sector_size=2048 buf=0002bea4
+[  60.739] cdvdman_read lsn=1148312 sectors=8 buf=2bea4
+[  60.740] sceCdSync 0 sync flag = 1
+[  60.744] sceCdGetError 0
+[  60.745] sceCdRead lsn=1148320 sectors=8 sector_size=2048 buf=0002bea4
+[  60.747] cdvdman_read lsn=1148320 sectors=8 buf=2bea4
+[  60.748] sceCdSync 0 sync flag = 1
+[  60.755] sceCdSC(0xFFFFFFF6, 0x0)
+[  60.755] sceCdGetError 0
+[  60.764] sceCdStatus 10
+[  60.798] sceCdStatus 10
+[  60.831] sceCdStatus 10
+[  60.864] sceCdStatus 10
+[  60.898] sceCdStatus 10
+[  60.931] sceCdStatus 10
+[  60.964] sceCdStatus 10
+[  60.998] sceCdStatus 10
+[  61.033] sceCdStatus 10
+[  61.065] sceCdStatus 10
+[  61.098] sceCdStatus 10
+[  61.131] sceCdStatus 10
+[  61.164] sceCdStatus 10
+[  61.198] sceCdStatus 10
+[  61.232] sceCdStatus 10
+[  61.264] sceCdStatus 10
+[  61.302] sceCdStatus 10
+[  61.303] sceCdDiskReady 0
+[  61.305] sceCdSC(0xFFFFFFF6, 0xE)
+[  61.305] sceCdDiskReady 0
+[  61.306] sceCdSC(0xFFFFFFF6, 0x0)
+[  61.307] sceCdSC(0xFFFFFFF6, 0x1)
+[  61.307] sceCdDiskReady 0
+[  61.308] sceCdGetError 0
+[  61.309] sceCdRead lsn=1148328 sectors=8 sector_size=2048 buf=0002bea4
+[  61.309] cdvdman_read lsn=1148328 sectors=8 buf=2bea4
+[  61.310] sceCdSync 0 sync flag = 1
+[  61.315] sceCdGetError 0
+[  61.315] sceCdRead lsn=1148336 sectors=8 sector_size=2048 buf=0002bea4
+[  61.316] cdvdman_read lsn=1148336 sectors=8 buf=2bea4
+[  61.316] sceCdSync 0 sync flag = 1
+[  61.324] sceCdSC(0xFFFFFFF6, 0x0)
+[  61.325] sceCdGetError 0
+[  61.331] sceCdStatus 10
+[  61.364] sceCdStatus 10
+[  61.398] sceCdStatus 10
+[  61.431] sceCdStatus 10
+[  61.464] sceCdStatus 10
+[  61.498] sceCdStatus 10
+[  61.531] sceCdStatus 10
+[  61.564] sceCdStatus 10
+[  61.598] sceCdStatus 10
+[  61.631] sceCdStatus 10
+[  61.664] sceCdStatus 10
+[  61.698] sceCdStatus 10
+[  61.734] sceCdStatus 10
+[  61.765] sceCdStatus 10
+[  61.798] sceCdStatus 10
+[  61.831] sceCdStatus 10
+[  61.864] sceCdStatus 10
+[  61.898] sceCdStatus 10
+[  61.899] sceCdDiskReady 0
+[  61.900] sceCdSC(0xFFFFFFF6, 0xE)
+[  61.900] sceCdDiskReady 0
+[  61.901] sceCdSC(0xFFFFFFF6, 0x0)
+[  61.901] sceCdSC(0xFFFFFFF6, 0x1)
+[  61.902] sceCdDiskReady 0
+[  61.903] sceCdGetError 0
+[  61.903] sceCdRead lsn=1148344 sectors=8 sector_size=2048 buf=0002bea4
+[  61.904] cdvdman_read lsn=1148344 sectors=8 buf=2bea4
+[  61.905] sceCdSync 0 sync flag = 1
+[  61.911] sceCdGetError 0
+[  61.912] sceCdRead lsn=1148352 sectors=8 sector_size=2048 buf=0002bea4
+[  61.914] cdvdman_read lsn=1148352 sectors=8 buf=2bea4
+[  61.915] sceCdSync 0 sync flag = 1
+[  61.921] sceCdSC(0xFFFFFFF6, 0x0)
+[  61.923] sceCdGetError 0
+[  61.931] sceCdStatus 10
+[  61.965] sceCdStatus 10
+[  61.998] sceCdStatus 10
+[  62.031] sceCdStatus 10
+[  62.065] sceCdStatus 10
+[  62.098] sceCdStatus 10
+[  62.131] sceCdStatus 10
+[  62.165] sceCdStatus 10
+[  62.198] sceCdStatus 10
+[  62.231] sceCdStatus 10
+[  62.265] sceCdStatus 10
+[  62.300] sceCdStatus 10
+[  62.331] sceCdStatus 10
+[  62.365] sceCdStatus 10
+[  62.398] sceCdStatus 10
+[  62.431] sceCdStatus 10
+[  62.465] sceCdStatus 10
+[  62.467] sceCdDiskReady 0
+[  62.467] sceCdSC(0xFFFFFFF6, 0xE)
+[  62.467] sceCdDiskReady 0
+[  62.468] sceCdSC(0xFFFFFFF6, 0x0)
+[  62.469] sceCdSC(0xFFFFFFF6, 0x1)
+[  62.469] sceCdDiskReady 0
+[  62.470] sceCdGetError 0
+[  62.471] sceCdRead lsn=1148360 sectors=8 sector_size=2048 buf=0002bea4
+[  62.471] cdvdman_read lsn=1148360 sectors=8 buf=2bea4
+[  62.472] sceCdSync 0 sync flag = 1
+[  62.478] sceCdGetError 0
+[  62.479] sceCdRead lsn=1148368 sectors=8 sector_size=2048 buf=0002bea4
+[  62.479] cdvdman_read lsn=1148368 sectors=8 buf=2bea4
+[  62.480] sceCdSync 0 sync flag = 1
+[  62.488] sceCdSC(0xFFFFFFF6, 0x0)
+[  62.488] sceCdGetError 0
+[  62.498] sceCdStatus 10
+[  62.532] sceCdStatus 10
+[  62.565] sceCdStatus 10
+[  62.600] sceCdStatus 10
+[  62.631] sceCdStatus 10
+[  62.666] sceCdStatus 10
+[  62.698] sceCdStatus 10
+[  62.732] sceCdStatus 10
+[  62.764] sceCdStatus 10
+[  62.798] sceCdStatus 10
+[  62.831] sceCdStatus 10
+[  62.864] sceCdStatus 10
+[  62.900] sceCdStatus 10
+[  62.931] sceCdStatus 10
+[  62.964] sceCdStatus 10
+[  62.998] sceCdStatus 10
+[  63.031] sceCdStatus 10
+[  63.064] sceCdStatus 10
+[  63.067] sceCdDiskReady 0
+[  63.068] sceCdSC(0xFFFFFFF6, 0xE)
+[  63.068] sceCdDiskReady 0
+[  63.069] sceCdSC(0xFFFFFFF6, 0x0)
+[  63.069] sceCdSC(0xFFFFFFF6, 0x1)
+[  63.070] sceCdDiskReady 0
+[  63.071] sceCdGetError 0
+[  63.072] sceCdRead lsn=1148376 sectors=8 sector_size=2048 buf=0002bea4
+[  63.072] cdvdman_read lsn=1148376 sectors=8 buf=2bea4
+[  63.073] sceCdSync 0 sync flag = 1
+[  63.079] sceCdGetError 0
+[  63.082] sceCdRead lsn=1148384 sectors=8 sector_size=2048 buf=0002bea4
+[  63.082] cdvdman_read lsn=1148384 sectors=8 buf=2bea4
+[  63.083] sceCdSync 0 sync flag = 1
+[  63.091] sceCdSC(0xFFFFFFF6, 0x0)
+[  63.092] sceCdGetError 0
+[  63.098] sceCdStatus 10
+[  63.131] sceCdStatus 10
+[  63.164] sceCdStatus 10
+[  63.198] sceCdStatus 10
+[  63.231] sceCdStatus 10
+[  63.264] sceCdStatus 10
+[  63.298] sceCdStatus 10
+[  63.331] sceCdStatus 10
+[  63.364] sceCdStatus 10
+[  63.398] sceCdStatus 10
+[  63.431] sceCdStatus 10
+[  63.465] sceCdStatus 10
+[  63.498] sceCdStatus 10
+[  63.531] sceCdStatus 10
+[  63.565] sceCdStatus 10
+[  63.598] sceCdStatus 10
+[  63.631] sceCdStatus 10
+[  63.664] sceCdStatus 10
+[  63.698] sceCdStatus 10
+[  63.732] sceCdStatus 10
+[  63.764] sceCdStatus 10
+[  63.798] sceCdStatus 10
+[  63.831] sceCdStatus 10
+[  63.864] sceCdStatus 10
+[  63.898] sceCdStatus 10
+[  63.931] sceCdStatus 10
+[  63.964] sceCdStatus 10
+[  63.998] sceCdStatus 10
+[  64.031] sceCdStatus 10
+[  64.064] sceCdStatus 10
+[  64.098] sceCdStatus 10
+[  64.131] sceCdStatus 10
+[  64.167] sceCdStatus 10
+[  64.198] sceCdStatus 10
+[  64.231] sceCdStatus 10
+[  64.265] sceCdStatus 10
+[  64.267] sceCdDiskReady 0
+[  64.269] sceCdSC(0xFFFFFFF6, 0xE)
+[  64.269] sceCdDiskReady 0
+[  64.270] sceCdSC(0xFFFFFFF6, 0x0)
+[  64.271] sceCdSC(0xFFFFFFF6, 0x1)
+[  64.271] sceCdDiskReady 0
+[  64.272] sceCdGetError 0
+[  64.273] sceCdRead lsn=1148392 sectors=8 sector_size=2048 buf=0002bea4
+[  64.273] cdvdman_read lsn=1148392 sectors=8 buf=2bea4
+[  64.274] sceCdSync 0 sync flag = 1
+[  64.279] sceCdGetError 0
+[  64.280] sceCdRead lsn=1148400 sectors=8 sector_size=2048 buf=0002bea4
+[  64.281] cdvdman_read lsn=1148400 sectors=8 buf=2bea4
+[  64.282] sceCdSync 0 sync flag = 1
+[  64.289] sceCdSC(0xFFFFFFF6, 0x0)
+[  64.290] sceCdGetError 0
+[  64.298] sceCdStatus 10
+[  64.331] sceCdStatus 10
+[  64.335] sceCdDiskReady 0
+[  64.336] sceCdSC(0xFFFFFFF6, 0xE)
+[  64.337] sceCdDiskReady 0
+[  64.338] sceCdSC(0xFFFFFFF6, 0x0)
+[  64.339] sceCdSC(0xFFFFFFF6, 0x1)
+[  64.339] sceCdDiskReady 0
+[  64.340] sceCdGetError 0
+[  64.341] sceCdRead lsn=1148408 sectors=8 sector_size=2048 buf=0002bea4
+[  64.341] cdvdman_read lsn=1148408 sectors=8 buf=2bea4
+[  64.342] sceCdSync 0 sync flag = 1
+[  64.346] sceCdGetError 0
+[  64.347] sceCdRead lsn=1148416 sectors=8 sector_size=2048 buf=0002bea4
+[  64.347] cdvdman_read lsn=1148416 sectors=8 buf=2bea4
+[  64.355] sceCdSync 0 sync flag = 0
+[  64.356] sceCdSC(0xFFFFFFF6, 0x0)
+[  64.357] sceCdGetError 0
+[  64.364] sceCdStatus 10
+[  64.398] sceCdStatus 10
+[  64.431] sceCdStatus 10
+[  64.466] sceCdStatus 10
+[  64.498] sceCdStatus 10
+[  64.531] sceCdStatus 10
+[  64.565] sceCdStatus 10
+[  64.598] sceCdStatus 10
+[  64.631] sceCdStatus 10
+[  64.665] sceCdStatus 10
+[  64.698] sceCdStatus 10
+[  64.731] sceCdStatus 10
+[  64.766] sceCdStatus 10
+[  64.798] sceCdStatus 10
+[  64.831] sceCdStatus 10
+[  64.865] sceCdStatus 10
+[  64.871] sceCdDiskReady 0
+[  64.872] sceCdSC(0xFFFFFFF6, 0xE)
+[  64.872] sceCdDiskReady 0
+[  64.873] sceCdSC(0xFFFFFFF6, 0x0)
+[  64.874] sceCdSC(0xFFFFFFF6, 0x1)
+[  64.874] sceCdDiskReady 0
+[  64.875] sceCdGetError 0
+[  64.875] sceCdRead lsn=1148424 sectors=8 sector_size=2048 buf=0002bea4
+[  64.876] cdvdman_read lsn=1148424 sectors=8 buf=2bea4
+[  64.877] sceCdSync 0 sync flag = 1
+[  64.880] sceCdGetError 0
+[  64.880] sceCdRead lsn=1148432 sectors=8 sector_size=2048 buf=0002bea4
+[  64.881] cdvdman_read lsn=1148432 sectors=8 buf=2bea4
+[  64.888] sceCdSync 0 sync flag = 1
+[  64.890] sceCdSC(0xFFFFFFF6, 0x0)
+[  64.891] sceCdGetError 0
+[  64.899] sceCdStatus 10
+[  64.932] sceCdStatus 10
+[  64.965] sceCdStatus 10
+[  64.998] sceCdStatus 10
+[  65.032] sceCdStatus 10
+[  65.064] sceCdStatus 10
+[  65.098] sceCdStatus 10
+[  65.131] sceCdStatus 10
+[  65.164] sceCdStatus 10
+[  65.198] sceCdStatus 10
+[  65.231] sceCdStatus 10
+[  65.264] sceCdStatus 10
+[  65.298] sceCdStatus 10
+[  65.331] sceCdStatus 10
+[  65.365] sceCdStatus 10
+[  65.398] sceCdStatus 10
+[  65.431] sceCdStatus 10
+[  65.465] sceCdStatus 10
+[  65.471] sceCdDiskReady 0
+[  65.472] sceCdSC(0xFFFFFFF6, 0xE)
+[  65.472] sceCdDiskReady 0
+[  65.473] sceCdSC(0xFFFFFFF6, 0x0)
+[  65.473] sceCdSC(0xFFFFFFF6, 0x1)
+[  65.474] sceCdDiskReady 0
+[  65.475] sceCdGetError 0
+[  65.475] sceCdRead lsn=1148440 sectors=8 sector_size=2048 buf=0002bea4
+[  65.476] cdvdman_read lsn=1148440 sectors=8 buf=2bea4
+[  65.476] sceCdSync 0 sync flag = 1
+[  65.482] sceCdGetError 0
+[  65.483] sceCdRead lsn=1148448 sectors=8 sector_size=2048 buf=0002bea4
+[  65.483] cdvdman_read lsn=1148448 sectors=8 buf=2bea4
+[  65.484] sceCdSync 0 sync flag = 1
+[  65.492] sceCdSC(0xFFFFFFF6, 0x0)
+[  65.493] sceCdGetError 0
+[  65.498] sceCdStatus 10
+[  65.531] sceCdStatus 10
+[  65.565] sceCdStatus 10
+[  65.598] sceCdStatus 10
+[  65.631] sceCdStatus 10
+[  65.665] sceCdStatus 10
+[  65.698] sceCdStatus 10
+[  65.731] sceCdStatus 10
+[  65.765] sceCdStatus 10
+[  65.798] sceCdStatus 10
+[  65.831] sceCdStatus 10
+[  65.865] sceCdStatus 10
+[  65.898] sceCdStatus 10
+[  65.931] sceCdStatus 10
+[  65.965] sceCdStatus 10
+[  65.998] sceCdStatus 10
+[  66.033] sceCdStatus 10
+[  66.065] sceCdStatus 10
+[  66.071] sceCdDiskReady 0
+[  66.071] sceCdSC(0xFFFFFFF6, 0xE)
+[  66.072] sceCdDiskReady 0
+[  66.072] sceCdSC(0xFFFFFFF6, 0x0)
+[  66.073] sceCdSC(0xFFFFFFF6, 0x1)
+[  66.073] sceCdDiskReady 0
+[  66.074] sceCdGetError 0
+[  66.075] sceCdRead lsn=1148456 sectors=8 sector_size=2048 buf=0002bea4
+[  66.075] cdvdman_read lsn=1148456 sectors=8 buf=2bea4
+[  66.076] sceCdSync 0 sync flag = 1
+[  66.081] sceCdGetError 0
+[  66.081] sceCdRead lsn=1148464 sectors=8 sector_size=2048 buf=0002bea4
+[  66.082] cdvdman_read lsn=1148464 sectors=8 buf=2bea4
+[  66.082] sceCdSync 0 sync flag = 1
+[  66.090] sceCdSC(0xFFFFFFF6, 0x0)
+[  66.091] sceCdGetError 0
+[  66.098] sceCdStatus 10
+[  66.131] sceCdStatus 10
+[  66.165] sceCdStatus 10
+[  66.198] sceCdStatus 10
+[  66.231] sceCdStatus 10
+[  66.265] sceCdStatus 10
+[  66.298] sceCdStatus 10
+[  66.333] sceCdStatus 10
+[  66.365] sceCdStatus 10
+[  66.398] sceCdStatus 10
+[  66.431] sceCdStatus 10
+[  66.465] sceCdStatus 10
+[  66.498] sceCdStatus 10
+[  66.531] sceCdStatus 10
+[  66.565] sceCdStatus 10
+[  66.598] sceCdStatus 10
+[  66.633] sceCdStatus 10
+[  66.665] sceCdStatus 10
+[  66.670] sceCdDiskReady 0
+[  66.671] sceCdSC(0xFFFFFFF6, 0xE)
+[  66.671] sceCdDiskReady 0
+[  66.672] sceCdSC(0xFFFFFFF6, 0x0)
+[  66.673] sceCdSC(0xFFFFFFF6, 0x1)
+[  66.673] sceCdDiskReady 0
+[  66.674] sceCdGetError 0
+[  66.674] sceCdRead lsn=1148472 sectors=8 sector_size=2048 buf=0002bea4
+[  66.675] cdvdman_read lsn=1148472 sectors=8 buf=2bea4
+[  66.676] sceCdSync 0 sync flag = 1
+[  66.683] sceCdGetError 0
+[  66.683] sceCdRead lsn=1148480 sectors=8 sector_size=2048 buf=0002bea4
+[  66.684] cdvdman_read lsn=1148480 sectors=8 buf=2bea4
+[  66.684] sceCdSync 0 sync flag = 1
+[  66.691] sceCdSC(0xFFFFFFF6, 0x0)
+[  66.692] sceCdGetError 0
+[  66.698] sceCdStatus 10
+[  66.731] sceCdStatus 10
+[  66.765] sceCdStatus 10
+[  66.798] sceCdStatus 10
+[  66.831] sceCdStatus 10
+[  66.865] sceCdStatus 10
+[  66.898] sceCdStatus 10
+[  66.931] sceCdStatus 10
+[  66.965] sceCdStatus 10
+[  66.998] sceCdStatus 10
+[  67.031] sceCdStatus 10
+[  67.065] sceCdStatus 10
+[  67.098] sceCdStatus 10
+[  67.131] sceCdStatus 10
+[  67.165] sceCdStatus 10
+[  67.198] sceCdStatus 10
+[  67.231] sceCdStatus 10
+[  67.265] sceCdStatus 10
+[  67.270] sceCdDiskReady 0
+[  67.271] sceCdSC(0xFFFFFFF6, 0xE)
+[  67.271] sceCdDiskReady 0
+[  67.271] sceCdSC(0xFFFFFFF6, 0x0)
+[  67.272] sceCdSC(0xFFFFFFF6, 0x1)
+[  67.273] sceCdDiskReady 0
+[  67.273] sceCdGetError 0
+[  67.274] sceCdRead lsn=1148488 sectors=8 sector_size=2048 buf=0002bea4
+[  67.275] cdvdman_read lsn=1148488 sectors=8 buf=2bea4
+[  67.275] sceCdSync 0 sync flag = 1
+[  67.281] sceCdGetError 0
+[  67.282] sceCdRead lsn=1148496 sectors=8 sector_size=2048 buf=0002bea4
+[  67.282] cdvdman_read lsn=1148496 sectors=8 buf=2bea4
+[  67.283] sceCdSync 0 sync flag = 1
+[  67.291] sceCdSC(0xFFFFFFF6, 0x0)
+[  67.292] sceCdGetError 0
+[  67.298] sceCdStatus 10
+[  67.332] sceCdStatus 10
+[  67.365] sceCdStatus 10
+[  67.398] sceCdStatus 10
+[  67.431] sceCdStatus 10
+[  67.465] sceCdStatus 10
+[  67.498] sceCdStatus 10
+[  67.531] sceCdStatus 10
+[  67.565] sceCdStatus 10
+[  67.598] sceCdStatus 10
+[  67.631] sceCdStatus 10
+[  67.665] sceCdStatus 10
+[  67.698] sceCdStatus 10
+[  67.731] sceCdStatus 10
+[  67.765] sceCdStatus 10
+[  67.799] sceCdStatus 10
+[  67.831] sceCdStatus 10
+[  67.865] sceCdStatus 10
+[  67.873] sceCdDiskReady 0
+[  67.873] sceCdSC(0xFFFFFFF6, 0xE)
+[  67.876] sceCdDiskReady 0
+[  67.876] sceCdSC(0xFFFFFFF6, 0x0)
+[  67.877] sceCdSC(0xFFFFFFF6, 0x1)
+[  67.877] sceCdDiskReady 0
+[  67.878] sceCdGetError 0
+[  67.879] sceCdRead lsn=1148504 sectors=8 sector_size=2048 buf=0002bea4
+[  67.880] cdvdman_read lsn=1148504 sectors=8 buf=2bea4
+[  67.880] sceCdSync 0 sync flag = 1
+[  67.884] sceCdGetError 0
+[  67.884] sceCdRead lsn=1148512 sectors=8 sector_size=2048 buf=0002bea4
+[  67.885] cdvdman_read lsn=1148512 sectors=8 buf=2bea4
+[  67.892] sceCdSync 0 sync flag = 1
+[  67.894] sceCdSC(0xFFFFFFF6, 0x0)
+[  67.894] sceCdGetError 0
+[  67.900] sceCdStatus 10
+[  67.931] sceCdStatus 10
+[  67.965] sceCdStatus 10
+[  67.998] sceCdStatus 10
+[  68.031] sceCdStatus 10
+[  68.065] sceCdStatus 10
+[  68.098] sceCdStatus 10
+[  68.131] sceCdStatus 10
+[  68.165] sceCdStatus 10
+[  68.200] sceCdStatus 10
+[  68.231] sceCdStatus 10
+[  68.265] sceCdStatus 10
+[  68.298] sceCdStatus 10
+[  68.331] sceCdStatus 10
+[  68.365] sceCdStatus 10
+[  68.398] sceCdStatus 10
+[  68.431] sceCdStatus 10
+[  68.465] sceCdStatus 10
+[  68.500] sceCdStatus 10
+[  68.531] sceCdStatus 10
+[  68.565] sceCdStatus 10
+[  68.598] sceCdStatus 10
+[  68.633] sceCdStatus 10
+[  68.665] sceCdStatus 10
+[  68.698] sceCdStatus 10
+[  68.731] sceCdStatus 10
+[  68.765] sceCdStatus 10
+[  68.798] sceCdStatus 10
+[  68.831] sceCdStatus 10
+[  68.865] sceCdStatus 10
+[  68.898] sceCdStatus 10
+[  68.931] sceCdStatus 10
+[  68.965] sceCdStatus 10
+[  68.998] sceCdStatus 10
+[  69.031] sceCdStatus 10
+[  69.065] sceCdStatus 10
+[  69.074] sceCdDiskReady 0
+[  69.074] sceCdSC(0xFFFFFFF6, 0xE)
+[  69.075] sceCdDiskReady 0
+[  69.075] sceCdSC(0xFFFFFFF6, 0x0)
+[  69.076] sceCdSC(0xFFFFFFF6, 0x1)
+[  69.077] sceCdDiskReady 0
+[  69.077] sceCdGetError 0
+[  69.078] sceCdRead lsn=1148520 sectors=8 sector_size=2048 buf=0002bea4
+[  69.078] cdvdman_read lsn=1148520 sectors=8 buf=2bea4
+[  69.079] sceCdSync 0 sync flag = 1
+[  69.085] sceCdGetError 0
+[  69.086] sceCdRead lsn=1148528 sectors=8 sector_size=2048 buf=0002bea4
+[  69.086] cdvdman_read lsn=1148528 sectors=8 buf=2bea4
+[  69.087] sceCdSync 0 sync flag = 1
+[  69.097] sceCdSC(0xFFFFFFF6, 0x0)
+[  69.097] sceCdGetError 0
+[  69.098] sceCdStatus 10
+[  69.131] sceCdStatus 10
+[  69.138] sceCdDiskReady 0
+[  69.140] sceCdSC(0xFFFFFFF6, 0xE)
+[  69.141] sceCdDiskReady 0
+[  69.141] sceCdSC(0xFFFFFFF6, 0x0)
+[  69.142] sceCdSC(0xFFFFFFF6, 0x1)
+[  69.142] sceCdDiskReady 0
+[  69.143] sceCdGetError 0
+[  69.144] sceCdRead lsn=1148536 sectors=8 sector_size=2048 buf=0002bea4
+[  69.145] cdvdman_read lsn=1148536 sectors=8 buf=2bea4
+[  69.146] sceCdSync 0 sync flag = 1
+[  69.153] sceCdGetError 0
+[  69.154] sceCdRead lsn=1148544 sectors=8 sector_size=2048 buf=0002bea4
+[  69.154] cdvdman_read lsn=1148544 sectors=8 buf=2bea4
+[  69.156] sceCdSync 0 sync flag = 1
+[  69.169] sceCdSC(0xFFFFFFF6, 0x0)
+[  69.170] sceCdGetError 0
+[  69.171] sceCdStatus 10
+[  69.198] sceCdStatus 10
+[  69.231] sceCdStatus 10
+[  69.265] sceCdStatus 10
+[  69.298] sceCdStatus 10
+[  69.331] sceCdStatus 10
+[  69.365] sceCdStatus 10
+[  69.398] sceCdStatus 10
+[  69.431] sceCdStatus 10
+[  69.465] sceCdStatus 10
+[  69.498] sceCdStatus 10
+[  69.531] sceCdStatus 10
+[  69.565] sceCdStatus 10
+[  69.600] sceCdStatus 10
+[  69.631] sceCdStatus 10
+[  69.641] sceCdDiskReady 0
+[  69.641] sceCdSC(0xFFFFFFF6, 0xE)
+[  69.642] sceCdDiskReady 0
+[  69.642] sceCdSC(0xFFFFFFF6, 0x0)
+[  69.643] sceCdSC(0xFFFFFFF6, 0x1)
+[  69.643] sceCdDiskReady 0
+[  69.644] sceCdGetError 0
+[  69.644] sceCdRead lsn=1148552 sectors=8 sector_size=2048 buf=0002bea4
+[  69.645] cdvdman_read lsn=1148552 sectors=8 buf=2bea4
+[  69.646] sceCdSync 0 sync flag = 1
+[  69.651] sceCdGetError 0
+[  69.651] sceCdRead lsn=1148560 sectors=8 sector_size=2048 buf=0002bea4
+[  69.652] cdvdman_read lsn=1148560 sectors=8 buf=2bea4
+[  69.660] sceCdSync 0 sync flag = 1
+[  69.665] sceCdStatus 10
+[  69.665] sceCdSC(0xFFFFFFF6, 0x0)
+[  69.666] sceCdGetError 0
+[  69.698] sceCdStatus 10
+[  69.731] sceCdStatus 10
+[  69.766] sceCdStatus 10
+[  69.804] sceCdStatus 10
+[  69.833] sceCdStatus 10
+[  69.878] sceCdStatus 10
+[  69.906] sceCdStatus 10
+[  69.939] sceCdStatus 10
+[  69.969] sceCdStatus 10
+[  69.999] sceCdStatus 10
+[  70.035] sceCdStatus 10
+[  70.075] sceCdStatus 10
+[  70.100] sceCdStatus 10
+[  70.135] sceCdStatus 10
+[  70.165] sceCdStatus 10
+[  70.201] sceCdStatus 10
+[  70.231] sceCdStatus 10
+[  70.241] sceCdDiskReady 0
+[  70.242] sceCdSC(0xFFFFFFF6, 0xE)
+[  70.242] sceCdDiskReady 0
+[  70.244] sceCdSC(0xFFFFFFF6, 0x0)
+[  70.244] sceCdSC(0xFFFFFFF6, 0x1)
+[  70.245] sceCdDiskReady 0
+[  70.245] sceCdGetError 0
+[  70.246] sceCdRead lsn=1148568 sectors=8 sector_size=2048 buf=0002bea4
+[  70.247] cdvdman_read lsn=1148568 sectors=8 buf=2bea4
+[  70.247] sceCdSync 0 sync flag = 1
+[  70.253] sceCdGetError 0
+[  70.254] sceCdRead lsn=1148576 sectors=8 sector_size=2048 buf=0002bea4
+[  70.254] cdvdman_read lsn=1148576 sectors=8 buf=2bea4
+[  70.255] sceCdSync 0 sync flag = 1
+[  70.262] sceCdSC(0xFFFFFFF6, 0x0)
+[  70.263] sceCdGetError 0
+[  70.265] sceCdStatus 10
+[  70.298] sceCdStatus 10
+[  70.331] sceCdStatus 10
+[  70.366] sceCdStatus 10
+[  70.398] sceCdStatus 10
+[  70.431] sceCdStatus 10
+[  70.465] sceCdStatus 10
+[  70.498] sceCdStatus 10
+[  70.531] sceCdStatus 10
+[  70.565] sceCdStatus 10
+[  70.598] sceCdStatus 10
+[  70.631] sceCdStatus 10
+[  70.665] sceCdStatus 10
+[  70.698] sceCdStatus 10
+[  70.731] sceCdStatus 10
+[  70.765] sceCdStatus 10
+[  70.798] sceCdStatus 10
+[  70.831] sceCdStatus 10
+[  70.842] sceCdDiskReady 0
+[  70.843] sceCdSC(0xFFFFFFF6, 0xE)
+[  70.844] sceCdDiskReady 0
+[  70.844] sceCdSC(0xFFFFFFF6, 0x0)
+[  70.845] sceCdSC(0xFFFFFFF6, 0x1)
+[  70.845] sceCdDiskReady 0
+[  70.846] sceCdGetError 0
+[  70.846] sceCdRead lsn=1148584 sectors=8 sector_size=2048 buf=0002bea4
+[  70.847] cdvdman_read lsn=1148584 sectors=8 buf=2bea4
+[  70.847] sceCdSync 0 sync flag = 1
+[  70.854] sceCdGetError 0
+[  70.854] sceCdRead lsn=1148592 sectors=8 sector_size=2048 buf=0002bea4
+[  70.856] cdvdman_read lsn=1148592 sectors=8 buf=2bea4
+[  70.857] sceCdSync 0 sync flag = 1
+[  70.863] sceCdSC(0xFFFFFFF6, 0x0)
+[  70.863] sceCdGetError 0
+[  70.864] sceCdStatus 10
+[  70.898] sceCdStatus 10
+[  70.931] sceCdStatus 10
+[  70.965] sceCdStatus 10
+[  70.998] sceCdStatus 10
+[  71.031] sceCdStatus 10
+[  71.068] sceCdStatus 10
+[  71.098] sceCdStatus 10
+[  71.131] sceCdStatus 10
+[  71.165] sceCdStatus 10
+[  71.198] sceCdStatus 10
+[  71.231] sceCdStatus 10
+[  71.265] sceCdStatus 10
+[  71.298] sceCdStatus 10
+[  71.331] sceCdStatus 10
+[  71.365] sceCdStatus 10
+[  71.398] sceCdStatus 10
+[  71.431] sceCdStatus 10
+[  71.442] sceCdDiskReady 0
+[  71.443] sceCdSC(0xFFFFFFF6, 0xE)
+[  71.443] sceCdDiskReady 0
+[  71.444] sceCdSC(0xFFFFFFF6, 0x0)
+[  71.444] sceCdSC(0xFFFFFFF6, 0x1)
+[  71.445] sceCdDiskReady 0
+[  71.446] sceCdGetError 0
+[  71.446] sceCdRead lsn=1148600 sectors=8 sector_size=2048 buf=0002bea4
+[  71.447] cdvdman_read lsn=1148600 sectors=8 buf=2bea4
+[  71.448] sceCdSync 0 sync flag = 1
+[  71.460] sceCdGetError 0
+[  71.460] sceCdRead lsn=1148608 sectors=8 sector_size=2048 buf=0002bea4
+[  71.461] cdvdman_read lsn=1148608 sectors=8 buf=2bea4
+[  71.461] sceCdSync 0 sync flag = 1
+[  71.466] sceCdStatus 6
+[  71.468] sceCdSC(0xFFFFFFF6, 0x0)
+[  71.469] sceCdGetError 0
+[  71.498] sceCdStatus 10
+[  71.531] sceCdStatus 10
+[  71.565] sceCdStatus 10
+[  71.598] sceCdStatus 10
+[  71.633] sceCdStatus 10
+[  71.665] sceCdStatus 10
+[  71.698] sceCdStatus 10
+[  71.732] sceCdStatus 10
+[  71.765] sceCdStatus 10
+[  71.800] sceCdStatus 10
+[  71.832] sceCdStatus 10
+[  71.865] sceCdStatus 10
+[  71.898] sceCdStatus 10
+[  71.935] sceCdStatus 10
+[  71.965] sceCdStatus 10
+[  71.998] sceCdStatus 10
+[  72.031] sceCdStatus 10
+[  72.043] sceCdDiskReady 0
+[  72.044] sceCdSC(0xFFFFFFF6, 0xE)
+[  72.044] sceCdDiskReady 0
+[  72.045] sceCdSC(0xFFFFFFF6, 0x0)
+[  72.047] sceCdSC(0xFFFFFFF6, 0x1)
+[  72.047] sceCdDiskReady 0
+[  72.048] sceCdGetError 0
+[  72.048] sceCdRead lsn=1148616 sectors=8 sector_size=2048 buf=0002bea4
+[  72.050] cdvdman_read lsn=1148616 sectors=8 buf=2bea4
+[  72.050] sceCdSync 0 sync flag = 1
+[  72.060] sceCdGetError 0
+[  72.060] sceCdRead lsn=1148624 sectors=8 sector_size=2048 buf=0002bea4
+[  72.061] cdvdman_read lsn=1148624 sectors=8 buf=2bea4
+[  72.062] sceCdSync 0 sync flag = 1
+[  72.067] sceCdStatus 6
+[  72.072] sceCdSC(0xFFFFFFF6, 0x0)
+[  72.072] sceCdGetError 0
+[  72.098] sceCdStatus 10
+[  72.131] sceCdStatus 10
+[  72.165] sceCdStatus 10
+[  72.198] sceCdStatus 10
+[  72.233] sceCdStatus 10
+[  72.265] sceCdStatus 10
+[  72.298] sceCdStatus 10
+[  72.331] sceCdStatus 10
+[  72.365] sceCdStatus 10
+[  72.677] sceCdStatus 10
+[  72.680] sceCdStatus 10
+[  72.681] sceCdStatus 10
+[  72.682] sceCdStatus 10
+[  72.683] sceCdStatus 10
+[  72.684] sceCdStatus 10
+[  72.684] sceCdStatus 10
+[  72.685] sceCdStatus 10
+[  72.687] sceCdDiskReady 0
+[  72.688] sceCdSC(0xFFFFFFF6, 0xE)
+[  72.688] sceCdDiskReady 0
+[  72.689] sceCdSC(0xFFFFFFF6, 0x0)
+[  72.689] sceCdSC(0xFFFFFFF6, 0x1)
+[  72.690] sceCdDiskReady 0
+[  72.690] sceCdGetError 0
+[  72.691] sceCdRead lsn=1148632 sectors=8 sector_size=2048 buf=0002bea4
+[  72.694] cdvdman_read lsn=1148632 sectors=8 buf=2bea4
+[  72.695] sceCdSync 0 sync flag = 1
+[  72.695] sceCdGetError 0
+[  72.696] sceCdRead lsn=1148640 sectors=8 sector_size=2048 buf=0002bea4
+[  72.696] cdvdman_read lsn=1148640 sectors=8 buf=2bea4
+[  72.697] sceCdSync 0 sync flag = 1
+[  72.697] sceCdStatus 6
+[  72.698] sceCdSC(0xFFFFFFF6, 0x0)
+[  72.698] sceCdGetError 0
+[  72.699] sceCdStatus 10
+[  72.731] sceCdStatus 10
+[  72.765] sceCdStatus 10
+[  72.799] sceCdStatus 10
+[  72.832] sceCdStatus 10
+[  72.867] sceCdStatus 10
+[  72.899] sceCdStatus 10
+[  72.931] sceCdStatus 10
+[  72.967] sceCdStatus 10
+[  72.999] sceCdStatus 10
+[  73.031] sceCdStatus 10
+[  73.065] sceCdStatus 10
+[  73.098] sceCdStatus 10
+[  73.131] sceCdStatus 10
+[  73.165] sceCdStatus 10
+[  73.198] sceCdStatus 10
+[  73.231] sceCdStatus 10
+[  73.265] sceCdStatus 10
+[  73.298] sceCdStatus 10
+[  73.331] sceCdStatus 10
+[  73.365] sceCdStatus 10
+[  73.398] sceCdStatus 10
