@@ -353,7 +353,7 @@ static u8 GenuineMacAddress[][3] =
 #define REQ_HCI_OUT     (USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_DEVICE)
 #define HCI_COMMAND_REQ 0
 
-#define MAX_PADS 2
+#define MAX_PADS 4 // up to four Bluetooth pads at once
 
 static u8 bt_bdaddr[6];              // usb bt adapter mac address
 static hci_information_t bt_version; // bt adapter version information
@@ -1540,6 +1540,8 @@ static void ds34pad_clear(int pad)
         return;
 
     ds34pad[pad].led_user = 0;
+    ds34pad[pad].bat_pct = BAT_PCT_UNKNOWN;
+    ds34pad[pad].bat_state = BAT_STATE_UNKNOWN;
     ds34pad[pad].hci_handle = 0x0FFF;
     ds34pad[pad].control_scid = 0;
     ds34pad[pad].interrupt_scid = 0;
@@ -2273,8 +2275,70 @@ static int ds5_to_ds4_report(u8 *data, int bytes)
     return 1;
 }
 
+/*
+ * Battery / charging, kept per pad for the OPL menu indicator (ds34bt_get_info_all).
+ * DS4 (0x11): Power 0-10 with the cable = charging, 11 = full; without the cable 0-10 is the level.
+ * DualSense (0x31): status byte, low nibble level 0-10, high nibble 0 discharging / 1 charging / 2 full.
+ * DS3 (0x01): Power 1-5 level, 0xEE charging, 0xEF full.
+ */
+static void bat_set(int pad, u8 pct, u8 state)
+{
+    ds34pad[pad].bat_pct = pct;
+    ds34pad[pad].bat_state = state;
+}
+
+static u8 bat_level_to_pct(u8 level)
+{
+    u8 pct = level * 10 + 5;
+
+    return pct > 100 ? 100 : pct;
+}
+
+static void bat_from_ds4(int pad, const struct ds4report *report)
+{
+    u8 level = report->Power;
+
+    if (report->Usb_plugged) {
+        if (level >= 11)
+            bat_set(pad, 100, BAT_STATE_FULL);
+        else
+            bat_set(pad, bat_level_to_pct(level), BAT_STATE_CHARGING);
+    } else {
+        bat_set(pad, bat_level_to_pct(level), BAT_STATE_DISCHARGING);
+    }
+}
+
+static void bat_from_ds5(int pad, u8 status)
+{
+    u8 level = status & 0x0F;
+    u8 chg = status >> 4;
+
+    if (level > 10)
+        level = 10;
+
+    if (chg == 2)
+        bat_set(pad, 100, BAT_STATE_FULL);
+    else if (chg == 1)
+        bat_set(pad, bat_level_to_pct(level), BAT_STATE_CHARGING);
+    else
+        bat_set(pad, bat_level_to_pct(level), BAT_STATE_DISCHARGING);
+}
+
+static void bat_from_ds3(int pad, u8 power)
+{
+    if (power == 0xEE)
+        bat_set(pad, BAT_PCT_UNKNOWN, BAT_STATE_CHARGING);
+    else if (power == 0xEF)
+        bat_set(pad, 100, BAT_STATE_FULL);
+    else if (power >= 1 && power <= 5)
+        bat_set(pad, power * 20, BAT_STATE_DISCHARGING);
+}
+
 static void hid_readReport(u8 *data, int bytes, int pad)
 {
+    if (data[8] == HID_THDR_DATA_INPUT && ds34pad[pad].type == DS5 && data[9] == PS5_31_REPORT_ID && bytes > 63)
+        bat_from_ds5(pad, data[63]); // before the report is rewritten into the DS4 layout
+
     if (data[8] == HID_THDR_DATA_INPUT && ds34pad[pad].type == DS5) {
         if (!ds5_to_ds4_report(data, bytes))
             return;
@@ -2296,6 +2360,9 @@ static void hid_readReport(u8 *data, int bytes, int pad)
 
             if (report->RightStickX == 0 && report->RightStickY == 0) // ledrumble cmd causes null report sometime
                 return;
+
+            if (bytes != 21) // the short report has no battery byte
+                bat_from_ds3(pad, report->Power);
 
             ds34pad[pad].data[0] = ~report->ButtonStateL;
             ds34pad[pad].data[1] = ~report->ButtonStateH;
@@ -2357,6 +2424,9 @@ static void hid_readReport(u8 *data, int bytes, int pad)
             u8 up = 0, down = 0, left = 0, right = 0;
 
             report = (struct ds4report *)&data[11];
+
+            if (bytes > 41 && ds34pad[pad].type == DS4) // DualSense is handled above (its battery isn't in this layout)
+                bat_from_ds4(pad, report);
 
             switch (report->Dpad) {
                 case 0:
@@ -2563,6 +2633,33 @@ void ds34bt_get_data(char *dst, int size, int port)
     WaitSema(bt_dev.hid_sema);
 
     mips_memcpy(dst, ds34pad[port].data, size);
+
+    SignalSema(bt_dev.hid_sema);
+}
+
+// 4 bytes per pad: [0] pad running, [1] type + 1 (1 DS3, 2 DS4, 3 DualSense), [2] battery 0-100 (BAT_PCT_UNKNOWN), [3] BAT_STATE_*
+// Fills all MAX_PADS pads in one go (out = MAX_PADS * 4 bytes), so the menu needs a single RPC per refresh.
+void ds34bt_get_info_all(u8 *out)
+{
+    int port;
+
+    mips_memset(out, 0, MAX_PADS * 4);
+    for (port = 0; port < MAX_PADS; port++)
+        out[port * 4 + 2] = BAT_PCT_UNKNOWN;
+
+    if (!(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED))
+        return;
+
+    WaitSema(bt_dev.hid_sema);
+
+    for (port = 0; port < MAX_PADS; port++) {
+        if (pad_status_check(DS34BT_STATE_RUNNING, port)) {
+            out[port * 4 + 0] = 1;
+            out[port * 4 + 1] = ds34pad[port].type + 1;
+            out[port * 4 + 2] = ds34pad[port].bat_pct;
+            out[port * 4 + 3] = ds34pad[port].bat_state;
+        }
+    }
 
     SignalSema(bt_dev.hid_sema);
 }
@@ -2839,6 +2936,7 @@ static int rpc_buf[64] __attribute((aligned(16)));
 #define DS34BT_SET_KEY       15
 #define DS34BT_GET_DEBUG     16
 #define DS34BT_GET_PADDEBUG  17
+#define DS34BT_GET_INFO_ALL  18
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -2903,6 +3001,9 @@ void *rpc_sf(int cmd, void *data, int size)
             break;
         case DS34BT_GET_PADDEBUG:
             ds34bt_get_paddebug((u8 *)data);
+            break;
+        case DS34BT_GET_INFO_ALL:
+            ds34bt_get_info_all((u8 *)data);
             break;
         default:
             break;

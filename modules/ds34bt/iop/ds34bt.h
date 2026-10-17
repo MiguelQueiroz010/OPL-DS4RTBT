@@ -12,6 +12,14 @@
 // DS4 and DualSense share the same Bluetooth connection flow
 #define IS_DS4_LIKE(t) ((t) == DS4 || (t) == DS5)
 
+#define BAT_PCT_UNKNOWN 0xFF
+enum {
+    BAT_STATE_UNKNOWN = 0,
+    BAT_STATE_DISCHARGING,
+    BAT_STATE_CHARGING,
+    BAT_STATE_FULL,
+};
+
 #define MAX_BUFFER_SIZE 64 // Size of general purpose data buffer
 
 #define PENDING    1
@@ -47,6 +55,8 @@ typedef struct
     u8 rrum;
     u8 update_rum;
     u8 led_user; // 1: lightbar colour chosen from the OPL menu, input reports must not overwrite it
+    u8 bat_pct;   // battery 0-100, BAT_PCT_UNKNOWN when the report doesn't tell
+    u8 bat_state; // BAT_STATE_*
     union
     {
         struct ds2report ds2;

@@ -272,7 +272,8 @@ void sysReset(int modload_mask)
     sysLoadModuleBuffer(&audsrv_irx, size_audsrv_irx, 0, NULL);
 
 #ifdef PADEMU
-    int ds3pads = 1; // only one pad enabled
+    int ds3pads = 1; // only one pad enabled (USB)
+    int ds34btpads = 0x0F; // up to four Bluetooth pads
 
     ds34usb_deinit();
     ds34bt_deinit();
@@ -281,7 +282,7 @@ void sysReset(int modload_mask)
         LOG("[DS34_USB]:\n");
         sysLoadModuleBuffer(&ds34usb_irx, size_ds34usb_irx, 4, (char *)&ds3pads);
         LOG("[DS34_BT]:\n");
-        sysLoadModuleBuffer(&ds34bt_irx, size_ds34bt_irx, 4, (char *)&ds3pads);
+        sysLoadModuleBuffer(&ds34bt_irx, size_ds34bt_irx, 4, (char *)&ds34btpads);
 
         ds34usb_init();
         ds34bt_init();

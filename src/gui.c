@@ -24,6 +24,10 @@
 #include "include/sound.h"
 #include "include/guigame.h"
 
+#ifdef PADEMU
+#include <libds34bt.h>
+#endif
+
 #include <limits.h>
 #include <stdlib.h>
 #include <libvux.h>
@@ -1394,6 +1398,90 @@ void guiDrawSubMenuHints(void)
     guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? subMenuIcons[1] : subMenuIcons[0], subMenuHints[1], gTheme->fonts[0], x, y, gTheme->textColor);
 }
 
+#ifdef PADEMU
+/*
+ * Bluetooth pads indicator (top right): one row per connected pad with type, battery level and charging.
+ * One RPC for all the ports about once a second from the main thread, never every frame.
+ */
+#define BTHUD_REFRESH_FRAMES 60
+#define BTHUD_ROW_H          18
+#define BTHUD_BAT_W          26
+#define BTHUD_BAT_H          10
+
+static int btHudLastPoll = -BTHUD_REFRESH_FRAMES;
+
+static void guiBtHudPoll(void)
+{
+    if (guiFrameId - btHudLastPoll < BTHUD_REFRESH_FRAMES && guiFrameId >= btHudLastPoll)
+        return;
+
+    btHudLastPoll = guiFrameId;
+    ds34bt_update_info(); // one RPC for all the ports
+}
+
+static void guiDrawBtPads(void)
+{
+    static const char *const typeNames[] = {"", "DS3", "DS4", "DS5"};
+    int i, row = 0;
+
+    guiBtHudPoll();
+
+    for (i = 0; i < DS34BT_PADS_MAX; i++) {
+        const ds34bt_info_t *info = ds34bt_cached_info(i);
+        char text[40];
+        int x, y, fill, known;
+        u64 color;
+
+        if (!info->connected)
+            continue;
+
+        known = info->percent != DS34BT_BAT_PCT_UNKNOWN;
+        y = 10 + row * BTHUD_ROW_H;
+        x = screenWidth - 10;
+
+        // battery: outline, tip, fill
+        x -= BTHUD_BAT_W + 3;
+        rmDrawRect(x, y + 2, BTHUD_BAT_W, BTHUD_BAT_H, GS_SETREG_RGBA(0xE0, 0xE0, 0xE0, 0x80));
+        rmDrawRect(x + BTHUD_BAT_W, y + 5, 3, BTHUD_BAT_H - 6, GS_SETREG_RGBA(0xE0, 0xE0, 0xE0, 0x80));
+        rmDrawRect(x + 1, y + 3, BTHUD_BAT_W - 2, BTHUD_BAT_H - 2, GS_SETREG_RGBA(0x10, 0x10, 0x10, 0x80));
+
+        fill = known ? (info->percent * (BTHUD_BAT_W - 2)) / 100 : 0;
+        if (info->state == DS34BT_BAT_CHARGING)
+            color = GS_SETREG_RGBA(0x30, 0x90, 0xFF, 0x80);
+        else if (!known)
+            color = GS_SETREG_RGBA(0x80, 0x80, 0x80, 0x80);
+        else if (info->percent > 40)
+            color = GS_SETREG_RGBA(0x30, 0xC0, 0x40, 0x80);
+        else if (info->percent > 20)
+            color = GS_SETREG_RGBA(0xE0, 0xC0, 0x20, 0x80);
+        else
+            color = GS_SETREG_RGBA(0xE0, 0x30, 0x30, 0x80);
+
+        if (info->state == DS34BT_BAT_CHARGING && ((guiFrameId >> 5) & 1)) // charging: the bar breathes
+            fill = (fill * 3) / 4;
+
+        if (fill > 0)
+            rmDrawRect(x + 1, y + 3, fill, BTHUD_BAT_H - 2, color);
+
+        // text, right aligned just left of the battery
+        if (info->state == DS34BT_BAT_FULL)
+            snprintf(text, sizeof(text), "%d %s cheia", i + 1, typeNames[info->type & 3]);
+        else if (info->state == DS34BT_BAT_CHARGING && known)
+            snprintf(text, sizeof(text), "%d %s %d%% carregando", i + 1, typeNames[info->type & 3], info->percent);
+        else if (info->state == DS34BT_BAT_CHARGING)
+            snprintf(text, sizeof(text), "%d %s carregando", i + 1, typeNames[info->type & 3]);
+        else if (known)
+            snprintf(text, sizeof(text), "%d %s %d%%", i + 1, typeNames[info->type & 3], info->percent);
+        else
+            snprintf(text, sizeof(text), "%d %s", i + 1, typeNames[info->type & 3]);
+
+        fntRenderString(gTheme->fonts[0], x - 6, y, ALIGN_RIGHT, 0, 0, text, gTheme->textColor);
+
+        row++;
+    }
+}
+#endif
+
 static int endIntro = 0; // Break intro loop and start 'Last Played Auto Start' countdown
 static void guiDrawOverlays()
 {
@@ -1413,6 +1501,10 @@ static void guiDrawOverlays()
 
     if (busyAlpha > 0x00)
         guiDrawBusy(busyAlpha);
+
+#ifdef PADEMU
+    guiDrawBtPads();
+#endif
 
 #ifdef __DEBUG
     char text[20];
