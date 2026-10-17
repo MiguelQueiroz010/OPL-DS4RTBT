@@ -1,8 +1,12 @@
 name: Release-BT
 
-# Builds OPL with PADEMU + Bluetooth and publishes a GitHub release.
-#  - push a tag like  bt-v1.0.0  (or bt-v1.0.0-rc1)  -> release with RELEASE_NOTES_BT.md as description
+# Builds OPL with PADEMU + Bluetooth and creates a GitHub release.
+#  - push a tag like  bt-v1.0.0  (or bt-v1.0.0-rc1)
 #  - or run it by hand (Actions > Release-BT > Run workflow) and give the tag name
+#
+# The release description starts as a copy of the notes of the previous BT release (tag bt-v*).
+# By default the release is created as a DRAFT: open it on the Releases page, edit the notes, then Publish.
+# (If there is no previous BT release, RELEASE_NOTES_BT.md is used instead.)
 
 on:
   push:
@@ -15,6 +19,10 @@ on:
         required: true
       prerelease:
         description: 'Mark as pre-release'
+        type: boolean
+        default: true
+      draft:
+        description: 'Create as draft (lets you edit the release notes before publishing)'
         type: boolean
         default: true
 
@@ -47,21 +55,41 @@ jobs:
         ELF=$(ls OPNPS2LD-*.ELF | head -n 1)
         cp "$ELF" "OPL-DualSense-BT-${TAG}.ELF"
 
-    - name: Release notes
-      run: |
-        {
-          cat RELEASE_NOTES_BT.md
-          echo
-          echo "---"
-          echo "Build: \`${OPL_VERSION}\` / commit \`${GITHUB_SHA::8}\`"
-        } > notes.md
+    # Starting text for the notes = body of the previous BT release (its old "Build:" footer is dropped).
+    # Falls back to RELEASE_NOTES_BT.md when there is no previous BT release.
+    - name: Release notes (copy of the previous release)
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const { owner, repo } = context.repo;
+          const tag = process.env.TAG;
+
+          const releases = await github.paginate(github.rest.repos.listReleases, { owner, repo, per_page: 100 });
+          const prev = releases
+            .filter(r => !r.draft && r.tag_name !== tag && r.tag_name.startsWith('bt-v'))
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+          let body;
+          if (prev && prev.body && prev.body.trim()) {
+            core.info(`Copying the notes of ${prev.tag_name}`);
+            body = prev.body.replace(/\r\n/g, '\n').replace(/\n+---\nBuild: [^\n]*\s*$/, '').trimEnd();
+          } else {
+            core.info('No previous BT release, using RELEASE_NOTES_BT.md');
+            body = fs.readFileSync('RELEASE_NOTES_BT.md', 'utf8').trimEnd();
+          }
+
+          const footer = `\n\n---\nBuild: \`${process.env.OPL_VERSION}\` / commit \`${context.sha.slice(0, 8)}\`\n`;
+          fs.writeFileSync('notes.md', body + footer);
 
     - name: Publish release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.TAG }}
+        target_commitish: ${{ github.sha }}
         name: OPL DualSense/DS4 BT ${{ env.TAG }}
         body_path: notes.md
+        draft: ${{ github.event.inputs.draft != 'false' }}
         prerelease: ${{ github.event.inputs.prerelease == 'true' || contains(env.TAG, '-rc') }}
         files: |
           OPL-DualSense-BT-${{ env.TAG }}.ELF
