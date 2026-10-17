@@ -351,6 +351,22 @@ static u8 GenuineMacAddress[][3] =
 static padsetup_t g_setup;
 static u8 g_remap_active;
 
+// Lightbar colour of a slot: the one chosen in the OPL menu (Controller Setup), otherwise the default pattern of the slot.
+static void led_slot_color(int slot, int bright, u8 *rgb)
+{
+    int idx = padsetup_get_led(&g_setup, slot); // out of range = default
+
+    if (idx) {
+        rgb[0] = padsetup_led_rgb(idx)[0];
+        rgb[1] = padsetup_led_rgb(idx)[1];
+        rgb[2] = padsetup_led_rgb(idx)[2];
+    } else {
+        rgb[0] = rgbled_patterns[slot][bright][0];
+        rgb[1] = rgbled_patterns[slot][bright][1];
+        rgb[2] = rgbled_patterns[slot][bright][2];
+    }
+}
+
 void ds34bt_set_setup(const void *blob)
 {
     int i;
@@ -1536,9 +1552,7 @@ static int L2CAP_event_task(int result, int bytes)
                                 ds34pad[pad].oldled[0] = led_patterns[pad][1];
                                 ds34pad[pad].oldled[3] = 0;
                             } else if (IS_DS4_LIKE(ds34pad[pad].type)) {
-                                ds34pad[pad].oldled[0] = rgbled_patterns[pad][1][0];
-                                ds34pad[pad].oldled[1] = rgbled_patterns[pad][1][1];
-                                ds34pad[pad].oldled[2] = rgbled_patterns[pad][1][2];
+                                led_slot_color(pad, 1, ds34pad[pad].oldled);
                                 ds34pad[pad].oldled[3] = 0;
                             }
                             DelayThread(CMD_DELAY);
@@ -2029,9 +2043,7 @@ static void hid_readReport(u8 *data, int bytes, int pad_idx)
                         pad->analog_btn = !pad->analog_btn;
                     }
 
-                    pad->oldled[0] = rgbled_patterns[pad_idx][(pad->analog_btn & 1)][0];
-                    pad->oldled[1] = rgbled_patterns[pad_idx][(pad->analog_btn & 1)][1];
-                    pad->oldled[2] = rgbled_patterns[pad_idx][(pad->analog_btn & 1)][2];
+                    led_slot_color(pad_idx, pad->analog_btn & 1, pad->oldled);
                     pad->btn_delay = 1;
                 } else {
                     pad->oldled[0] = report->Battery;
@@ -2043,9 +2055,7 @@ static void hid_readReport(u8 *data, int bytes, int pad_idx)
                     }
                 }
             } else {
-                pad->oldled[0] = rgbled_patterns[pad_idx][(pad->analog_btn & 1)][0];
-                pad->oldled[1] = rgbled_patterns[pad_idx][(pad->analog_btn & 1)][1];
-                pad->oldled[2] = rgbled_patterns[pad_idx][(pad->analog_btn & 1)][2];
+                led_slot_color(pad_idx, pad->analog_btn & 1, pad->oldled);
 
                 if (pad->btn_delay > 0) {
                     pad->btn_delay--;

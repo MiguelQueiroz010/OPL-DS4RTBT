@@ -24,6 +24,9 @@ void guiGameBtKeysRequestPush(void);
 void guiGameBtKeysPushIfPending(void);
 void guiGameBtKeysModuleArg(char *out); // needs BTKEYS_ARG_LEN bytes
 void guiGameSetupModuleArg(unsigned char *out); // Controller Setup blob, PADSETUP_ARG_LEN bytes
+void guiGameBtLedApply(int slot);               // send the lightbar colour of the slot to the menu driver
+void guiGameBtLedOnConnect(int slot);           // a pad connected to the menu driver: apply its colour if the user chose one
+int guiGameBtLedGet(int slot, unsigned char *rgb); // colour chosen for the slot, 0 = default
 #endif
 
 void guiGameShowOSDLanguageConfig(int forceGlobal);

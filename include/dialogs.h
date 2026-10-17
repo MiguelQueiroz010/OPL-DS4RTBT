@@ -210,6 +210,10 @@ enum UI_ITEMS {
     PADSET_PS_TAP,
     PADSET_PS_HOLD,
     PADSET_PS_TIME,
+    PADSET_LED0, // lightbar colour of slots 1 to 4
+    PADSET_LED1,
+    PADSET_LED2,
+    PADSET_LED3,
     PADSET_REMAP,
     PADSET_RESET,
     PADREM_BASE, // 16 rows: one per DS2 button

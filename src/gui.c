@@ -1400,82 +1400,152 @@ void guiDrawSubMenuHints(void)
 
 #ifdef PADEMU
 /*
- * Bluetooth pads indicator (top right): one row per connected pad with type, battery level and charging.
+ * Bluetooth pads indicator (top right): one card per connected pad with the slot colour (same colours the
+ * lightbar uses), type, a 5 segment battery, the percentage and a bolt while charging.
  * One RPC for all the ports about once a second from the main thread, never every frame.
  */
 #define BTHUD_REFRESH_FRAMES 60
-#define BTHUD_ROW_H          18
-#define BTHUD_BAT_W          26
+#define BTHUD_MARGIN         10
+#define BTHUD_CARD_W         146
+#define BTHUD_CARD_H         22
+#define BTHUD_CARD_GAP       4
+#define BTHUD_SEGMENTS       5
+#define BTHUD_SEG_W          5
+#define BTHUD_SEG_GAP        1
+#define BTHUD_BAT_W          (BTHUD_SEGMENTS * BTHUD_SEG_W + (BTHUD_SEGMENTS - 1) * BTHUD_SEG_GAP + 4)
 #define BTHUD_BAT_H          10
 
 static int btHudLastPoll = -BTHUD_REFRESH_FRAMES;
 
 static void guiBtHudPoll(void)
 {
+    static u8 wasConnected[DS34BT_PADS_MAX];
+    int i;
+
     if (guiFrameId - btHudLastPoll < BTHUD_REFRESH_FRAMES && guiFrameId >= btHudLastPoll)
         return;
 
     btHudLastPoll = guiFrameId;
     ds34bt_update_info(); // one RPC for all the ports
+
+    // a pad that just connected gets the lightbar colour chosen for its slot
+    for (i = 0; i < DS34BT_PADS_MAX; i++) {
+        u8 now = ds34bt_cached_info(i)->connected;
+
+        if (now && !wasConnected[i])
+            guiGameBtLedOnConnect(i);
+        wasConnected[i] = now;
+    }
+}
+
+static void guiBtHudBolt(int x, int y, u64 color)
+{
+    rmDrawRect(x + 3, y + 0, 4, 2, color);
+    rmDrawRect(x + 2, y + 2, 4, 2, color);
+    rmDrawRect(x + 0, y + 4, 7, 2, color);
+    rmDrawRect(x + 2, y + 6, 4, 2, color);
+    rmDrawRect(x + 1, y + 8, 3, 2, color);
+}
+
+static void guiBtHudCheck(int x, int y, u64 color)
+{
+    rmDrawRect(x + 0, y + 5, 2, 2, color);
+    rmDrawRect(x + 2, y + 7, 2, 2, color);
+    rmDrawRect(x + 4, y + 5, 2, 2, color);
+    rmDrawRect(x + 6, y + 3, 2, 2, color);
+    rmDrawRect(x + 8, y + 1, 2, 2, color);
 }
 
 static void guiDrawBtPads(void)
 {
     static const char *const typeNames[] = {"", "DS3", "DS4", "DS5"};
+    static const u64 slotColors[DS34BT_PADS_MAX] = {
+        GS_SETREG_RGBA(0x30, 0x60, 0xFF, 0x80), // 1 blue
+        GS_SETREG_RGBA(0x30, 0xC0, 0x40, 0x80), // 2 green
+        GS_SETREG_RGBA(0xE0, 0xC0, 0x20, 0x80), // 3 yellow
+        GS_SETREG_RGBA(0x30, 0xC0, 0xC0, 0x80), // 4 cyan
+    };
+    const u64 frameColor = GS_SETREG_RGBA(0xD0, 0xD0, 0xD8, 0x80);
+    const u64 emptyColor = GS_SETREG_RGBA(0x40, 0x40, 0x48, 0x70);
     int i, row = 0;
 
     guiBtHudPoll();
 
     for (i = 0; i < DS34BT_PADS_MAX; i++) {
         const ds34bt_info_t *info = ds34bt_cached_info(i);
-        char text[40];
-        int x, y, fill, known;
+        char text[16];
+        u8 ledRgb[3];
+        int x0, y0, bx, by, s, lit, known, charging, full, low;
         u64 color;
 
         if (!info->connected)
             continue;
 
         known = info->percent != DS34BT_BAT_PCT_UNKNOWN;
-        y = 10 + row * BTHUD_ROW_H;
-        x = screenWidth - 10;
+        charging = info->state == DS34BT_BAT_CHARGING;
+        full = info->state == DS34BT_BAT_FULL;
+        low = known && !charging && !full && info->percent <= 15;
 
-        // battery: outline, tip, fill
-        x -= BTHUD_BAT_W + 3;
-        rmDrawRect(x, y + 2, BTHUD_BAT_W, BTHUD_BAT_H, GS_SETREG_RGBA(0xE0, 0xE0, 0xE0, 0x80));
-        rmDrawRect(x + BTHUD_BAT_W, y + 5, 3, BTHUD_BAT_H - 6, GS_SETREG_RGBA(0xE0, 0xE0, 0xE0, 0x80));
-        rmDrawRect(x + 1, y + 3, BTHUD_BAT_W - 2, BTHUD_BAT_H - 2, GS_SETREG_RGBA(0x10, 0x10, 0x10, 0x80));
+        x0 = screenWidth - BTHUD_MARGIN - BTHUD_CARD_W;
+        y0 = BTHUD_MARGIN + row * (BTHUD_CARD_H + BTHUD_CARD_GAP);
 
-        fill = known ? (info->percent * (BTHUD_BAT_W - 2)) / 100 : 0;
-        if (info->state == DS34BT_BAT_CHARGING)
+        // card: dark background (it pulses red on a low battery) and the slot colour on the left edge
+        if (low && ((guiFrameId >> 5) & 1))
+            rmDrawRect(x0, y0, BTHUD_CARD_W, BTHUD_CARD_H, GS_SETREG_RGBA(0x60, 0x10, 0x10, 0x70));
+        else
+            rmDrawRect(x0, y0, BTHUD_CARD_W, BTHUD_CARD_H, GS_SETREG_RGBA(0x10, 0x10, 0x18, 0x60));
+        if (guiGameBtLedGet(i, ledRgb)) { // colour chosen for the slot (black = Off: show it gray)
+            if (ledRgb[0] || ledRgb[1] || ledRgb[2])
+                rmDrawRect(x0, y0, 3, BTHUD_CARD_H, GS_SETREG_RGBA(ledRgb[0], ledRgb[1], ledRgb[2], 0x80));
+            else
+                rmDrawRect(x0, y0, 3, BTHUD_CARD_H, GS_SETREG_RGBA(0x50, 0x50, 0x58, 0x80));
+        } else {
+            rmDrawRect(x0, y0, 3, BTHUD_CARD_H, slotColors[i]);
+        }
+
+        // slot and type
+        snprintf(text, sizeof(text), "%d %s", i + 1, typeNames[info->type & 3]);
+        fntRenderString(gTheme->fonts[0], x0 + 9, y0 + 3, ALIGN_LEFT, 0, 0, text, gTheme->textColor);
+
+        // level colour
+        if (charging)
             color = GS_SETREG_RGBA(0x30, 0x90, 0xFF, 0x80);
-        else if (!known)
-            color = GS_SETREG_RGBA(0x80, 0x80, 0x80, 0x80);
-        else if (info->percent > 40)
+        else if (full || (known && info->percent > 40))
             color = GS_SETREG_RGBA(0x30, 0xC0, 0x40, 0x80);
-        else if (info->percent > 20)
+        else if (known && info->percent > 20)
             color = GS_SETREG_RGBA(0xE0, 0xC0, 0x20, 0x80);
-        else
-            color = GS_SETREG_RGBA(0xE0, 0x30, 0x30, 0x80);
-
-        if (info->state == DS34BT_BAT_CHARGING && ((guiFrameId >> 5) & 1)) // charging: the bar breathes
-            fill = (fill * 3) / 4;
-
-        if (fill > 0)
-            rmDrawRect(x + 1, y + 3, fill, BTHUD_BAT_H - 2, color);
-
-        // text, right aligned just left of the battery
-        if (info->state == DS34BT_BAT_FULL)
-            snprintf(text, sizeof(text), "%d %s cheia", i + 1, typeNames[info->type & 3]);
-        else if (info->state == DS34BT_BAT_CHARGING && known)
-            snprintf(text, sizeof(text), "%d %s %d%% carregando", i + 1, typeNames[info->type & 3], info->percent);
-        else if (info->state == DS34BT_BAT_CHARGING)
-            snprintf(text, sizeof(text), "%d %s carregando", i + 1, typeNames[info->type & 3]);
         else if (known)
-            snprintf(text, sizeof(text), "%d %s %d%%", i + 1, typeNames[info->type & 3], info->percent);
+            color = GS_SETREG_RGBA(0xE0, 0x30, 0x30, 0x80);
         else
-            snprintf(text, sizeof(text), "%d %s", i + 1, typeNames[info->type & 3]);
+            color = GS_SETREG_RGBA(0x90, 0x90, 0x98, 0x80);
 
-        fntRenderString(gTheme->fonts[0], x - 6, y, ALIGN_RIGHT, 0, 0, text, gTheme->textColor);
+        // battery: frame, tip and 5 segments (1% already lights the first one)
+        bx = x0 + 52;
+        by = y0 + (BTHUD_CARD_H - BTHUD_BAT_H) / 2;
+        rmDrawRect(bx, by, BTHUD_BAT_W, 1, frameColor);
+        rmDrawRect(bx, by + BTHUD_BAT_H - 1, BTHUD_BAT_W, 1, frameColor);
+        rmDrawRect(bx, by, 1, BTHUD_BAT_H, frameColor);
+        rmDrawRect(bx + BTHUD_BAT_W - 1, by, 1, BTHUD_BAT_H, frameColor);
+        rmDrawRect(bx + BTHUD_BAT_W, by + 3, 2, BTHUD_BAT_H - 6, frameColor);
+
+        lit = full ? BTHUD_SEGMENTS : (known ? (info->percent + 19) / 20 : 0);
+        if (charging && lit < BTHUD_SEGMENTS && ((guiFrameId >> 4) & 1))
+            lit++; // charging: the next segment blinks
+        for (s = 0; s < BTHUD_SEGMENTS; s++)
+            rmDrawRect(bx + 2 + s * (BTHUD_SEG_W + BTHUD_SEG_GAP), by + 2, BTHUD_SEG_W, BTHUD_BAT_H - 4, s < lit ? color : emptyColor);
+
+        // percentage
+        if (known)
+            snprintf(text, sizeof(text), "%d%%", info->percent);
+        else
+            snprintf(text, sizeof(text), "--");
+        fntRenderString(gTheme->fonts[0], bx + BTHUD_BAT_W + 8, y0 + 3, ALIGN_LEFT, 0, 0, text, gTheme->textColor);
+
+        // charging bolt / full check, right edge
+        if (charging)
+            guiBtHudBolt(x0 + BTHUD_CARD_W - 16, y0 + 6, GS_SETREG_RGBA(0xFF, 0xD0, 0x30, 0x80));
+        else if (full)
+            guiBtHudCheck(x0 + BTHUD_CARD_W - 18, y0 + 6, GS_SETREG_RGBA(0x30, 0xC0, 0x40, 0x80));
 
         row++;
     }

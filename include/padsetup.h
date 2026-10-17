@@ -38,6 +38,19 @@ enum {
 // left, l2, r2, l1, r1, triangle, circle, cross, square). For remap[] a value of 0xFF disables the button.
 #define PADSETUP_TARGET_DISABLED 0xFF
 
+// Lightbar colour of each of the 4 slots: index into this palette, 0 = default pattern of the slot.
+// Stored in led[2] (slot 0 = low nibble of led[0], ... slot 3 = high nibble of led[1]); it travels to the in-game pad emulator with the rest of the blob.
+#define PADSETUP_LED_SLOTS 4
+#define PADSETUP_LED_COUNT 10 // Default, Red, Green, Blue, Yellow, Cyan, Magenta, White, Orange, Off
+
+static inline const unsigned char *padsetup_led_rgb(int idx)
+{
+    static const unsigned char rgb[PADSETUP_LED_COUNT][3] = {
+        {0, 0, 0}, {255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 200, 0}, {0, 255, 255}, {255, 0, 255}, {255, 255, 255}, {255, 90, 0}, {0, 0, 0}};
+
+    return rgb[(idx > 0 && idx < PADSETUP_LED_COUNT) ? idx : 0];
+}
+
 typedef struct
 {
     unsigned char magic[2];
@@ -50,10 +63,31 @@ typedef struct
     unsigned char ps_hold_time;  // 0 = 1s, 1 = 2s, 2 = 3s
     unsigned char reserved0;
     unsigned char remap[16];     // per DS2 button: 0 = unchanged, 0xFF = disabled, else target + 1
-    unsigned char reserved1[2];
+    unsigned char led[2];        // lightbar colour per slot (DS4/DualSense), 4 bits each, see padsetup_get_led()
 } __attribute__((packed)) padsetup_t;
 
 _Static_assert(sizeof(padsetup_t) == PADSETUP_ARG_LEN, "padsetup_t size");
+
+static inline int padsetup_get_led(const padsetup_t *s, int slot)
+{
+    int v;
+
+    if (slot < 0 || slot >= PADSETUP_LED_SLOTS)
+        return 0;
+    v = (s->led[slot >> 1] >> ((slot & 1) * 4)) & 0x0F;
+    return v < PADSETUP_LED_COUNT ? v : 0; // anything unknown = default
+}
+
+static inline void padsetup_set_led(padsetup_t *s, int slot, int idx)
+{
+    int sh = (slot & 1) * 4;
+
+    if (slot < 0 || slot >= PADSETUP_LED_SLOTS)
+        return;
+    if (idx < 0 || idx >= PADSETUP_LED_COUNT)
+        idx = 0;
+    s->led[slot >> 1] = (unsigned char)((s->led[slot >> 1] & ~(0x0F << sh)) | (idx << sh));
+}
 
 static inline void padsetup_default(padsetup_t *s)
 {

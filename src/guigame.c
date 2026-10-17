@@ -796,6 +796,54 @@ void guiGameSetupModuleArg(unsigned char *out)
     memcpy(out, &gPadSetup, PADSETUP_ARG_LEN);
 }
 
+/*
+ * Lightbar colour per slot (Controller Setup). The same value goes to the menu driver here and, inside the game,
+ * to bt_pademu through the Controller Setup blob.
+ */
+void guiGameBtLedApply(int slot)
+{
+    u8 led[4];
+    int idx;
+
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+
+    idx = padsetup_get_led(&gPadSetup, slot);
+    led[0] = padsetup_led_rgb(idx)[0];
+    led[1] = padsetup_led_rgb(idx)[1];
+    led[2] = padsetup_led_rgb(idx)[2];
+    led[3] = idx ? 0x02 : 0x00; // bit1: colour chosen by the user (kept by the driver), 0 = default pattern of the slot
+    ds34bt_set_led(slot, led);
+}
+
+// Called when a pad connects to the menu driver: only a colour the user picked is sent, the default pattern is already there.
+void guiGameBtLedOnConnect(int slot)
+{
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+
+    if (padsetup_get_led(&gPadSetup, slot))
+        guiGameBtLedApply(slot);
+}
+
+// Colour picked for the slot (rgb[3]); returns 0 when the slot uses its default colour
+int guiGameBtLedGet(int slot, u8 *rgb)
+{
+    int idx;
+
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+
+    idx = padsetup_get_led(&gPadSetup, slot);
+    if (!idx)
+        return 0;
+
+    rgb[0] = padsetup_led_rgb(idx)[0];
+    rgb[1] = padsetup_led_rgb(idx)[1];
+    rgb[2] = padsetup_led_rgb(idx)[2];
+    return 1;
+}
+
 static int btKeysCount = 0; // copy of the saved keys: OPL frees its config (configEnd) before launching a game
 
 static int guiGameBtKeysLoad(void)
@@ -1018,8 +1066,6 @@ static void guiGameShowBtSearch(void)
 #define BTT_RUMBLE_FRAMES 30 // about half a second at 60 Hz
 
 static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta", "White", "Orange", "Off", NULL};
-static const u8 btLedRgb[][3] = {
-    {0, 0, 0}, {255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 200, 0}, {0, 255, 255}, {255, 0, 255}, {255, 255, 255}, {255, 90, 0}, {0, 0, 0}};
 
 // DS4 output report variants (clone pads don't all accept the same one); see hid_LEDRumble in modules/ds34bt/iop/ds34bt.c
 static const char *btModeNames[] = {"A: CRC, interrupt", "B: raw, interrupt", "C: raw, control", "D: CRC, control", "E: CRC, flags FF", NULL};
@@ -1056,9 +1102,9 @@ static void guiGameBtTestApplyLed(int sel)
 {
     u8 led[4];
 
-    led[0] = btLedRgb[sel][0];
-    led[1] = btLedRgb[sel][1];
-    led[2] = btLedRgb[sel][2];
+    led[0] = padsetup_led_rgb(sel)[0];
+    led[1] = padsetup_led_rgb(sel)[1];
+    led[2] = padsetup_led_rgb(sel)[2];
     led[3] = (sel ? 0x02 : 0x00) | (bttModeSel << 2); // bit1: colour chosen by the user, 0 = default pattern of the port; bits 2-4: DS4 report variant
     ds34bt_set_led(0, led);
 }
@@ -1177,6 +1223,8 @@ static void guiGameSetupToDialog(void)
     diaSetInt(diaPadEmuSetup, PADSET_PS_TAP, gPadSetup.ps_tap);
     diaSetInt(diaPadEmuSetup, PADSET_PS_HOLD, gPadSetup.ps_hold);
     diaSetInt(diaPadEmuSetup, PADSET_PS_TIME, gPadSetup.ps_hold_time);
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
+        diaSetInt(diaPadEmuSetup, PADSET_LED0 + i, padsetup_get_led(&gPadSetup, i));
 }
 
 static void guiGameSetupFromDialog(void)
@@ -1195,6 +1243,10 @@ static void guiGameSetupFromDialog(void)
         gPadSetup.ps_hold = (unsigned char)v;
     if (diaGetInt(diaPadEmuSetup, PADSET_PS_TIME, &v) && v >= 0 && v <= 2)
         gPadSetup.ps_hold_time = (unsigned char)v;
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++) {
+        if (diaGetInt(diaPadEmuSetup, PADSET_LED0 + i, &v) && v >= 0 && v < PADSETUP_LED_COUNT)
+            padsetup_set_led(&gPadSetup, i, v);
+    }
 }
 
 static void guiGameShowPadRemap(void)
@@ -1236,6 +1288,8 @@ static void guiGameShowPadSetup(void)
     diaSetEnum(diaPadEmuSetup, PADSET_PS_TAP, setupTargetNames);
     diaSetEnum(diaPadEmuSetup, PADSET_PS_HOLD, setupPsHold);
     diaSetEnum(diaPadEmuSetup, PADSET_PS_TIME, setupPsTime);
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
+        diaSetEnum(diaPadEmuSetup, PADSET_LED0 + i, btLedNames);
     guiGameSetupToDialog();
 
     while (1) {
@@ -1254,6 +1308,13 @@ static void guiGameShowPadSetup(void)
 
     guiGameSetupFromDialog();
     guiGameSetupSave();
+
+    // pads already connected to the menu take the new colours right away (Default = back to the pattern of the slot)
+    ds34bt_update_info();
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++) {
+        if (ds34bt_cached_info(i)->connected)
+            guiGameBtLedApply(i);
+    }
 }
 
 void guiGameShowPadEmuConfig(int forceGlobal)
