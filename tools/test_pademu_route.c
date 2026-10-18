@@ -83,6 +83,18 @@ int main(void)
     expect("no mtap game: 1P is slot A", pademu_route_port(&r, 0), 0);
     expect("no mtap game: 2P real", pademu_route_port(&r, 1), PADEMU_ROUTE_REAL);
 
+    /* 6. multitap commands: only the emulated multitap port is intercepted, the other port reaches the real SIO2 */
+    r = (pademu_route_t) {.mtap_enabled = 0, .mtap_port = 0};
+    expect("mtap off: no interception p0", pademu_route_is_mtap_port(&r, 0), 0);
+    expect("mtap off: no interception p1", pademu_route_is_mtap_port(&r, 1), 0);
+    for (mport = 0; mport < 2; mport++) {
+        r = (pademu_route_t) {.mtap_enabled = 1, .mtap_port = (unsigned char)mport};
+        expect("mtap port intercepted", pademu_route_is_mtap_port(&r, mport), 1);
+        expect("other port passes through", pademu_route_is_mtap_port(&r, 1 - mport), 0);
+        expect("port 2 passes through", pademu_route_is_mtap_port(&r, 2), 0);
+        expect("port 3 passes through", pademu_route_is_mtap_port(&r, 3), 0);
+    }
+
     printf("%d checks, %d failures\n", checks, failures);
     return failures ? 1 : 0;
 }

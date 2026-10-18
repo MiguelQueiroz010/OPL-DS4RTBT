@@ -301,7 +301,7 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
     port2 = td->regdata[1] & 0x03;
 
     if ((ctrl & 0xF0) == 0x40) {
-        if (td->port_ctrl2[port1] == 0x00030064 && td->in[0] == 0x21 && pad_route.mtap_enabled) {
+        if (td->port_ctrl2[port1] == 0x00030064 && td->in[0] == 0x21 && pademu_route_is_mtap_port(&pad_route, port1)) {
             sio2proc = pademu_mtap;
         } else if (td->in[0] == 0x01) {
             if (port2 == 1) { // 2 sio cmds: port 1 and port 2 polled together

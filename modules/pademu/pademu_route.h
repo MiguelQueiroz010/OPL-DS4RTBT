@@ -54,4 +54,11 @@ static inline int pademu_route_port(const pademu_route_t *r, int port)
     return slot;
 }
 
+// true when a multitap command (0x21 device) sent to `port` belongs to the multitap PADEMU emulates.
+// Commands for any other port go to the console's SIO2 untouched, so a real multitap there keeps working.
+static inline int pademu_route_is_mtap_port(const pademu_route_t *r, int port)
+{
+    return r->mtap_enabled && port >= 0 && port <= 1 && port == r->mtap_port;
+}
+
 #endif
