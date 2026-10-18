@@ -295,7 +295,14 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
             } else {
                 if (mtap_inited) {
                     if (mtap_port == port1) {
-                        sio2proc = pademu;
+                        /*
+                         * The multitap of this port is emulated (see pademu_mtap), so no real pad can be in slots B..D:
+                         * those always go to the emulator. Slot A is the only one that can still be a real DS2, the one
+                         * plugged into the port: when no controller is emulated there, leave the transfer to the hardware.
+                         * (An emulated slot A, even without a connected pad, keeps answering "no pad" as before.)
+                         */
+                        if ((mtap_slot & 3) != 0 || pad[0].enabled)
+                            sio2proc = pademu;
                     }
                 } else {
                     if (pad[port1].enabled) { // emulating this port

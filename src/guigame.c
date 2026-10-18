@@ -578,6 +578,8 @@ static char *ver_to_str(char *str, u8 ma, u16 mi)
     return str;
 }
 
+static int padEmuMtapPrev; // multitap state when the dialog opened / at the last update: the default slots are set only when it is switched on
+
 static int guiGamePadEmuUpdater(int modified)
 {
     int PadEmuMode, PadPort, PadEmuVib, PadEmuPort, PadEmuMtap, PadEmuMtapPort, PadEmuWorkaround;
@@ -632,8 +634,9 @@ static int guiGamePadEmuUpdater(int modified)
     if (modified) {
         if (PadEmuMtap) {
             diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[PadEmuMtapPort]);
-            diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_PORT, (PadPort == 0) & EnablePadEmu);
-            PadEmuSettings |= 0x00000E00;
+            diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_PORT, EnablePadEmu); // every slot can be chosen: slot A unticked = the real DS2 of the port
+            if (!padEmuMtapPrev)
+                PadEmuSettings |= 0x00000E00; // multitap just switched on: slots B, C and D start emulated; after that each slot keeps its own choice
         } else {
             diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[0]);
             diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_PORT, EnablePadEmu);
@@ -651,6 +654,7 @@ static int guiGamePadEmuUpdater(int modified)
             oldPadPort = PadPort;
         }
     }
+    padEmuMtapPrev = PadEmuMtap;
 
     PadEmuSettings |= PadEmuMode | (PadEmuPort << (8 + PadPort)) | (PadEmuVib << (16 + PadPort)) | (PadEmuMtap << 24) | ((PadEmuMtapPort - 1) << 25) | (PadEmuWorkaround << 26);
     PadEmuSettings &= (~(PadEmuMode ? 0 : 1) & ~(!PadEmuPort << (8 + PadPort)) & ~(!PadEmuVib << (16 + PadPort)) & ~(!PadEmuMtap << 24) & ~(!(PadEmuMtapPort - 1) << 25) & ~(!PadEmuWorkaround << 26));
@@ -1396,9 +1400,9 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND_STR, PadEmuSettings & EnablePadEmu);
 
+    padEmuMtapPrev = PadEmuMtap;
     if (PadEmuMtap) {
-        diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[PadEmuMtapPort]);
-        PadEmuSettings |= 0x00000E00;
+        diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[PadEmuMtapPort]); // slot bits stay as saved
     } else {
         diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[0]);
         PadEmuSettings &= 0xFFFF03FF;
