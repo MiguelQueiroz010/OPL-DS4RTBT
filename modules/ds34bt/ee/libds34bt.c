@@ -21,6 +21,7 @@
 #define DS34BT_GET_DEBUG     16
 #define DS34BT_GET_PADDEBUG  17
 #define DS34BT_GET_INFO_ALL  18
+#define DS34BT_DISCONNECT    19
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -211,6 +212,20 @@ int ds34bt_get_search(int index, int *count, u8 *bdaddr, char *name)
     }
 
     return rpcbuf[0];
+}
+
+// Drops the connected pad of this port (it can connect again by pressing PS). Returns 1 if a pad was disconnected.
+int ds34bt_disconnect(int port)
+{
+    if (!ds34bt_inited)
+        return 0;
+
+    rpcbuf[0] = port;
+
+    if (SifCallRpc(&ds34bt, DS34BT_DISCONNECT, 0, rpcbuf, 1, rpcbuf, 1, NULL, NULL) == 0)
+        return rpcbuf[0];
+
+    return 0;
 }
 
 int ds34bt_pair(int index)

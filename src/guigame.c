@@ -580,14 +580,21 @@ static char *ver_to_str(char *str, u8 ma, u16 mi)
 
 static int padEmuMtapPrev; // multitap state when the dialog opened / at the last update: the default slots are set only when it is switched on
 
-// Bits of PadEmuSettings that the dialog owns: mode (byte 0), emulation of the 4 slots (bits 8-11), vibration of the 4 slots (bits 16-19),
-// multitap on/off, multitap port and the fake DS3 workaround (bits 24-26)
-#define PADEMU_DIALOG_MASK 0x070F0FFF
+// Bits of PadEmuSettings that the main dialog owns: mode (byte 0), emulation of the 4 slots (bits 8-11), vibration of the 4 slots (bits 16-19),
+// multitap on/off and multitap port (bits 24-25). The fake DS3 workaround (bit 26) belongs to the Bluetooth Pads dialog.
+#define PADEMU_DIALOG_MASK 0x030F0FFF
+
+// What each port / multitap slot does: one choice per row (emulation bit + vibration bit of the slot)
+#define SLOT_OFF        0
+#define SLOT_ON         1
+#define SLOT_ON_VIBRATE 2
+static const char *padEmuSlotModes[] = {"Off", "On", "On + Vibration", NULL};
+static char padEmuSlotNames[4][12];
 
 static int guiGamePadEmuUpdater(int modified)
 {
-    int PadEmuMode, PadEmuMtap, PadEmuMtapPort, PadEmuWorkaround, i, slots, shown;
-    int emu[4], vib[4];
+    int PadEmuMode = 0, PadEmuMtap = 0, PadEmuMtapPort = 1, i, slots, shown, bt;
+    int val[4] = {SLOT_OFF, SLOT_OFF, SLOT_OFF, SLOT_OFF};
     int previousSource = gPadEmuSource;
 
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, &gPadEmuSource);
@@ -607,114 +614,153 @@ static int guiGamePadEmuUpdater(int modified)
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_MODE, &PadEmuMode);
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP, &PadEmuMtap);
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, &PadEmuMtapPort);
-    diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, &PadEmuWorkaround);
-    for (i = 0; i < 4; i++) {
-        diaGetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, &emu[i]);
-        diaGetInt(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, &vib[i]);
-    }
+    for (i = 0; i < 4; i++)
+        diaGetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, &val[i]);
 
     slots = PadEmuMtap ? 4 : 2; // rows of the slot table in use: 1P/2P, or the four slots of the multitap
 
     if (modified) {
         if (PadEmuMtap && !padEmuMtapPrev) {
             // multitap just switched on: slots B, C and D start emulated; after that each slot keeps its own choice
-            for (i = 1; i < 4; i++)
-                emu[i] = 1;
+            for (i = 1; i < 4; i++) {
+                if (val[i] == SLOT_OFF)
+                    val[i] = SLOT_ON;
+            }
         }
         if (!PadEmuMtap) {
             // without the multitap there are only the two ports
-            for (i = 2; i < 4; i++)
-                emu[i] = vib[i] = 0;
+            val[2] = val[3] = SLOT_OFF;
         }
-        for (i = 0; i < 4; i++) {
-            diaSetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, emu[i]);
-            diaSetInt(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, vib[i]);
-        }
+        for (i = 0; i < 4; i++)
+            diaSetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, val[i]);
     }
     padEmuMtapPrev = PadEmuMtap;
 
+    bt = (PadEmuMode == 1) & EnablePadEmu;
+
     diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MTAP, EnablePadEmu);
     diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, PadEmuMtap & EnablePadEmu);
-
     diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MODE, EnablePadEmu);
 
-    // slot table: names follow the multitap (1P 2P / 1A to 1D / 2A to 2D), rows without a slot are hidden
+    // ports to emulate: names follow the multitap (Port 1 / 2, or 1A to 1D / 2A to 2D), rows without a slot are hidden
     for (i = 0; i < 4; i++) {
         shown = i < slots;
 
-        if (shown)
-            diaSetLabel(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, PadEmuPorts_enums[PadEmuMtap ? PadEmuMtapPort : 0][i]);
+        if (shown) {
+            if (PadEmuMtap)
+                snprintf(padEmuSlotNames[i], sizeof(padEmuSlotNames[i]), "Port %s", PadEmuPorts_enums[PadEmuMtapPort][i]);
+            else
+                snprintf(padEmuSlotNames[i], sizeof(padEmuSlotNames[i]), "Port %d", i + 1);
+            diaSetLabel(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, padEmuSlotNames[i]);
+        }
 
         diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, shown);
-        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_ESTR0 + i, shown);
         diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, shown);
-        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_VSTR0 + i, shown);
-        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, shown);
-
         diaSetEnabled(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, EnablePadEmu);
-        diaSetEnabled(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, emu[i] & EnablePadEmu);
     }
 
-    diaSetVisible(diaPadEmuConfig, PADCFG_USBDG_MAC, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAD_MAC, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAIR, (PadEmuMode == 1) & EnablePadEmu);
-
-    diaSetVisible(diaPadEmuConfig, PADCFG_USBDG_MAC_STR, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAD_MAC_STR, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAIR_STR, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH_STR, (PadEmuMode == 1) & EnablePadEmu);
-
-    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP_STR, (PadEmuMode == 1) & EnablePadEmu);
-
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTINFO, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, (PadEmuMode == 1) & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND_STR, (PadEmuMode == 1) & EnablePadEmu);
+    // pad behaviour and wireless pads only exist in Bluetooth mode
+    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, bt);
+    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP_STR, bt);
+    diaSetVisible(diaPadEmuConfig, PADCFG_BT_OPEN, bt);
+    diaSetVisible(diaPadEmuConfig, PADCFG_BT_OPEN_STR, bt);
 
     // PadEmuSettings is rebuilt from the dialog; bits the dialog does not own are left alone
     PadEmuSettings &= ~PADEMU_DIALOG_MASK;
     PadEmuSettings |= PadEmuMode & 0xFF;
     for (i = 0; i < slots; i++)
-        PadEmuSettings |= ((emu[i] & 1) << (8 + i)) | ((vib[i] & 1) << (16 + i));
-    PadEmuSettings |= ((PadEmuMtap & 1) << 24) | (((PadEmuMtapPort - 1) & 1) << 25) | ((PadEmuWorkaround & 1) << 26);
+        PadEmuSettings |= (((val[i] >= SLOT_ON) & 1) << (8 + i)) | (((val[i] == SLOT_ON_VIBRATE) & 1) << (16 + i));
+    PadEmuSettings |= ((PadEmuMtap & 1) << 24) | (((PadEmuMtapPort - 1) & 1) << 25);
 
-    if (PadEmuMode == 1) {
-        if (ds34bt_get_status(0) & DS34BT_STATE_USB_CONFIGURED) {
-            if (dg_discon) {
-                dgmacset = 0;
-                dg_discon = 0;
-            }
-            if (!dgmacset) {
-                if (ds34bt_get_bdaddr(dg_mac)) {
-                    dgmacset = 1;
-                    diaSetLabel(diaPadEmuConfig, PADCFG_USBDG_MAC, bdaddr_to_str(dg_mac, dg_str));
-                } else {
-                    dgmacset = 0;
-                }
-            }
-        } else {
-            dg_discon = 1;
+    return 0;
+}
+
+/*
+ * Bluetooth Pads dialog: the adapter, the pads connected right now (with a Disconnect button each),
+ * Search / Pair new pad, DualShock 3 pairing through the USB cable and the adapter information.
+ */
+static char btPadNames[DS34BT_PADS_MAX][40];
+static int btPadsTimer;
+
+static void guiGameBtPadsRefresh(void)
+{
+    static const char *types[] = {"", "DualShock 3", "DualShock 4", "DualSense"};
+    int i, any = 0;
+
+    ds34bt_update_info(); // one RPC for all the ports
+
+    for (i = 0; i < DS34BT_PADS_MAX; i++) {
+        const ds34bt_info_t *info = ds34bt_cached_info(i);
+        int on = info->connected;
+
+        if (on) {
+            const char *type = types[info->type <= DS34BT_TYPE_DS5 ? info->type : 0];
+
+            if (info->percent <= 100)
+                snprintf(btPadNames[i], sizeof(btPadNames[i]), "Pad %d: %s %d%%", i + 1, type, info->percent);
+            else
+                snprintf(btPadNames[i], sizeof(btPadNames[i]), "Pad %d: %s", i + 1, type);
+            diaSetLabel(diaPadEmuBtPads, PADCFG_BTP_LABEL0 + i, btPadNames[i]);
+            any = 1;
         }
 
-        if (!dgmacset) {
-            diaSetLabel(diaPadEmuConfig, PADCFG_USBDG_MAC, _l(_STR_NOT_CONNECTED));
-        }
-
-        if (ds34usb_get_status(0) & DS34USB_STATE_RUNNING) {
-            if (!ds3macset) {
-                if (ds34usb_get_bdaddr(0, ds3_mac)) {
-                    ds3macset = 1;
-                    diaSetLabel(diaPadEmuConfig, PADCFG_PAD_MAC, bdaddr_to_str(ds3_mac, ds3_str));
-                } else {
-                    ds3macset = 0;
-                }
-            }
-        } else {
-            diaSetLabel(diaPadEmuConfig, PADCFG_PAD_MAC, _l(_STR_NOT_CONNECTED));
-            ds3macset = 0;
-        }
+        diaSetVisible(diaPadEmuBtPads, PADCFG_BTP_LABEL0 + i, on);
+        diaSetVisible(diaPadEmuBtPads, PADCFG_BTP_DISC0 + i, on);
     }
+
+    diaSetVisible(diaPadEmuBtPads, PADCFG_BTP_NONE, !any);
+}
+
+static int guiGamePadEmuBtPadsUpdater(int modified)
+{
+    int workaround = 0;
+
+    // the workaround lives in this dialog but is stored with the rest of the settings
+    diaGetInt(diaPadEmuBtPads, PADCFG_PADEMU_WORKAROUND, &workaround);
+    PadEmuSettings = (PadEmuSettings & ~(1 << 26)) | ((workaround & 1) << 26);
+
+    if ((btPadsTimer++ % 30) == 0) // about twice per second
+        guiGameBtPadsRefresh();
+
+    if (ds34bt_get_status(0) & DS34BT_STATE_USB_CONFIGURED) {
+        if (dg_discon) {
+            dgmacset = 0;
+            dg_discon = 0;
+        }
+        if (!dgmacset) {
+            if (ds34bt_get_bdaddr(dg_mac)) {
+                dgmacset = 1;
+                diaSetLabel(diaPadEmuBtPads, PADCFG_USBDG_MAC, bdaddr_to_str(dg_mac, dg_str));
+            } else {
+                dgmacset = 0;
+            }
+        }
+    } else {
+        dg_discon = 1;
+    }
+
+    if (!dgmacset)
+        diaSetLabel(diaPadEmuBtPads, PADCFG_USBDG_MAC, _l(_STR_NOT_CONNECTED));
+
+    if (ds34usb_get_status(0) & DS34USB_STATE_RUNNING) {
+        if (!ds3macset) {
+            if (ds34usb_get_bdaddr(0, ds3_mac)) {
+                ds3macset = 1;
+                diaSetLabel(diaPadEmuBtPads, PADCFG_PAD_MAC, bdaddr_to_str(ds3_mac, ds3_str));
+            } else {
+                ds3macset = 0;
+            }
+        }
+    } else {
+        diaSetLabel(diaPadEmuBtPads, PADCFG_PAD_MAC, _l(_STR_NOT_CONNECTED));
+        ds3macset = 0;
+    }
+
+    // the DS3 pairing rows only make sense with a DualShock 3 plugged in
+    diaSetVisible(diaPadEmuBtPads, PADCFG_PAD_MAC_STR, ds3macset);
+    diaSetVisible(diaPadEmuBtPads, PADCFG_PAD_MAC, ds3macset);
+    diaSetVisible(diaPadEmuBtPads, PADCFG_PAIR_STR, ds3macset);
+    diaSetVisible(diaPadEmuBtPads, PADCFG_PAIR, ds3macset);
 
     return 0;
 }
@@ -963,6 +1009,15 @@ static int guiGameBtDebugUpdate(u8 *d)
     return 1;
 }
 
+// The adapter / driver lines are for troubleshooting only: they appear when something went wrong
+static void guiGameBtSearchShowDebug(int show)
+{
+    int i;
+
+    for (i = 0; i < 4; i++)
+        diaSetVisible(diaPadEmuBtSearch, PADCFG_BTS_DBG0 + i, show);
+}
+
 static void guiGameBtSearchStart(void)
 {
     u8 d[DS34BT_DEBUG_SIZE];
@@ -970,13 +1025,16 @@ static void guiGameBtSearchStart(void)
     btsCount = 0;
     btsShown = 0;
     guiGameBtSearchShowDevices(0);
+    guiGameBtSearchShowDebug(0);
 
     if (ds34bt_search_start()) {
         snprintf(btsStatus, sizeof(btsStatus), "Searching...");
     } else if (guiGameBtDebugUpdate(d)) {
         snprintf(btsStatus, sizeof(btsStatus), "Bluetooth adapter not ready (init stage %d/7). See below.", d[1]);
+        guiGameBtSearchShowDebug(1);
     } else {
         snprintf(btsStatus, sizeof(btsStatus), "Bluetooth adapter not ready.");
+        guiGameBtSearchShowDebug(1);
     }
 }
 
@@ -1011,6 +1069,7 @@ static int guiGameBtSearchUpdater(int modified)
             break;
         case DS34BT_SEARCH_ERROR:
             snprintf(btsStatus, sizeof(btsStatus), "Search failed. Try again.");
+            guiGameBtSearchShowDebug(1);
             break;
         case DS34BT_SEARCH_DONE:
             if (btsShown)
@@ -1028,8 +1087,10 @@ static int guiGameBtSearchUpdater(int modified)
             guiGameBtSearchShowDevices(1);
             if (btsCount > 0)
                 snprintf(btsStatus, sizeof(btsStatus), "Found %d. Select the pad to pair:", btsCount);
-            else
+            else {
                 snprintf(btsStatus, sizeof(btsStatus), "Nothing found. Is the light flashing fast? Search again.");
+                guiGameBtSearchShowDebug(1);
+            }
             break;
         default:
             break;
@@ -1076,7 +1137,7 @@ static void guiGameShowBtSearch(void)
         } else if (result == BTS_RESULT_PAIRED) {
             if (ds34bt_get_pair(bdaddr, key) == DS34BT_PAIR_DONE) {
                 guiGameBtKeysSave(bdaddr, key);
-                snprintf(btsStatus, sizeof(btsStatus), "Paired and saved: %s", btsNames[btsPairIdx]);
+                snprintf(btsStatus, sizeof(btsStatus), "Paired: %s. Press PS to connect.", btsNames[btsPairIdx]);
             }
             btsPairIdx = -1;
             result = -1;
@@ -1269,48 +1330,29 @@ static void guiGameShowPadSetup(void)
     }
 }
 
-void guiGameShowPadEmuConfig(int forceGlobal)
+// Bluetooth Pads: connected pads (Disconnect), Search / Pair new pad, DualShock 3 pairing, adapter information
+static void guiGameShowBtPads(void)
 {
-    const char *settingsSource[] = {_l(_STR_GLOBAL_SETTINGS), _l(_STR_PERGAME_SETTINGS), NULL};
-    const char *PadEmuModes[] = {_l(_STR_DS34USB_MODE), "DS3/DS4/DS5 BT", NULL}; // fixed label: says DualSense in every language
+    int result = -1, i;
 
-    int PadEmuMtap, i;
+    btPadsTimer = 0;
 
-    forceGlobalPadEmu = forceGlobal;
-    diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, !forceGlobalPadEmu);
+    while (1) {
+        result = diaExecuteDialog(diaPadEmuBtPads, result, 1, &guiGamePadEmuBtPadsUpdater);
 
-    if (forceGlobalPadEmu)
-        guiGameLoadPadEmuConfig(NULL, configGetByType(CONFIG_GAME));
+        if (result == UIID_BTN_OK || result == UIID_BTN_CANCEL || result == 0)
+            break;
 
-    diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, settingsSource);
-    diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_MODE, PadEmuModes);
+        if (result >= PADCFG_BTP_DISC0 && result < PADCFG_BTP_DISC0 + DS34BT_PADS_MAX) {
+            ds34bt_disconnect(result - PADCFG_BTP_DISC0);
+            DelayThread(300 * 1000); // let the driver close the link before the list is read again
+            btPadsTimer = 0;
+        }
 
-    PadEmuMtap = (PadEmuSettings >> 24) & 1;
-
-    diaSetVisible(diaPadEmuConfig, PADCFG_USBDG_MAC, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAD_MAC, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAIR, PadEmuSettings & EnablePadEmu);
-
-    diaSetVisible(diaPadEmuConfig, PADCFG_USBDG_MAC_STR, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAD_MAC_STR, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PAIR_STR, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH_STR, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP_STR, PadEmuSettings & EnablePadEmu);
-
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTINFO, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND_STR, PadEmuSettings & EnablePadEmu);
-
-    padEmuMtapPrev = PadEmuMtap;
-    if (!PadEmuMtap)
-        PadEmuSettings &= ~0x000C0C00; // only the two ports exist without the multitap: no emulation or vibration bits for slots C and D
-
-    int result = -1;
-
-    while (result != 0) {
-        result = diaExecuteDialog(diaPadEmuConfig, result, 1, &guiGamePadEmuUpdater);
+        if (result == PADCFG_BTSEARCH) {
+            guiGameShowBtSearch();
+            btPadsTimer = 0;
+        }
 
         if (result == PADCFG_PAIR) {
             if (ds3macset && dgmacset) {
@@ -1320,12 +1362,6 @@ void guiGameShowPadEmuConfig(int forceGlobal)
                 }
             }
         }
-
-        if (result == PADCFG_BTSEARCH)
-            guiGameShowBtSearch();
-
-        if (result == PADCFG_SETUP)
-            guiGameShowPadSetup();
 
         if (result == PADCFG_BTINFO) {
             for (i = PADCFG_FEAT_START; i < PADCFG_FEAT_END + 1; i++)
@@ -1342,6 +1378,43 @@ void guiGameShowPadEmuConfig(int forceGlobal)
             feat_set = 0;
             diaExecuteDialog(diaPadEmuInfo, -1, 1, &guiGamePadEmuInfoUpdater);
         }
+    }
+}
+
+void guiGameShowPadEmuConfig(int forceGlobal)
+{
+    const char *settingsSource[] = {_l(_STR_GLOBAL_SETTINGS), _l(_STR_PERGAME_SETTINGS), NULL};
+    const char *PadEmuModes[] = {_l(_STR_DS34USB_MODE), "DS3/DS4/DS5 BT", NULL}; // fixed label: says DualSense in every language
+
+    int PadEmuMtap, i;
+
+    forceGlobalPadEmu = forceGlobal;
+    diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, !forceGlobalPadEmu);
+
+    if (forceGlobalPadEmu)
+        guiGameLoadPadEmuConfig(NULL, configGetByType(CONFIG_GAME));
+
+    diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, settingsSource);
+    diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_MODE, PadEmuModes);
+    for (i = 0; i < 4; i++)
+        diaSetEnum(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, padEmuSlotModes);
+
+    PadEmuMtap = (PadEmuSettings >> 24) & 1;
+
+    padEmuMtapPrev = PadEmuMtap;
+    if (!PadEmuMtap)
+        PadEmuSettings &= ~0x000C0C00; // only the two ports exist without the multitap: no emulation or vibration bits for slots C and D
+
+    int result = -1;
+
+    while (result != 0) {
+        result = diaExecuteDialog(diaPadEmuConfig, result, 1, &guiGamePadEmuUpdater);
+
+        if (result == PADCFG_BT_OPEN)
+            guiGameShowBtPads();
+
+        if (result == PADCFG_SETUP)
+            guiGameShowPadSetup();
 
         if (result == UIID_BTN_OK)
             break;
@@ -1813,13 +1886,15 @@ static void guiGameLoadPadEmuConfig(config_set_t *configSet, config_set_t *confi
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_MODE, PadEmuSettings & 0xFF);
     for (int slot = 0; slot < 4; slot++) {
         int shown = PadEmuMtap || slot < 2;
+        int emu = shown ? (PadEmuSettings >> (8 + slot)) & 1 : 0;
+        int vib = shown ? (PadEmuSettings >> (16 + slot)) & 1 : 0;
 
-        diaSetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + slot, shown ? (PadEmuSettings >> (8 + slot)) & 1 : 0);
-        diaSetInt(diaPadEmuConfig, PADCFG_SLOT_VIB0 + slot, shown ? (PadEmuSettings >> (16 + slot)) & 1 : 0);
+        // one choice per slot: Off / On / On + Vibration (vibration without emulation does nothing)
+        diaSetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + slot, !emu ? SLOT_OFF : (vib ? SLOT_ON_VIBRATE : SLOT_ON));
     }
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP, PadEmuMtap);
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, PadEmuMtapPort);
-    diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, ((PadEmuSettings >> 26) & 1));
+    diaSetInt(diaPadEmuBtPads, PADCFG_PADEMU_WORKAROUND, ((PadEmuSettings >> 26) & 1));
 }
 
 static void guiGameLoadPadMacroConfig(config_set_t *configSet, config_set_t *configGame)

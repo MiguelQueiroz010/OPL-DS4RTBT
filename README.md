@@ -6,7 +6,7 @@ A fork of [Open PS2 Loader](https://github.com/ps2homebrew/Open-PS2-Loader) with
 
 - **Wireless pads in the OPL menu and in-game:** DualShock 4 (original and "Wireless Controller" clones), DualSense and DS3. Buttons, sticks, rumble and lightbar.
 - **Realtek dongles (RTL8761B/BU):** the firmware is loaded automatically at startup, in the menu and in-game.
-- **Wireless pairing from the OPL menu:** `Wireless Pairing → Search`, pick the pad from the list, done. No cable, no PC.
+- **Wireless pairing from the OPL menu:** `Bluetooth Pads → Search`, pick the pad from the list, done. The same screen shows the connected pads (type and battery) with a `Disconnect` button each. No cable, no PC.
 - **Up to 4 Bluetooth pads at once.** All of them can navigate the OPL menu.
 - **Battery indicator in the menu:** one card per connected pad (slot, type, 5-segment battery, percentage, charging bolt, low battery alert).
 - **Lightbar colour per slot** in `Controller Setup` (Default, Red, Green, Blue, Yellow, Cyan, Magenta, White, Orange or Off), applied in the menu and in-game.
@@ -38,7 +38,7 @@ Don't forget `Save Changes`. If you skip it, the game launches without the emula
 ### 2. Pair the pad (only once)
 
 **Wireless (recommended):**
-1. In the same PADEMU screen, go to `Wireless Pairing → Search`.
+1. In the same PADEMU screen, go to `Bluetooth Pads → Search`.
 2. Put the pad in pairing mode: **PS + Share** on the DualShock 4, **PS + Create** on the DualSense (hold until the light blinks fast).
 3. Your pad shows up in the list. Select it and wait for `Paired and saved`.
 
@@ -135,7 +135,7 @@ See [README-OPL.md](README-OPL.md) for the full upstream docs (game formats, dev
 - `include/btkeys.h`: per-pad link keys for wireless pairing
 - `include/padsetup.h`: Controller Setup blob (remapping, lightbar colour per slot)
 - `src/gui.c`: Bluetooth pads indicator (battery cards)
-- `src/guigame.c`, `src/dialogs.c`: `Wireless Pairing`, `Controller Setup` and `Controller Test` screens
+- `src/guigame.c`, `src/dialogs.c`: `Pad Emulator Settings`, `Bluetooth Pads`, `Controller Setup` and `Controller Test` screens
 
 ## Credits
 

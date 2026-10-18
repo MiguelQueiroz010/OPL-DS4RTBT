@@ -554,15 +554,15 @@ struct UIItem diaCheatConfig[] = {
     {UI_TERMINATOR}};
 
 #ifdef PADEMU
-// One row of the slot table: port / multitap slot name, then the emulation and vibration switches of that slot
-#define PADEMU_SLOT_ROW(n, name) \
-    {UI_LABEL, PADCFG_SLOT_LABEL0 + (n), 1, 1, -1, -50, 0, {.label = {name, -1}}}, \
+/*
+ * Pad Emulator Settings: one control per row (label on the left half, value on the right), so nothing overlaps.
+ * The rows of the slot table follow the multitap (1P 2P / 1A to 1D / 2A to 2D) and each one is a single choice:
+ * Off / On / On + Vibration. Everything about Bluetooth pads (adapter, connected pads, search, pairing) is in diaPadEmuBtPads.
+ */
+#define PADEMU_SLOT_ROW(n) \
+    {UI_LABEL, PADCFG_SLOT_LABEL0 + (n), 1, 1, -1, -50, 0, {.label = {"", -1}}}, \
     {UI_SPACER}, \
-    {UI_LABEL, PADCFG_SLOT_ESTR0 + (n), 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_PORT}}}, \
-    {UI_BOOL, PADCFG_SLOT_EMU0 + (n), 1, 1, _STR_HINT_PADEMU_PORT, 0, 0, {.intvalue = {1, 1}}}, \
-    {UI_SPACER}, \
-    {UI_LABEL, PADCFG_SLOT_VSTR0 + (n), 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_VIB}}}, \
-    {UI_BOOL, PADCFG_SLOT_VIB0 + (n), 1, 1, _STR_HINT_PADEMU_VIB, 0, 0, {.intvalue = {1, 1}}}, \
+    {UI_ENUM, PADCFG_SLOT_EMU0 + (n), 1, 1, _STR_HINT_PADEMU_PORT, 0, 0, {.intvalue = {0, 0}}}, \
     {UI_BREAK},
 
 struct UIItem diaPadEmuConfig[] = {
@@ -574,53 +574,88 @@ struct UIItem diaPadEmuConfig[] = {
     {UI_ENUM, PADCFG_PADEMU_SOURCE, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
     {UI_BREAK},
 
-    // pad emulator on/off and where the pads come from, on one row
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_ENABLE}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_ENABLE, 1, 1, _STR_HINT_PADEMU_ENABLE, 0, 0, {.intvalue = {1, 1}}},
+    {UI_BREAK},
+
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_MODE}}},
+    {UI_SPACER},
     {UI_ENUM, PADCFG_PADEMU_MODE, 1, 1, _STR_HINT_PADEMU_MODE, 0, 0, {.intvalue = {1, 1}}},
     {UI_BREAK},
 
-    // multitap emulation and its port, on one row
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_MTAP_ENABLE}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_MTAP, 1, 1, _STR_HINT_MTAP_ENABLE, 0, 0, {.intvalue = {1, 1}}},
+    {UI_BREAK},
+
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_MTAP_PORT}}},
+    {UI_SPACER},
     {UI_INT, PADCFG_PADEMU_MTAP_PORT, 1, 1, _STR_HINT_MTAP_PORT, 0, 0, {.intvalue = {1, 1, 1, 2}}},
     {UI_BREAK},
 
-    // slot table: 1P/2P, or the four slots of the multitap (the last two rows are hidden without it)
-    PADEMU_SLOT_ROW(0, "1P")
-    PADEMU_SLOT_ROW(1, "2P")
-    PADEMU_SLOT_ROW(2, "")
-    PADEMU_SLOT_ROW(3, "")
+    // ports to emulate: 1P/2P, or the four slots of the multitap (the last two rows are hidden without it)
+    {UI_SPLITTER},
+    PADEMU_SLOT_ROW(0)
+    PADEMU_SLOT_ROW(1)
+    PADEMU_SLOT_ROW(2)
+    PADEMU_SLOT_ROW(3)
 
-    // pad behaviour (buttons, touchpad, PS button): not part of the connection
+    // pad behaviour and wireless pads (Bluetooth mode only)
+    {UI_SPLITTER},
     {UI_LABEL, PADCFG_SETUP_STR, 1, 1, -1, -50, 0, {.label = {"Controller Setup", -1}}},
     {UI_SPACER},
     {UI_BUTTON, PADCFG_SETUP, 1, 1, -1, 0, 0, {.label = {"Open", -1}}},
     {UI_BREAK},
 
-    // connection area (Bluetooth mode only)
-    {UI_SPLITTER},
+    {UI_LABEL, PADCFG_BT_OPEN_STR, 1, 1, -1, -50, 0, {.label = {"Bluetooth Pads", -1}}},
+    {UI_SPACER},
+    {UI_BUTTON, PADCFG_BT_OPEN, 1, 1, -1, 0, 0, {.label = {"Open", -1}}},
     {UI_BREAK},
 
-    {UI_LABEL, PADCFG_BTSEARCH_STR, 1, 1, -1, -50, 0, {.label = {"Wireless Pairing", -1}}},
+    {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},
+
+    // end of dialog
+    {UI_TERMINATOR}};
+
+// One row per pad slot: what is connected on it (type + battery) and a button to disconnect it
+#define PADEMU_BTPAD_ROW(n) \
+    {UI_LABEL, PADCFG_BTP_LABEL0 + (n), 1, 1, -1, -50, 0, {.label = {"", -1}}}, \
+    {UI_SPACER}, \
+    {UI_BUTTON, PADCFG_BTP_DISC0 + (n), 1, 1, -1, 0, 0, {.label = {"Disconnect", -1}}}, \
+    {UI_BREAK},
+
+struct UIItem diaPadEmuBtPads[] = {
+    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"Bluetooth Pads", -1}}},
+    {UI_SPLITTER},
+
+    {UI_LABEL, PADCFG_USBDG_MAC_STR, 1, 1, -1, -50, 0, {.label = {"Adapter", -1}}},
+    {UI_SPACER},
+    {UI_LABEL, PADCFG_USBDG_MAC, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
+
+    // connected pads
+    {UI_SPLITTER},
+    PADEMU_BTPAD_ROW(0)
+    PADEMU_BTPAD_ROW(1)
+    PADEMU_BTPAD_ROW(2)
+    PADEMU_BTPAD_ROW(3)
+    {UI_LABEL, PADCFG_BTP_NONE, 1, 1, -1, 0, 0, {.label = {"No pad connected", -1}}},
+    {UI_BREAK},
+
+    // connecting: search lists the pads in pairing mode, pairing one saves it so it connects by itself with the PS button
+    {UI_SPLITTER},
+    {UI_LABEL, PADCFG_BTSEARCH_STR, 1, 1, -1, -50, 0, {.label = {"Search / Pair new pad", -1}}},
     {UI_SPACER},
     {UI_BUTTON, PADCFG_BTSEARCH, 1, 1, -1, 0, 0, {.label = {"Search", -1}}},
     {UI_BREAK},
 
-    {UI_LABEL, PADCFG_USBDG_MAC_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_USBDG_MAC}}},
-    {UI_SPACER},
-    {UI_LABEL, PADCFG_USBDG_MAC, 1, 1, -1, 0, 0, {.label = {"", -1}}},
-    {UI_BREAK},
-    {UI_LABEL, PADCFG_PAD_MAC_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PAD_MAC}}},
+    // DualShock 3 plugged in the USB port: copies the adapter address into it
+    {UI_LABEL, PADCFG_PAD_MAC_STR, 1, 1, -1, -50, 0, {.label = {"DS3 on USB cable", -1}}},
     {UI_SPACER},
     {UI_LABEL, PADCFG_PAD_MAC, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
-
-    {UI_LABEL, PADCFG_PAIR_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PAIR_PAD}}},
+    {UI_LABEL, PADCFG_PAIR_STR, 1, 1, -1, -50, 0, {.label = {"Pair DS3", -1}}},
     {UI_SPACER},
     {UI_BUTTON, PADCFG_PAIR, 1, 1, _STR_HINT_PAIRPAD, 0, 0, {.label = {NULL, _STR_PAIR}}},
     {UI_BREAK},
@@ -628,7 +663,11 @@ struct UIItem diaPadEmuConfig[] = {
     {UI_LABEL, PADCFG_PADEMU_WORKAROUND_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_WORKAROUND}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_WORKAROUND, 1, 1, _STR_HINT_PADEMU_WORKAROUND, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BUTTON, PADCFG_BTINFO, 1, 1, _STR_HINT_BTINFO, 0, 0, {.label = {NULL, _STR_BTINFO}}},
+    {UI_BREAK},
+
+    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {"Adapter information", -1}}},
+    {UI_SPACER},
+    {UI_BUTTON, PADCFG_BTINFO, 1, 1, _STR_HINT_BTINFO, 0, 0, {.label = {"Open", -1}}},
     {UI_BREAK},
 
     {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},

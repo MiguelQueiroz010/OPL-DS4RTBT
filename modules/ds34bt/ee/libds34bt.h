@@ -86,6 +86,7 @@ int ds34bt_get_features(u8 *info);
 int ds34bt_search_start(void);
 int ds34bt_get_search(int index, int *count, u8 *bdaddr, char *name); // returns the search state
 int ds34bt_pair(int index);
+int ds34bt_disconnect(int port); // drops the pad connected on this port, 1 if there was one
 int ds34bt_get_pair(u8 *bdaddr, u8 *key); // returns the pairing state
 int ds34bt_set_key(const u8 *bdaddr, const u8 *key); // NULL, NULL clears the table
 int ds34bt_get_debug(u8 *out);                       // DS34BT_DEBUG_SIZE bytes of driver status, 1 if read

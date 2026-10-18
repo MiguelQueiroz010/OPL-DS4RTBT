@@ -2664,6 +2664,25 @@ void ds34bt_get_info_all(u8 *out)
     SignalSema(bt_dev.hid_sema);
 }
 
+// Asks the driver to drop the pad of this port: the link is closed by the HID event task (DS34BT_STATE_DISCONNECT_REQUEST),
+// the pad can connect again later (press PS). Returns 1 if the pad was connected and running.
+int ds34bt_disconnect(int port)
+{
+    int ret = 0;
+
+    if (!(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED) || port < 0 || port >= MAX_PADS)
+        return 0;
+
+    WaitSema(bt_dev.hid_sema);
+    if (pad_status_check(DS34BT_STATE_RUNNING, port)) {
+        pad_status_set(DS34BT_STATE_DISCONNECT_REQUEST, port);
+        ret = 1;
+    }
+    SignalSema(bt_dev.hid_sema);
+
+    return ret;
+}
+
 void ds34bt_reset()
 {
     int pad;
@@ -2937,6 +2956,7 @@ static int rpc_buf[64] __attribute((aligned(16)));
 #define DS34BT_GET_DEBUG     16
 #define DS34BT_GET_PADDEBUG  17
 #define DS34BT_GET_INFO_ALL  18
+#define DS34BT_DISCONNECT    19
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -3004,6 +3024,9 @@ void *rpc_sf(int cmd, void *data, int size)
             break;
         case DS34BT_GET_INFO_ALL:
             ds34bt_get_info_all((u8 *)data);
+            break;
+        case DS34BT_DISCONNECT:
+            *(u8 *)data = ds34bt_disconnect(*(u8 *)data);
             break;
         default:
             break;

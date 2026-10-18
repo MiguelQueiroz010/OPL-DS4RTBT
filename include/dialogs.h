@@ -160,22 +160,10 @@ enum UI_ITEMS {
     PADCFG_SLOT_LABEL1,
     PADCFG_SLOT_LABEL2,
     PADCFG_SLOT_LABEL3,
-    PADCFG_SLOT_ESTR0,
-    PADCFG_SLOT_ESTR1,
-    PADCFG_SLOT_ESTR2,
-    PADCFG_SLOT_ESTR3,
     PADCFG_SLOT_EMU0,
     PADCFG_SLOT_EMU1,
     PADCFG_SLOT_EMU2,
     PADCFG_SLOT_EMU3,
-    PADCFG_SLOT_VSTR0,
-    PADCFG_SLOT_VSTR1,
-    PADCFG_SLOT_VSTR2,
-    PADCFG_SLOT_VSTR3,
-    PADCFG_SLOT_VIB0,
-    PADCFG_SLOT_VIB1,
-    PADCFG_SLOT_VIB2,
-    PADCFG_SLOT_VIB3,
     PADCFG_USBDG_MAC,
     PADCFG_USBDG_MAC_STR,
     PADCFG_PAD_MAC,
@@ -210,6 +198,17 @@ enum UI_ITEMS {
     PADCFG_BTS_DBG3,
     PADCFG_SETUP,
     PADCFG_SETUP_STR,
+    PADCFG_BT_OPEN_STR,
+    PADCFG_BT_OPEN, // opens the Bluetooth pads dialog
+    PADCFG_BTP_LABEL0, // Bluetooth pads dialog: one row per pad slot (name + battery) ...
+    PADCFG_BTP_LABEL1,
+    PADCFG_BTP_LABEL2,
+    PADCFG_BTP_LABEL3,
+    PADCFG_BTP_DISC0, // ... and its Disconnect button
+    PADCFG_BTP_DISC1,
+    PADCFG_BTP_DISC2,
+    PADCFG_BTP_DISC3,
+    PADCFG_BTP_NONE, // "no pad connected" line
     PADSET_TOUCH_MODE,
     PADSET_TOUCH_SENS,
     PADSET_TOUCH_CLICK,
@@ -257,6 +256,7 @@ extern struct UIItem diaPadEmuConfig[];
 extern struct UIItem diaPadMacroConfig[];
 extern struct UIItem diaPadEmuInfo[];
 extern struct UIItem diaPadEmuBtSearch[];
+extern struct UIItem diaPadEmuBtPads[];
 extern struct UIItem diaPadEmuSetup[];
 extern struct UIItem diaPadEmuRemap[];
 #endif
