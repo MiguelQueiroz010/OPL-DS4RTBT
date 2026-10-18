@@ -26,6 +26,7 @@
 
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h> // fileXioDevctl("genvmc:", ***)
+#include <delaythread.h>
 
 static int configSourceID;
 static int dmaMode;
