@@ -68,6 +68,108 @@ typedef struct
 
 _Static_assert(sizeof(padsetup_t) == PADSETUP_ARG_LEN, "padsetup_t size");
 
+/*
+ * Parameter table: every single-value setting of the blob is described here once (where it lives, its valid range and
+ * its default). The OPL menu (src/guigame.c), the config load/save and the in-game emulator (bt_pademu) all go through
+ * it, so adding a setting or redesigning the menu does not mean touching three places:
+ *   1. add the field to padsetup_t (use a reserved byte, the blob size and PADSETUP_VERSION stay the same),
+ *   2. add an enum value below and one row in padsetup_params[],
+ *   3. add a row in the GUI table (gSetupUi[] in src/guigame.c) and the dialog item (src/dialogs.c).
+ * Button remapping (16 bytes) is not a single value and has its own accessors (padsetup_get_remap / set_remap).
+ */
+enum {
+    PADSETUP_P_TOUCH_MODE = 0,
+    PADSETUP_P_TOUCH_SENS,
+    PADSETUP_P_TOUCH_CLICK,
+    PADSETUP_P_PS_TAP,
+    PADSETUP_P_PS_HOLD,
+    PADSETUP_P_PS_TIME,
+    PADSETUP_P_LED0, // lightbar colour of slots 1 to 4 (consecutive: PADSETUP_P_LED0 + slot)
+    PADSETUP_P_LED1,
+    PADSETUP_P_LED2,
+    PADSETUP_P_LED3,
+    PADSETUP_P_COUNT,
+};
+
+typedef struct
+{
+    unsigned char off;   // byte offset inside padsetup_t
+    unsigned char shift; // bit position of the value inside that byte
+    unsigned char mask;  // value mask (after the shift)
+    unsigned char min;
+    unsigned char max;
+    unsigned char def;
+} padsetup_param_t;
+
+#define PADSETUP_PARAM_ROW(field, shift, mask, min, max, def) {(unsigned char)__builtin_offsetof(padsetup_t, field), shift, mask, min, max, def}
+
+static const padsetup_param_t padsetup_params[PADSETUP_P_COUNT] = {
+    /* TOUCH_MODE  */ PADSETUP_PARAM_ROW(touch_mode, 0, 0xFF, 0, PADSETUP_TOUCH_MODE_COUNT - 1, PADSETUP_TOUCH_SELSTART),
+    /* TOUCH_SENS  */ PADSETUP_PARAM_ROW(touch_sens, 0, 0xFF, 1, 8, 4),
+    /* TOUCH_CLICK */ PADSETUP_PARAM_ROW(touch_click, 0, 0xFF, 0, 16, 0),
+    /* PS_TAP      */ PADSETUP_PARAM_ROW(ps_tap, 0, 0xFF, 0, 16, 0),
+    /* PS_HOLD     */ PADSETUP_PARAM_ROW(ps_hold, 0, 0xFF, 0, PADSETUP_PSHOLD_COUNT - 1, PADSETUP_PSHOLD_EXIT), // basic IGR: hold PS to go back to the OPL menu
+    /* PS_TIME     */ PADSETUP_PARAM_ROW(ps_hold_time, 0, 0xFF, 0, 2, 1),                                       // 2 seconds
+    /* LED0        */ PADSETUP_PARAM_ROW(led[0], 0, 0x0F, 0, PADSETUP_LED_COUNT - 1, 0),
+    /* LED1        */ PADSETUP_PARAM_ROW(led[0], 4, 0x0F, 0, PADSETUP_LED_COUNT - 1, 0),
+    /* LED2        */ PADSETUP_PARAM_ROW(led[1], 0, 0x0F, 0, PADSETUP_LED_COUNT - 1, 0),
+    /* LED3        */ PADSETUP_PARAM_ROW(led[1], 4, 0x0F, 0, PADSETUP_LED_COUNT - 1, 0),
+};
+
+// Raw value of a parameter (not range checked). Out-of-range parameter numbers read as 0.
+static inline int padsetup_get_raw(const padsetup_t *s, int p)
+{
+    const padsetup_param_t *d;
+
+    if (p < 0 || p >= PADSETUP_P_COUNT)
+        return 0;
+    d = &padsetup_params[p];
+    return (((const unsigned char *)s)[d->off] >> d->shift) & d->mask;
+}
+
+// Current value; a stored value outside the valid range reads as the default.
+static inline int padsetup_get(const padsetup_t *s, int p)
+{
+    int v;
+
+    if (p < 0 || p >= PADSETUP_P_COUNT)
+        return 0;
+    v = padsetup_get_raw(s, p);
+    return (v < padsetup_params[p].min || v > padsetup_params[p].max) ? padsetup_params[p].def : v;
+}
+
+// Sets a parameter. Returns 1 when stored, 0 (blob unchanged) when the value is outside the valid range.
+static inline int padsetup_set(padsetup_t *s, int p, int v)
+{
+    const padsetup_param_t *d;
+    unsigned char *b;
+
+    if (p < 0 || p >= PADSETUP_P_COUNT)
+        return 0;
+    d = &padsetup_params[p];
+    if (v < d->min || v > d->max)
+        return 0;
+    b = &((unsigned char *)s)[d->off];
+    *b = (unsigned char)((*b & ~(d->mask << d->shift)) | (v << d->shift));
+    return 1;
+}
+
+// Puts every stored value that is out of range back to its default (blob from an older/newer version or corrupted).
+// One pass over the table, written to stay small: this runs inside bt_pademu, where every byte is IOP RAM.
+static inline void padsetup_sanitize(padsetup_t *s)
+{
+    const padsetup_param_t *d;
+
+    for (d = padsetup_params; d != padsetup_params + PADSETUP_P_COUNT; d++) {
+        unsigned char *b = &((unsigned char *)s)[d->off];
+        int v = (*b >> d->shift) & d->mask;
+
+        if (v < d->min || v > d->max)
+            *b = (unsigned char)((*b & ~(d->mask << d->shift)) | (d->def << d->shift));
+    }
+}
+
+// Lightbar colour of a slot, 0 = default pattern of the slot (kept for the bt_pademu / menu code)
 static inline int padsetup_get_led(const padsetup_t *s, int slot)
 {
     int v;
@@ -89,6 +191,31 @@ static inline void padsetup_set_led(padsetup_t *s, int slot, int idx)
     s->led[slot >> 1] = (unsigned char)((s->led[slot >> 1] & ~(0x0F << sh)) | (idx << sh));
 }
 
+/*
+ * Button remapping. Stored value per DS2 button: 0 = unchanged, 0xFF = disabled, 1..16 = target button + 1.
+ * UI index (what a dropdown holds): 0 = Unchanged, 1 = Disabled, 2..17 = target button (Select..Square).
+ */
+static inline int padsetup_get_remap(const padsetup_t *s, int btn)
+{
+    unsigned char v;
+
+    if (btn < 0 || btn >= 16)
+        return 0;
+    v = s->remap[btn];
+    if (v == 0)
+        return 0;
+    if (v == PADSETUP_TARGET_DISABLED)
+        return 1;
+    return (v >= 1 && v <= 16) ? v + 1 : 0;
+}
+
+static inline void padsetup_set_remap(padsetup_t *s, int btn, int idx)
+{
+    if (btn < 0 || btn >= 16)
+        return;
+    s->remap[btn] = idx <= 0 ? 0 : (idx == 1 ? PADSETUP_TARGET_DISABLED : (unsigned char)(idx - 1));
+}
+
 static inline void padsetup_default(padsetup_t *s)
 {
     unsigned char *p = (unsigned char *)s;
@@ -99,9 +226,8 @@ static inline void padsetup_default(padsetup_t *s)
     s->magic[0] = PADSETUP_MAGIC0;
     s->magic[1] = PADSETUP_MAGIC1;
     s->version = PADSETUP_VERSION;
-    s->touch_sens = 4;
-    s->ps_hold = PADSETUP_PSHOLD_EXIT; // basic IGR: hold PS to go back to the OPL menu
-    s->ps_hold_time = 1;               // 2 seconds
+    for (i = 0; i < PADSETUP_P_COUNT; i++)
+        p[padsetup_params[i].off] |= (unsigned char)(padsetup_params[i].def << padsetup_params[i].shift);
 }
 
 static inline int padsetup_valid(const padsetup_t *s)
@@ -155,8 +281,7 @@ static inline int padsetup_from_hex(const char *str, padsetup_t *s)
     }
     if (!padsetup_valid(s))
         goto bad;
-    if (s->touch_sens < 1 || s->touch_sens > 8)
-        s->touch_sens = 4;
+    padsetup_sanitize(s);
     return 1;
 bad:
     padsetup_default(s);

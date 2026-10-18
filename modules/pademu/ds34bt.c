@@ -377,14 +377,7 @@ void ds34bt_set_setup(const void *blob)
         if (!padsetup_valid(&g_setup))
             padsetup_default(&g_setup);
     }
-    if (g_setup.touch_mode >= PADSETUP_TOUCH_MODE_COUNT)
-        g_setup.touch_mode = PADSETUP_TOUCH_SELSTART;
-    if (g_setup.touch_sens < 1 || g_setup.touch_sens > 8)
-        g_setup.touch_sens = 4;
-    if (g_setup.ps_hold >= PADSETUP_PSHOLD_COUNT)
-        g_setup.ps_hold = PADSETUP_PSHOLD_NONE;
-    if (g_setup.ps_hold_time > 2)
-        g_setup.ps_hold_time = 1;
+    padsetup_sanitize(&g_setup); // out-of-range values (newer/corrupt blob) back to their defaults
 
     g_remap_active = 0;
     for (i = 0; i < 16; i++)

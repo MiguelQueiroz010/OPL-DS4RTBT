@@ -1197,55 +1197,48 @@ static void guiGameSetupBuildRemapEnum(void)
     setupRemapEnum[18] = NULL;
 }
 
-static int guiGameSetupRemapToIndex(unsigned char v)
-{
-    if (v == 0)
-        return 0;
-    if (v == PADSETUP_TARGET_DISABLED)
-        return 1;
-    return (v >= 1 && v <= 16) ? v + 1 : 0;
-}
+/*
+ * Controller Setup <-> dialog. One row per parameter of the padsetup_params[] table (include/padsetup.h):
+ * the dialog item of parameter p is PADSET_TOUCH_MODE + p (checked below), gSetupLabels[p] holds its dropdown
+ * labels (NULL for a plain number). A new setting only needs a row here, its dialog item and its table row.
+ */
+_Static_assert(PADSET_LED3 - PADSET_TOUCH_MODE == PADSETUP_P_LED3, "dialog items must follow the padsetup_params order");
+#define SETUP_DIA_ID(p) (PADSET_TOUCH_MODE + (p))
 
-static unsigned char guiGameSetupRemapFromIndex(int idx)
+static const char **const gSetupLabels[PADSETUP_P_COUNT] = {
+    [PADSETUP_P_TOUCH_MODE] = setupTouchModes,
+    [PADSETUP_P_TOUCH_SENS] = NULL,
+    [PADSETUP_P_TOUCH_CLICK] = setupTargetNames,
+    [PADSETUP_P_PS_TAP] = setupTargetNames,
+    [PADSETUP_P_PS_HOLD] = setupPsHold,
+    [PADSETUP_P_PS_TIME] = setupPsTime,
+    [PADSETUP_P_LED0] = btLedNames,
+    [PADSETUP_P_LED1] = btLedNames,
+    [PADSETUP_P_LED2] = btLedNames,
+    [PADSETUP_P_LED3] = btLedNames,
+};
+
+static void guiGameSetupEnumsToDialog(void)
 {
-    if (idx <= 0)
-        return 0;
-    if (idx == 1)
-        return PADSETUP_TARGET_DISABLED;
-    return (unsigned char)(idx - 1);
+    for (int p = 0; p < PADSETUP_P_COUNT; p++) {
+        if (gSetupLabels[p])
+            diaSetEnum(diaPadEmuSetup, SETUP_DIA_ID(p), gSetupLabels[p]);
+    }
 }
 
 static void guiGameSetupToDialog(void)
 {
-    diaSetInt(diaPadEmuSetup, PADSET_TOUCH_MODE, gPadSetup.touch_mode);
-    diaSetInt(diaPadEmuSetup, PADSET_TOUCH_SENS, gPadSetup.touch_sens);
-    diaSetInt(diaPadEmuSetup, PADSET_TOUCH_CLICK, gPadSetup.touch_click);
-    diaSetInt(diaPadEmuSetup, PADSET_PS_TAP, gPadSetup.ps_tap);
-    diaSetInt(diaPadEmuSetup, PADSET_PS_HOLD, gPadSetup.ps_hold);
-    diaSetInt(diaPadEmuSetup, PADSET_PS_TIME, gPadSetup.ps_hold_time);
-    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
-        diaSetInt(diaPadEmuSetup, PADSET_LED0 + i, padsetup_get_led(&gPadSetup, i));
+    for (int p = 0; p < PADSETUP_P_COUNT; p++)
+        diaSetInt(diaPadEmuSetup, SETUP_DIA_ID(p), padsetup_get(&gPadSetup, p));
 }
 
 static void guiGameSetupFromDialog(void)
 {
     int v;
 
-    if (diaGetInt(diaPadEmuSetup, PADSET_TOUCH_MODE, &v) && v >= 0 && v < PADSETUP_TOUCH_MODE_COUNT)
-        gPadSetup.touch_mode = (unsigned char)v;
-    if (diaGetInt(diaPadEmuSetup, PADSET_TOUCH_SENS, &v) && v >= 1 && v <= 8)
-        gPadSetup.touch_sens = (unsigned char)v;
-    if (diaGetInt(diaPadEmuSetup, PADSET_TOUCH_CLICK, &v) && v >= 0 && v <= 16)
-        gPadSetup.touch_click = (unsigned char)v;
-    if (diaGetInt(diaPadEmuSetup, PADSET_PS_TAP, &v) && v >= 0 && v <= 16)
-        gPadSetup.ps_tap = (unsigned char)v;
-    if (diaGetInt(diaPadEmuSetup, PADSET_PS_HOLD, &v) && v >= 0 && v < PADSETUP_PSHOLD_COUNT)
-        gPadSetup.ps_hold = (unsigned char)v;
-    if (diaGetInt(diaPadEmuSetup, PADSET_PS_TIME, &v) && v >= 0 && v <= 2)
-        gPadSetup.ps_hold_time = (unsigned char)v;
-    for (int i = 0; i < PADSETUP_LED_SLOTS; i++) {
-        if (diaGetInt(diaPadEmuSetup, PADSET_LED0 + i, &v) && v >= 0 && v < PADSETUP_LED_COUNT)
-            padsetup_set_led(&gPadSetup, i, v);
+    for (int p = 0; p < PADSETUP_P_COUNT; p++) {
+        if (diaGetInt(diaPadEmuSetup, SETUP_DIA_ID(p), &v))
+            padsetup_set(&gPadSetup, p, v); // out-of-range values are ignored
     }
 }
 
@@ -1256,7 +1249,7 @@ static void guiGameShowPadRemap(void)
     guiGameSetupBuildRemapEnum();
     for (i = 0; i < 16; i++) {
         diaSetEnum(diaPadEmuRemap, PADREM_BASE + i, setupRemapEnum);
-        diaSetInt(diaPadEmuRemap, PADREM_BASE + i, guiGameSetupRemapToIndex(gPadSetup.remap[i]));
+        diaSetInt(diaPadEmuRemap, PADREM_BASE + i, padsetup_get_remap(&gPadSetup, i));
     }
 
     while (1) {
@@ -1272,24 +1265,71 @@ static void guiGameShowPadRemap(void)
 
     for (i = 0; i < 16; i++) {
         if (diaGetInt(diaPadEmuRemap, PADREM_BASE + i, &v))
-            gPadSetup.remap[i] = guiGameSetupRemapFromIndex(v);
+            padsetup_set_remap(&gPadSetup, i, v);
+    }
+}
+
+/*
+ * Public Controller Setup API (include/guigame.h). The value lives in gPadSetup, which is what bt_pademu receives at game
+ * launch; guiGameSetupSave() writes it to the OPL config. A new menu layout only needs these, not the blob.
+ */
+int guiGameSetupGet(int param)
+{
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+    return padsetup_get(&gPadSetup, param);
+}
+
+int guiGameSetupSet(int param, int value)
+{
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+    return padsetup_set(&gPadSetup, param, value);
+}
+
+int guiGameSetupGetRemap(int button)
+{
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+    return padsetup_get_remap(&gPadSetup, button);
+}
+
+void guiGameSetupSetRemap(int button, int index)
+{
+    if (!gPadSetupLoaded)
+        guiGameSetupLoad();
+    padsetup_set_remap(&gPadSetup, button, index);
+}
+
+void guiGameSetupResetDefaults(void)
+{
+    padsetup_default(&gPadSetup);
+    gPadSetupLoaded = 1;
+}
+
+// Save to the config and apply what the menu driver can use right away (lightbar colours of connected pads).
+void guiGameSetupCommit(void)
+{
+    guiGameSetupSave();
+
+    // pads already connected to the menu take the new colours right away (Default = back to the pattern of the slot)
+    ds34bt_update_info();
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++) {
+        if (ds34bt_cached_info(i)->connected)
+            guiGameBtLedApply(i);
     }
 }
 
 static void guiGameShowPadSetup(void)
 {
-    int result = -1;
+    int result = -1, saved = 0;
+    padsetup_t backup;
 
     if (!gPadSetupLoaded)
         guiGameSetupLoad();
 
-    diaSetEnum(diaPadEmuSetup, PADSET_TOUCH_MODE, setupTouchModes);
-    diaSetEnum(diaPadEmuSetup, PADSET_TOUCH_CLICK, setupTargetNames);
-    diaSetEnum(diaPadEmuSetup, PADSET_PS_TAP, setupTargetNames);
-    diaSetEnum(diaPadEmuSetup, PADSET_PS_HOLD, setupPsHold);
-    diaSetEnum(diaPadEmuSetup, PADSET_PS_TIME, setupPsTime);
-    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
-        diaSetEnum(diaPadEmuSetup, PADSET_LED0 + i, btLedNames);
+    backup = gPadSetup; // Cancel puts this back
+    guiGameSetupEnumsToDialog();
     guiGameSetupToDialog();
 
     while (1) {
@@ -1301,19 +1341,19 @@ static void guiGameShowPadSetup(void)
         } else if (result == PADSET_RESET) {
             padsetup_default(&gPadSetup);
             guiGameSetupToDialog();
-        } else if (result == UIID_BTN_OK || result == UIID_BTN_CANCEL) {
+        } else if (result == UIID_BTN_OK) {
+            saved = 1;
+            break;
+        } else if (result == UIID_BTN_CANCEL) {
             break;
         }
     }
 
-    guiGameSetupFromDialog();
-    guiGameSetupSave();
-
-    // pads already connected to the menu take the new colours right away (Default = back to the pattern of the slot)
-    ds34bt_update_info();
-    for (int i = 0; i < PADSETUP_LED_SLOTS; i++) {
-        if (ds34bt_cached_info(i)->connected)
-            guiGameBtLedApply(i);
+    if (saved) {
+        guiGameSetupFromDialog();
+        guiGameSetupCommit();
+    } else {
+        gPadSetup = backup; // cancelled: nothing changes (the remap dialog edits gPadSetup directly)
     }
 }
 
