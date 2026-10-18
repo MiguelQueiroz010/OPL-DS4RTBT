@@ -1434,6 +1434,8 @@ static void guiBtHudPoll(void)
 
         if (now && !wasConnected[i])
             guiGameBtLedOnConnect(i);
+        else if (!now && wasConnected[i])
+            guiGameBtLedOnDisconnect(i);
         wasConnected[i] = now;
     }
 }

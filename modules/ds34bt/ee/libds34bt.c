@@ -22,6 +22,7 @@
 #define DS34BT_GET_PADDEBUG  17
 #define DS34BT_GET_INFO_ALL  18
 #define DS34BT_DISCONNECT    19
+#define DS34BT_GET_PAD_ADDR  20
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -331,4 +332,21 @@ int ds34bt_update_info(void)
 const ds34bt_info_t *ds34bt_cached_info(int port)
 {
     return &info_cache[(port >= 0 && port < DS34BT_PADS_MAX) ? port : 0];
+}
+
+// Bluetooth address (HCI order) of the pad running on a port. Returns 1 and fills bdaddr[6] when there is one.
+int ds34bt_get_pad_addr(int port, u8 *bdaddr)
+{
+    if (!ds34bt_inited || port < 0 || port >= DS34BT_PADS_MAX)
+        return 0;
+
+    rpcbuf[0] = port;
+    if (SifCallRpc(&ds34bt, DS34BT_GET_PAD_ADDR, 0, rpcbuf, 1, rpcbuf, 8, NULL, NULL) != 0)
+        return 0;
+
+    if (!rpcbuf[6])
+        return 0;
+
+    memcpy(bdaddr, rpcbuf, 6);
+    return 1;
 }

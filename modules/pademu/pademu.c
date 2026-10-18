@@ -304,6 +304,12 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
         if (td->port_ctrl2[port1] == 0x00030064 && td->in[0] == 0x21 && pademu_route_is_mtap_port(&pad_route, port1)) {
             sio2proc = pademu_mtap;
         } else if (td->in[0] == 0x01) {
+            // Any emulated option is on: bring the Bluetooth driver up on the first pad access. Without this it only
+            // started inside pademu(), i.e. after a command had already been routed to an emulated pad, so with the
+            // real pad on slot A (and the game not polling an emulated slot yet) the pads could not connect.
+            if (!pad_inited && (pad_route.enabled || pad_route.mtap_enabled))
+                pad_inited = PAD_INIT(pad_enable, pad_options);
+
             if (port2 == 1) { // 2 sio cmds: port 1 and port 2 polled together
                 int cmd2 = pademu_second_cmd(td);
 

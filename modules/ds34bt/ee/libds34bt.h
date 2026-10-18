@@ -78,6 +78,7 @@ typedef struct
 
 int ds34bt_update_info(void);                      // one RPC refreshes the info of every port, returns 1 if the driver answered
 const ds34bt_info_t *ds34bt_cached_info(int port); // result of the last ds34bt_update_info, no RPC
+int ds34bt_get_pad_addr(int port, u8 *bdaddr);     // BD_ADDR (HCI order) of the pad on a port, 1 if one is running there
 int ds34bt_reset();
 int ds34bt_get_version(hci_information_t *info);
 int ds34bt_get_features(u8 *info);

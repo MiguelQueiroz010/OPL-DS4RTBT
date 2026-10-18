@@ -2683,6 +2683,26 @@ int ds34bt_disconnect(int port)
     return ret;
 }
 
+// in: data[0] = port. out: bdaddr[6] (HCI order, same as the saved keys), data[6] = 1 when a pad is connected and running there
+void ds34bt_get_pad_addr(u8 *data)
+{
+    int port = data[0];
+
+    mips_memset(data, 0, 8);
+
+    if (port < 0 || port >= MAX_PADS || !(bt_dev.status & DS34BT_STATE_USB_AUTHORIZED))
+        return;
+
+    WaitSema(bt_dev.hid_sema);
+
+    if (pad_status_check(DS34BT_STATE_RUNNING, port)) {
+        mips_memcpy(data, ds34pad[port].bdaddr, 6);
+        data[6] = 1;
+    }
+
+    SignalSema(bt_dev.hid_sema);
+}
+
 void ds34bt_reset()
 {
     int pad;
@@ -2957,6 +2977,7 @@ static int rpc_buf[64] __attribute((aligned(16)));
 #define DS34BT_GET_PADDEBUG  17
 #define DS34BT_GET_INFO_ALL  18
 #define DS34BT_DISCONNECT    19
+#define DS34BT_GET_PAD_ADDR  20
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -3027,6 +3048,9 @@ void *rpc_sf(int cmd, void *data, int size)
             break;
         case DS34BT_DISCONNECT:
             *(u8 *)data = ds34bt_disconnect(*(u8 *)data);
+            break;
+        case DS34BT_GET_PAD_ADDR:
+            ds34bt_get_pad_addr((u8 *)data);
             break;
         default:
             break;

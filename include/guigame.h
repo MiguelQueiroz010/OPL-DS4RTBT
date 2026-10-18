@@ -32,7 +32,8 @@ void guiGameSetupSetRemap(int button, int index);
 void guiGameSetupResetDefaults(void);
 void guiGameSetupCommit(void);                   // save to the OPL config + apply what the menu driver can use right away
 void guiGameBtLedApply(int slot);               // send the lightbar colour of the slot to the menu driver
-void guiGameBtLedOnConnect(int slot);           // a pad connected to the menu driver: apply its colour if the user chose one
+void guiGameBtLedOnConnect(int slot);           // a pad connected to the menu driver: find which saved pad it is, apply its colour if one was chosen
+void guiGameBtLedOnDisconnect(int slot);        // the pad of the slot is gone
 int guiGameBtLedGet(int slot, unsigned char *rgb); // colour chosen for the slot, 0 = default
 #endif
 

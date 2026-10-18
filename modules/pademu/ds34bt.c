@@ -351,10 +351,16 @@ static u8 GenuineMacAddress[][3] =
 static padsetup_t g_setup;
 static u8 g_remap_active;
 
-// Lightbar colour of a slot: the one chosen in the OPL menu (Controller Setup), otherwise the default pattern of the slot.
+static int led_pad_index(int slot); // colour saved for the pad itself (defined once the pad table exists)
+
+// Lightbar colour of a pad: the one saved with that controller (follows its Bluetooth address, so it does not change
+// when the pad lands in another slot), else the one of the slot in Controller Setup, else the default pattern of the slot.
 static void led_slot_color(int slot, int bright, u8 *rgb)
 {
-    int idx = padsetup_get_led(&g_setup, slot); // out of range = default
+    int idx = led_pad_index(slot);
+
+    if (!idx)
+        idx = padsetup_get_led(&g_setup, slot); // out of range = default
 
     if (idx) {
         rgb[0] = padsetup_led_rgb(idx)[0];
@@ -595,6 +601,16 @@ static int HCI_Command(int nbytes, u8 *dataptr);
 // keys of pads paired wirelessly from the OPL menu (empty: behaves exactly as before)
 static bt_link_key_t bt_keys[BTKEYS_MAX];
 static int bt_keys_count = 0;
+
+static int led_pad_index(int slot)
+{
+    int idx;
+
+    if (slot < 0 || slot >= MAX_PADS || bt_keys_count <= 0)
+        return 0;
+    idx = btkeys_get_led(bt_keys, bt_keys_count, ds34pad[slot].bdaddr);
+    return idx < PADSETUP_LED_COUNT ? idx : 0;
+}
 
 // Case-insensitive prefix compare for remote names (clone pads don't always use the exact same capitalization)
 static int bt_name_starts(const u8 *name, const char *prefix)
