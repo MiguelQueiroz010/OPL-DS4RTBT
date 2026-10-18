@@ -589,8 +589,12 @@ static int padEmuMtapPrev; // multitap state when the dialog opened / at the las
 #define SLOT_OFF        0
 #define SLOT_ON         1
 #define SLOT_ON_VIBRATE 2
-static const char *padEmuSlotModes[] = {"Off", "On", "On + Vibration", NULL};
+// "Off" means the real controller for a physical port (Port 1/2, or slot A of the multitap = the controller plugged in the port itself);
+// the other multitap slots have no real controller behind them, so Off means empty
+static const char *padEmuSlotModesReal[] = {"Real controller", "Emulated", "Emulated + Vibration", NULL};
+static const char *padEmuSlotModesEmpty[] = {"Empty", "Emulated", "Emulated + Vibration", NULL};
 static char padEmuSlotNames[4][12];
+static char padEmuOtherName[12];
 
 static int guiGamePadEmuUpdater(int modified)
 {
@@ -655,10 +659,17 @@ static int guiGamePadEmuUpdater(int modified)
             diaSetLabel(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, padEmuSlotNames[i]);
         }
 
+        diaSetEnum(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, (i == 0 || !PadEmuMtap) ? padEmuSlotModesReal : padEmuSlotModesEmpty);
         diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, shown);
         diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, shown);
         diaSetEnabled(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, EnablePadEmu);
     }
+
+    // the physical port that does not carry the emulated multitap
+    snprintf(padEmuOtherName, sizeof(padEmuOtherName), "Port %d", 3 - PadEmuMtapPort);
+    diaSetLabel(diaPadEmuConfig, PADCFG_PORT_OTHER_LABEL, padEmuOtherName);
+    diaSetVisible(diaPadEmuConfig, PADCFG_PORT_OTHER_LABEL, PadEmuMtap);
+    diaSetVisible(diaPadEmuConfig, PADCFG_PORT_OTHER_VALUE, PadEmuMtap);
 
     // pad behaviour and wireless pads only exist in Bluetooth mode
     diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, bt);
@@ -1398,7 +1409,7 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, settingsSource);
     diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_MODE, PadEmuModes);
     for (i = 0; i < 4; i++)
-        diaSetEnum(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, padEmuSlotModes);
+        diaSetEnum(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, padEmuSlotModesReal);
 
     PadEmuMtap = (PadEmuSettings >> 24) & 1;
 

@@ -164,6 +164,8 @@ enum UI_ITEMS {
     PADCFG_SLOT_EMU1,
     PADCFG_SLOT_EMU2,
     PADCFG_SLOT_EMU3,
+    PADCFG_PORT_OTHER_LABEL, // the physical port that is not the emulated multitap: always the real controller
+    PADCFG_PORT_OTHER_VALUE,
     PADCFG_USBDG_MAC,
     PADCFG_USBDG_MAC_STR,
     PADCFG_PAD_MAC,

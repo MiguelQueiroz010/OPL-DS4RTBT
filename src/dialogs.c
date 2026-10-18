@@ -600,6 +600,11 @@ struct UIItem diaPadEmuConfig[] = {
     PADEMU_SLOT_ROW(1)
     PADEMU_SLOT_ROW(2)
     PADEMU_SLOT_ROW(3)
+    // with the multitap emulated, the other physical port is left to the real controller plugged in it (or to a real multitap)
+    {UI_LABEL, PADCFG_PORT_OTHER_LABEL, 1, 1, -1, -50, 0, {.label = {"", -1}}},
+    {UI_SPACER},
+    {UI_LABEL, PADCFG_PORT_OTHER_VALUE, 1, 1, -1, 0, 0, {.label = {"Real controller", -1}}},
+    {UI_BREAK},
 
     // pad behaviour and wireless pads (Bluetooth mode only)
     {UI_SPLITTER},
