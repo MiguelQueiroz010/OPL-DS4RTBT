@@ -531,13 +531,13 @@ $(EE_ASM_DIR)ds34usb.c: modules/ds34usb/iop/ds34usb.irx | $(EE_ASM_DIR)
 	$(BIN2C) $< $@ $(*F)_irx
 
 modules/pademu/bt_pademu.irx: modules/pademu
-	$(MAKE) -C $< USE_BT=1
+	$(MAKE) $(MOD_DEBUG_FLAGS) -C $< USE_BT=1
 
 $(EE_ASM_DIR)bt_pademu.c: modules/pademu/bt_pademu.irx
 	$(BIN2C) $< $@ $(*F)_irx
 
 modules/pademu/usb_pademu.irx: modules/pademu
-	$(MAKE) -C $< USE_USB=1
+	$(MAKE) $(MOD_DEBUG_FLAGS) -C $< USE_USB=1
 
 $(EE_ASM_DIR)usb_pademu.c: modules/pademu/usb_pademu.irx
 	$(BIN2C) $< $@ $(*F)_irx
