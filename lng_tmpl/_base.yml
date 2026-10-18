@@ -460,18 +460,14 @@ gui_strings:
   string: DualShock3/4 USB
 - label: DS34BT_MODE
   string: DualShock3/4 BT
-- label: PADPORT
-  string: 'Settings For Port:'
-- label: HINT_PAD_PORT
-  string: Select Pad Emulator port for settings.
 - label: PADEMU_PORT
   string: Emulation
 - label: HINT_PADEMU_PORT
-  string: Turns on/off Pad Emulator for selected port.
+  string: Turns on/off Pad Emulator for this port or slot. Slot A off uses the real controller.
 - label: PADEMU_VIB
   string: Vibration
 - label: HINT_PADEMU_VIB
-  string: Turns on/off vibration for Pad Emulator selected port.
+  string: Turns on/off vibration for this port or slot.
 - label: USBDG_MAC
   string: 'USB Bluetooth Adapter MAC Address:'
 - label: PAD_MAC

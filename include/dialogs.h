@@ -155,9 +155,27 @@ enum UI_ITEMS {
     PADCFG_PADEMU_CONFIG,
     PADCFG_PADEMU_ENABLE,
     PADCFG_PADEMU_MODE,
-    PADCFG_PADEMU_PORT,
-    PADCFG_PADEMU_VIB,
-    PADCFG_PADPORT,
+    // slot table: one row per port (1P, 2P) or multitap slot (A to D); label, "Emulation" text + switch, "Vibration" text + switch
+    PADCFG_SLOT_LABEL0,
+    PADCFG_SLOT_LABEL1,
+    PADCFG_SLOT_LABEL2,
+    PADCFG_SLOT_LABEL3,
+    PADCFG_SLOT_ESTR0,
+    PADCFG_SLOT_ESTR1,
+    PADCFG_SLOT_ESTR2,
+    PADCFG_SLOT_ESTR3,
+    PADCFG_SLOT_EMU0,
+    PADCFG_SLOT_EMU1,
+    PADCFG_SLOT_EMU2,
+    PADCFG_SLOT_EMU3,
+    PADCFG_SLOT_VSTR0,
+    PADCFG_SLOT_VSTR1,
+    PADCFG_SLOT_VSTR2,
+    PADCFG_SLOT_VSTR3,
+    PADCFG_SLOT_VIB0,
+    PADCFG_SLOT_VIB1,
+    PADCFG_SLOT_VIB2,
+    PADCFG_SLOT_VIB3,
     PADCFG_USBDG_MAC,
     PADCFG_USBDG_MAC_STR,
     PADCFG_PAD_MAC,
@@ -190,18 +208,6 @@ enum UI_ITEMS {
     PADCFG_BTS_DBG1,
     PADCFG_BTS_DBG2,
     PADCFG_BTS_DBG3,
-    PADCFG_BTTEST,
-    PADCFG_BTTEST_STR,
-    PADCFG_BTT_STATUS,
-    PADCFG_BTT_LED,
-    PADCFG_BTT_MODE,
-    PADCFG_BTT_DBG0,
-    PADCFG_BTT_DBG1,
-    PADCFG_BTT_DBG2,
-    PADCFG_BTT_DBG3,
-    PADCFG_BTT_RUMBLE_BIG,
-    PADCFG_BTT_RUMBLE_SMALL,
-    PADCFG_BTT_RUMBLE_BOTH,
     PADCFG_SETUP,
     PADCFG_SETUP_STR,
     PADSET_TOUCH_MODE,
@@ -251,7 +257,6 @@ extern struct UIItem diaPadEmuConfig[];
 extern struct UIItem diaPadMacroConfig[];
 extern struct UIItem diaPadEmuInfo[];
 extern struct UIItem diaPadEmuBtSearch[];
-extern struct UIItem diaPadEmuBtTest[];
 extern struct UIItem diaPadEmuSetup[];
 extern struct UIItem diaPadEmuRemap[];
 #endif

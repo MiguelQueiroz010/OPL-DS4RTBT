@@ -580,10 +580,14 @@ static char *ver_to_str(char *str, u8 ma, u16 mi)
 
 static int padEmuMtapPrev; // multitap state when the dialog opened / at the last update: the default slots are set only when it is switched on
 
+// Bits of PadEmuSettings that the dialog owns: mode (byte 0), emulation of the 4 slots (bits 8-11), vibration of the 4 slots (bits 16-19),
+// multitap on/off, multitap port and the fake DS3 workaround (bits 24-26)
+#define PADEMU_DIALOG_MASK 0x070F0FFF
+
 static int guiGamePadEmuUpdater(int modified)
 {
-    int PadEmuMode, PadPort, PadEmuVib, PadEmuPort, PadEmuMtap, PadEmuMtapPort, PadEmuWorkaround;
-    static int oldPadPort;
+    int PadEmuMode, PadEmuMtap, PadEmuMtapPort, PadEmuWorkaround, i, slots, shown;
+    int emu[4], vib[4];
     int previousSource = gPadEmuSource;
 
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, &gPadEmuSource);
@@ -601,21 +605,55 @@ static int guiGamePadEmuUpdater(int modified)
 
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_ENABLE, &EnablePadEmu);
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_MODE, &PadEmuMode);
-    diaGetInt(diaPadEmuConfig, PADCFG_PADPORT, &PadPort);
-    diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_PORT, &PadEmuPort);
-    diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_VIB, &PadEmuVib);
-
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP, &PadEmuMtap);
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, &PadEmuMtapPort);
     diaGetInt(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, &PadEmuWorkaround);
+    for (i = 0; i < 4; i++) {
+        diaGetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, &emu[i]);
+        diaGetInt(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, &vib[i]);
+    }
+
+    slots = PadEmuMtap ? 4 : 2; // rows of the slot table in use: 1P/2P, or the four slots of the multitap
+
+    if (modified) {
+        if (PadEmuMtap && !padEmuMtapPrev) {
+            // multitap just switched on: slots B, C and D start emulated; after that each slot keeps its own choice
+            for (i = 1; i < 4; i++)
+                emu[i] = 1;
+        }
+        if (!PadEmuMtap) {
+            // without the multitap there are only the two ports
+            for (i = 2; i < 4; i++)
+                emu[i] = vib[i] = 0;
+        }
+        for (i = 0; i < 4; i++) {
+            diaSetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, emu[i]);
+            diaSetInt(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, vib[i]);
+        }
+    }
+    padEmuMtapPrev = PadEmuMtap;
 
     diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MTAP, EnablePadEmu);
-    diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, PadEmuMtap);
+    diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, PadEmuMtap & EnablePadEmu);
 
     diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_MODE, EnablePadEmu);
 
-    diaSetEnabled(diaPadEmuConfig, PADCFG_PADPORT, EnablePadEmu);
-    diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_VIB, PadEmuPort & EnablePadEmu);
+    // slot table: names follow the multitap (1P 2P / 1A to 1D / 2A to 2D), rows without a slot are hidden
+    for (i = 0; i < 4; i++) {
+        shown = i < slots;
+
+        if (shown)
+            diaSetLabel(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, PadEmuPorts_enums[PadEmuMtap ? PadEmuMtapPort : 0][i]);
+
+        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_LABEL0 + i, shown);
+        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_ESTR0 + i, shown);
+        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, shown);
+        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_VSTR0 + i, shown);
+        diaSetVisible(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, shown);
+
+        diaSetEnabled(diaPadEmuConfig, PADCFG_SLOT_EMU0 + i, EnablePadEmu);
+        diaSetEnabled(diaPadEmuConfig, PADCFG_SLOT_VIB0 + i, emu[i] & EnablePadEmu);
+    }
 
     diaSetVisible(diaPadEmuConfig, PADCFG_USBDG_MAC, (PadEmuMode == 1) & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PAD_MAC, (PadEmuMode == 1) & EnablePadEmu);
@@ -627,37 +665,19 @@ static int guiGamePadEmuUpdater(int modified)
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH, (PadEmuMode == 1) & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH_STR, (PadEmuMode == 1) & EnablePadEmu);
 
+    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, (PadEmuMode == 1) & EnablePadEmu);
+    diaSetVisible(diaPadEmuConfig, PADCFG_SETUP_STR, (PadEmuMode == 1) & EnablePadEmu);
+
     diaSetVisible(diaPadEmuConfig, PADCFG_BTINFO, (PadEmuMode == 1) & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, (PadEmuMode == 1) & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND_STR, (PadEmuMode == 1) & EnablePadEmu);
 
-    if (modified) {
-        if (PadEmuMtap) {
-            diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[PadEmuMtapPort]);
-            diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_PORT, EnablePadEmu); // every slot can be chosen: slot A unticked = the real DS2 of the port
-            if (!padEmuMtapPrev)
-                PadEmuSettings |= 0x00000E00; // multitap just switched on: slots B, C and D start emulated; after that each slot keeps its own choice
-        } else {
-            diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[0]);
-            diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_PORT, EnablePadEmu);
-            PadEmuSettings &= 0xFFFF03FF;
-            if (PadPort > 1) {
-                PadPort = 0;
-                diaSetInt(diaPadEmuConfig, PADCFG_PADPORT, PadPort);
-            }
-        }
-
-        if (PadPort != oldPadPort) {
-            diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_PORT, (PadEmuSettings >> (8 + PadPort)) & 1);
-            diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_VIB, (PadEmuSettings >> (16 + PadPort)) & 1);
-
-            oldPadPort = PadPort;
-        }
-    }
-    padEmuMtapPrev = PadEmuMtap;
-
-    PadEmuSettings |= PadEmuMode | (PadEmuPort << (8 + PadPort)) | (PadEmuVib << (16 + PadPort)) | (PadEmuMtap << 24) | ((PadEmuMtapPort - 1) << 25) | (PadEmuWorkaround << 26);
-    PadEmuSettings &= (~(PadEmuMode ? 0 : 1) & ~(!PadEmuPort << (8 + PadPort)) & ~(!PadEmuVib << (16 + PadPort)) & ~(!PadEmuMtap << 24) & ~(!(PadEmuMtapPort - 1) << 25) & ~(!PadEmuWorkaround << 26));
+    // PadEmuSettings is rebuilt from the dialog; bits the dialog does not own are left alone
+    PadEmuSettings &= ~PADEMU_DIALOG_MASK;
+    PadEmuSettings |= PadEmuMode & 0xFF;
+    for (i = 0; i < slots; i++)
+        PadEmuSettings |= ((emu[i] & 1) << (8 + i)) | ((vib[i] & 1) << (16 + i));
+    PadEmuSettings |= ((PadEmuMtap & 1) << 24) | (((PadEmuMtapPort - 1) & 1) << 25) | ((PadEmuWorkaround & 1) << 26);
 
     if (PadEmuMode == 1) {
         if (ds34bt_get_status(0) & DS34BT_STATE_USB_CONFIGURED) {
@@ -1064,120 +1084,8 @@ static void guiGameShowBtSearch(void)
     }
 }
 
-/*
- * Controller test (menu): lightbar colour and rumble of the pad connected to the menu driver (port 0).
- */
-#define BTT_RUMBLE_FRAMES 30 // about half a second at 60 Hz
-
+// lightbar colours, shared with the Controller Setup dialog
 static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta", "White", "Orange", "Off", NULL};
-
-// DS4 output report variants (clone pads don't all accept the same one); see hid_LEDRumble in modules/ds34bt/iop/ds34bt.c
-static const char *btModeNames[] = {"A: CRC, interrupt", "B: raw, interrupt", "C: raw, control", "D: CRC, control", "E: CRC, flags FF", NULL};
-
-static char bttStatus[96];
-static char bttDbg[4][72];
-static int bttLedSel, bttModeSel, bttRumbleFrames, bttTimer;
-
-// Pad 0 driver state for troubleshooting (layout of d[]: ds34bt_get_paddebug in modules/ds34bt/iop/ds34bt.c)
-static void guiGameBtTestDebugUpdate(void)
-{
-    u8 d[DS34BT_DEBUG_SIZE];
-    int i;
-
-    if (!ds34bt_get_paddebug(d)) {
-        snprintf(bttDbg[0], sizeof(bttDbg[0]), "debug: ds34bt driver does not answer");
-        bttDbg[1][0] = bttDbg[2][0] = bttDbg[3][0] = '\0';
-    } else {
-        // pad type (0 DS3, 1 DS4, 2 DS5) | fake flag | status flags (04 connected, 08 running) | hci handle | control and interrupt channel ids
-        snprintf(bttDbg[0], sizeof(bttDbg[0]), "pad0 type:%d fake:%d st:%02X hnd:%04X c:%04X i:%04X", d[0], d[1], d[2], d[6] | (d[7] << 8), d[8] | (d[9] << 8), d[10] | (d[11] << 8));
-        // output reports built | refused by the usb layer | last usb return code | report variant | update pending | motors
-        snprintf(bttDbg[1], sizeof(bttDbg[1]), "out:%d fail:%d rc:%02X mode:%c upd:%d rum:%02X/%02X", d[12] | (d[13] << 8), d[14], d[15], 'A' + (d[4] & 7), d[3], d[30], d[31]);
-        // reports received from the pad | last report id | last hid header | last size | control channel packets | last control byte
-        snprintf(bttDbg[2], sizeof(bttDbg[2]), "rx:%d id:%02X th:%02X len:%d ctl:%d hs:%02X", d[16] | (d[17] << 8), d[18], d[19], d[20] | (d[21] << 8), d[22] | (d[23] << 8), d[24]);
-        // calls that reached the driver from the menu | calls ignored | colour kept from menu | diagnostics build tag
-        snprintf(bttDbg[3], sizeof(bttDbg[3]), "rpc rum:%d led:%d drop:%d usr:%d diag1", d[25] | (d[26] << 8), d[27] | (d[28] << 8), d[29], d[5]);
-    }
-
-    for (i = 0; i < 4; i++)
-        diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_DBG0 + i, bttDbg[i]);
-}
-
-static void guiGameBtTestApplyLed(int sel)
-{
-    u8 led[4];
-
-    led[0] = padsetup_led_rgb(sel)[0];
-    led[1] = padsetup_led_rgb(sel)[1];
-    led[2] = padsetup_led_rgb(sel)[2];
-    led[3] = (sel ? 0x02 : 0x00) | (bttModeSel << 2); // bit1: colour chosen by the user, 0 = default pattern of the port; bits 2-4: DS4 report variant
-    ds34bt_set_led(0, led);
-}
-
-static int guiGameBtTestUpdater(int modified)
-{
-    int sel = 0, msel = 0, status;
-
-    if (bttRumbleFrames > 0 && --bttRumbleFrames == 0)
-        ds34bt_set_rumble(0, 0, 0);
-
-    if (diaGetInt(diaPadEmuBtTest, PADCFG_BTT_LED, &sel) && sel != bttLedSel) {
-        bttLedSel = sel;
-        guiGameBtTestApplyLed(sel);
-    }
-
-    if (diaGetInt(diaPadEmuBtTest, PADCFG_BTT_MODE, &msel) && msel != bttModeSel) {
-        bttModeSel = msel;
-        guiGameBtTestApplyLed(bttLedSel);
-    }
-
-    if ((++bttTimer % 20) == 0) {
-        status = ds34bt_get_status(0);
-        if (!(status & DS34BT_STATE_USB_CONFIGURED))
-            snprintf(bttStatus, sizeof(bttStatus), "Bluetooth adapter not ready.");
-        else if (status & (DS34BT_STATE_CONNECTED | DS34BT_STATE_RUNNING))
-            snprintf(bttStatus, sizeof(bttStatus), "Controller connected.");
-        else
-            snprintf(bttStatus, sizeof(bttStatus), "No controller connected. Press PS on the pad.");
-        diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_STATUS, bttStatus);
-        guiGameBtTestDebugUpdate();
-    }
-
-    return 0;
-}
-
-static void guiGameShowBtTest(void)
-{
-    int result = -1;
-
-    bttLedSel = 0;
-    bttModeSel = 0;
-    bttRumbleFrames = 0;
-    bttTimer = 19; // refresh the status line right away
-    diaSetEnum(diaPadEmuBtTest, PADCFG_BTT_LED, btLedNames);
-    diaSetInt(diaPadEmuBtTest, PADCFG_BTT_LED, 0);
-    diaSetEnum(diaPadEmuBtTest, PADCFG_BTT_MODE, btModeNames);
-    diaSetInt(diaPadEmuBtTest, PADCFG_BTT_MODE, 0);
-    snprintf(bttStatus, sizeof(bttStatus), "Checking...");
-    diaSetLabel(diaPadEmuBtTest, PADCFG_BTT_STATUS, bttStatus);
-
-    while (1) {
-        result = diaExecuteDialog(diaPadEmuBtTest, result, 1, &guiGameBtTestUpdater);
-
-        if (result == UIID_BTN_OK || result == UIID_BTN_CANCEL)
-            break;
-
-        if (result == PADCFG_BTT_RUMBLE_BIG || result == PADCFG_BTT_RUMBLE_SMALL || result == PADCFG_BTT_RUMBLE_BOTH) {
-            ds34bt_set_rumble(0, (result == PADCFG_BTT_RUMBLE_SMALL) ? 0 : 255, (result == PADCFG_BTT_RUMBLE_BIG) ? 0 : 255);
-            bttRumbleFrames = BTT_RUMBLE_FRAMES;
-        }
-    }
-
-    ds34bt_set_rumble(0, 0, 0);
-    if (bttLedSel || bttModeSel) {
-        bttModeSel = 0;
-        guiGameBtTestApplyLed(0); // back to the default colour and report variant
-    }
-}
 
 /*
  * Controller Setup dialogs
@@ -1366,7 +1274,7 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     const char *settingsSource[] = {_l(_STR_GLOBAL_SETTINGS), _l(_STR_PERGAME_SETTINGS), NULL};
     const char *PadEmuModes[] = {_l(_STR_DS34USB_MODE), "DS3/DS4/DS5 BT", NULL}; // fixed label: says DualSense in every language
 
-    int PadEmuMtap, PadEmuMtapPort, i;
+    int PadEmuMtap, i;
 
     forceGlobalPadEmu = forceGlobal;
     diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_SOURCE, !forceGlobalPadEmu);
@@ -1378,9 +1286,6 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetEnum(diaPadEmuConfig, PADCFG_PADEMU_MODE, PadEmuModes);
 
     PadEmuMtap = (PadEmuSettings >> 24) & 1;
-    PadEmuMtapPort = ((PadEmuSettings >> 25) & 1) + 1;
-
-    diaSetEnabled(diaPadEmuConfig, PADCFG_PADEMU_PORT, EnablePadEmu);
 
     diaSetVisible(diaPadEmuConfig, PADCFG_USBDG_MAC, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_PAD_MAC, PadEmuSettings & EnablePadEmu);
@@ -1391,8 +1296,6 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetVisible(diaPadEmuConfig, PADCFG_PAIR_STR, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_BTSEARCH_STR, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTTEST, PadEmuSettings & EnablePadEmu);
-    diaSetVisible(diaPadEmuConfig, PADCFG_BTTEST_STR, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_SETUP, PadEmuSettings & EnablePadEmu);
     diaSetVisible(diaPadEmuConfig, PADCFG_SETUP_STR, PadEmuSettings & EnablePadEmu);
 
@@ -1401,12 +1304,8 @@ void guiGameShowPadEmuConfig(int forceGlobal)
     diaSetVisible(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND_STR, PadEmuSettings & EnablePadEmu);
 
     padEmuMtapPrev = PadEmuMtap;
-    if (PadEmuMtap) {
-        diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[PadEmuMtapPort]); // slot bits stay as saved
-    } else {
-        diaSetEnum(diaPadEmuConfig, PADCFG_PADPORT, PadEmuPorts_enums[0]);
-        PadEmuSettings &= 0xFFFF03FF;
-    }
+    if (!PadEmuMtap)
+        PadEmuSettings &= ~0x000C0C00; // only the two ports exist without the multitap: no emulation or vibration bits for slots C and D
 
     int result = -1;
 
@@ -1424,9 +1323,6 @@ void guiGameShowPadEmuConfig(int forceGlobal)
 
         if (result == PADCFG_BTSEARCH)
             guiGameShowBtSearch();
-
-        if (result == PADCFG_BTTEST)
-            guiGameShowBtTest();
 
         if (result == PADCFG_SETUP)
             guiGameShowPadSetup();
@@ -1915,9 +1811,12 @@ static void guiGameLoadPadEmuConfig(config_set_t *configSet, config_set_t *confi
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_ENABLE, EnablePadEmu);
 
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_MODE, PadEmuSettings & 0xFF);
-    diaSetInt(diaPadEmuConfig, PADCFG_PADPORT, 0);
-    diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_PORT, (PadEmuSettings >> 8) & 1);
-    diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_VIB, (PadEmuSettings >> 16) & 1);
+    for (int slot = 0; slot < 4; slot++) {
+        int shown = PadEmuMtap || slot < 2;
+
+        diaSetInt(diaPadEmuConfig, PADCFG_SLOT_EMU0 + slot, shown ? (PadEmuSettings >> (8 + slot)) & 1 : 0);
+        diaSetInt(diaPadEmuConfig, PADCFG_SLOT_VIB0 + slot, shown ? (PadEmuSettings >> (16 + slot)) & 1 : 0);
+    }
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP, PadEmuMtap);
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_MTAP_PORT, PadEmuMtapPort);
     diaSetInt(diaPadEmuConfig, PADCFG_PADEMU_WORKAROUND, ((PadEmuSettings >> 26) & 1));

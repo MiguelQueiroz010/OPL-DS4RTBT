@@ -554,6 +554,17 @@ struct UIItem diaCheatConfig[] = {
     {UI_TERMINATOR}};
 
 #ifdef PADEMU
+// One row of the slot table: port / multitap slot name, then the emulation and vibration switches of that slot
+#define PADEMU_SLOT_ROW(n, name) \
+    {UI_LABEL, PADCFG_SLOT_LABEL0 + (n), 1, 1, -1, -50, 0, {.label = {name, -1}}}, \
+    {UI_SPACER}, \
+    {UI_LABEL, PADCFG_SLOT_ESTR0 + (n), 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_PORT}}}, \
+    {UI_BOOL, PADCFG_SLOT_EMU0 + (n), 1, 1, _STR_HINT_PADEMU_PORT, 0, 0, {.intvalue = {1, 1}}}, \
+    {UI_SPACER}, \
+    {UI_LABEL, PADCFG_SLOT_VSTR0 + (n), 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_VIB}}}, \
+    {UI_BOOL, PADCFG_SLOT_VIB0 + (n), 1, 1, _STR_HINT_PADEMU_VIB, 0, 0, {.intvalue = {1, 1}}}, \
+    {UI_BREAK},
+
 struct UIItem diaPadEmuConfig[] = {
     {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_PADEMU_SETTINGS}}},
     {UI_SPLITTER},
@@ -562,44 +573,42 @@ struct UIItem diaPadEmuConfig[] = {
     {UI_SPACER},
     {UI_ENUM, PADCFG_PADEMU_SOURCE, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
     {UI_BREAK},
-    {UI_BREAK},
 
+    // pad emulator on/off and where the pads come from, on one row
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_ENABLE}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_ENABLE, 1, 1, _STR_HINT_PADEMU_ENABLE, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BREAK},
-
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_MODE}}},
-    {UI_SPACER},
     {UI_ENUM, PADCFG_PADEMU_MODE, 1, 1, _STR_HINT_PADEMU_MODE, 0, 0, {.intvalue = {1, 1}}},
     {UI_BREAK},
 
+    // multitap emulation and its port, on one row
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_MTAP_ENABLE}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_MTAP, 1, 1, _STR_HINT_MTAP_ENABLE, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BREAK},
-
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_MTAP_PORT}}},
-    {UI_SPACER},
     {UI_INT, PADCFG_PADEMU_MTAP_PORT, 1, 1, _STR_HINT_MTAP_PORT, 0, 0, {.intvalue = {1, 1, 1, 2}}},
     {UI_BREAK},
+
+    // slot table: 1P/2P, or the four slots of the multitap (the last two rows are hidden without it)
+    PADEMU_SLOT_ROW(0, "1P")
+    PADEMU_SLOT_ROW(1, "2P")
+    PADEMU_SLOT_ROW(2, "")
+    PADEMU_SLOT_ROW(3, "")
+
+    // pad behaviour (buttons, touchpad, PS button): not part of the connection
+    {UI_LABEL, PADCFG_SETUP_STR, 1, 1, -1, -50, 0, {.label = {"Controller Setup", -1}}},
+    {UI_SPACER},
+    {UI_BUTTON, PADCFG_SETUP, 1, 1, -1, 0, 0, {.label = {"Open", -1}}},
     {UI_BREAK},
 
-    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADPORT}}},
-    {UI_SPACER},
-    {UI_ENUM, PADCFG_PADPORT, 1, 1, _STR_HINT_PAD_PORT, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BREAK},
-
-    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_PORT}}},
-    {UI_SPACER},
-    {UI_BOOL, PADCFG_PADEMU_PORT, 1, 1, _STR_HINT_PADEMU_PORT, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BREAK},
-    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_VIB}}},
-    {UI_SPACER},
-    {UI_BOOL, PADCFG_PADEMU_VIB, 1, 1, _STR_HINT_PADEMU_VIB, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BREAK},
-
+    // connection area (Bluetooth mode only)
     {UI_SPLITTER},
+    {UI_BREAK},
+
+    {UI_LABEL, PADCFG_BTSEARCH_STR, 1, 1, -1, -50, 0, {.label = {"Wireless Pairing", -1}}},
+    {UI_SPACER},
+    {UI_BUTTON, PADCFG_BTSEARCH, 1, 1, -1, 0, 0, {.label = {"Search", -1}}},
     {UI_BREAK},
 
     {UI_LABEL, PADCFG_USBDG_MAC_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_USBDG_MAC}}},
@@ -616,27 +625,9 @@ struct UIItem diaPadEmuConfig[] = {
     {UI_BUTTON, PADCFG_PAIR, 1, 1, _STR_HINT_PAIRPAD, 0, 0, {.label = {NULL, _STR_PAIR}}},
     {UI_BREAK},
 
-    {UI_LABEL, PADCFG_BTSEARCH_STR, 1, 1, -1, -50, 0, {.label = {"Wireless Pairing", -1}}},
-    {UI_SPACER},
-    {UI_BUTTON, PADCFG_BTSEARCH, 1, 1, -1, 0, 0, {.label = {"Search", -1}}},
-    {UI_BREAK},
-
-    {UI_LABEL, PADCFG_BTTEST_STR, 1, 1, -1, -50, 0, {.label = {"Controller Test", -1}}},
-    {UI_SPACER},
-    {UI_BUTTON, PADCFG_BTTEST, 1, 1, -1, 0, 0, {.label = {"Open", -1}}},
-    {UI_BREAK},
-
-    {UI_LABEL, PADCFG_SETUP_STR, 1, 1, -1, -50, 0, {.label = {"Controller Setup", -1}}},
-    {UI_SPACER},
-    {UI_BUTTON, PADCFG_SETUP, 1, 1, -1, 0, 0, {.label = {"Open", -1}}},
-    {UI_BREAK},
-
     {UI_LABEL, PADCFG_PADEMU_WORKAROUND_STR, 1, 1, -1, -50, 0, {.label = {NULL, _STR_PADEMU_WORKAROUND}}},
     {UI_SPACER},
     {UI_BOOL, PADCFG_PADEMU_WORKAROUND, 1, 1, _STR_HINT_PADEMU_WORKAROUND, 0, 0, {.intvalue = {1, 1}}},
-    {UI_BREAK},
-
-    {UI_BREAK},
     {UI_BUTTON, PADCFG_BTINFO, 1, 1, _STR_HINT_BTINFO, 0, 0, {.label = {NULL, _STR_BTINFO}}},
     {UI_BREAK},
 
@@ -679,48 +670,6 @@ struct UIItem diaPadEmuBtSearch[] = {
     {UI_LABEL, PADCFG_BTS_DBG2, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
     {UI_LABEL, PADCFG_BTS_DBG3, 1, 1, -1, 0, 0, {.label = {"", -1}}},
-    {UI_BREAK},
-
-    {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},
-
-    // end of dialog
-    {UI_TERMINATOR}};
-
-struct UIItem diaPadEmuBtTest[] = {
-    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"Controller Test", -1}}},
-    {UI_SPLITTER},
-
-    {UI_LABEL, PADCFG_BTT_STATUS, 1, 1, -1, 0, 0, {.label = {"", -1}}},
-    {UI_BREAK},
-    {UI_BREAK},
-
-    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {"Lightbar colour", -1}}},
-    {UI_SPACER},
-    {UI_ENUM, PADCFG_BTT_LED, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
-    {UI_BREAK},
-
-    {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {"DS4 report mode", -1}}},
-    {UI_SPACER},
-    {UI_ENUM, PADCFG_BTT_MODE, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
-    {UI_BREAK},
-    {UI_BREAK},
-
-    {UI_BUTTON, PADCFG_BTT_RUMBLE_BIG, 1, 1, -1, 0, 0, {.label = {"Rumble: big motor", -1}}},
-    {UI_BREAK},
-    {UI_BUTTON, PADCFG_BTT_RUMBLE_SMALL, 1, 1, -1, 0, 0, {.label = {"Rumble: small motor", -1}}},
-    {UI_BREAK},
-    {UI_BUTTON, PADCFG_BTT_RUMBLE_BOTH, 1, 1, -1, 0, 0, {.label = {"Rumble: both motors", -1}}},
-    {UI_BREAK},
-    {UI_BREAK},
-
-    // pad 0 driver diagnostics (filled by guiGameBtTestDebugUpdate)
-    {UI_LABEL, PADCFG_BTT_DBG0, 1, 1, -1, 0, 0, {.label = {"", -1}}},
-    {UI_BREAK},
-    {UI_LABEL, PADCFG_BTT_DBG1, 1, 1, -1, 0, 0, {.label = {"", -1}}},
-    {UI_BREAK},
-    {UI_LABEL, PADCFG_BTT_DBG2, 1, 1, -1, 0, 0, {.label = {"", -1}}},
-    {UI_BREAK},
-    {UI_LABEL, PADCFG_BTT_DBG3, 1, 1, -1, 0, 0, {.label = {"", -1}}},
     {UI_BREAK},
 
     {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},
