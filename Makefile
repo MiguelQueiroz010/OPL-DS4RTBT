@@ -47,6 +47,9 @@ DEBUG ?= 0
 EESIO_DEBUG ?= 0
 INGAME_DEBUG ?= 0
 DECI2_DEBUG ?= 0
+# In-game debug builds (INGAME_DEBUG=1) keep cdvdman quiet so the PADEMU log is readable in the UDPTTY output.
+# CDVDMAN_DEBUG=1 brings back the verbose cdvdman (IOPCORE_DEBUG) in those builds.
+CDVDMAN_DEBUG ?= 0
 #How the TTY will reach developer: 'UDP', 'PPC_UART'.
 TTY_APPROACH ?= UDP
 
@@ -192,7 +195,11 @@ ifeq ($(DEBUG),1)
   else ifeq ($(INGAME_DEBUG),1)
     EE_CFLAGS += -D__INGAME_DEBUG
     EECORE_EXTRA_FLAGS += LOAD_DEBUG_MODULES=1
-    CDVDMAN_DEBUG_FLAGS = IOPCORE_DEBUG=1
+    ifeq ($(CDVDMAN_DEBUG),1)
+      CDVDMAN_DEBUG_FLAGS = IOPCORE_DEBUG=1
+    else
+      CDVDMAN_DEBUG_FLAGS = USE_DEV9=1 #(clear IOPCORE_DEBUG) quiet cdvdman, still with dev9 for the in-game network debug output
+    endif
     # Same small in-game lwIP as release builds (so the debug build has the real memory budget), plus UDP for UDPTTY.
     SMSTCPIP_INGAME_CFLAGS = INGAME_DRIVER=1 INGAME_UDP=1
     ifeq ($(DECI2_DEBUG),1)
