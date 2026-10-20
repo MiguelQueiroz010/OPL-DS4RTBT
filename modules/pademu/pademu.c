@@ -302,10 +302,10 @@ static int pademu_second_cmd(const sio2_transfer_data_t *td)
 #ifdef PADEMU_DEBUG
 static void pademu_log_route(int both_ports, int port, int pad_idx)
 {
-    static short last[2][2] = {{-2, -2}, {-2, -2}};
+    static u8 seen[2][2]; // bit per route (real, pad 0..3): the route changes with every multitap slot, log each one once
 
-    if (last[both_ports][port] != pad_idx) {
-        last[both_ports][port] = pad_idx;
+    if (!(seen[both_ports][port] & (1 << (pad_idx + 1)))) {
+        seen[both_ports][port] |= 1 << (pad_idx + 1);
         if (pad_idx == PADEMU_ROUTE_REAL)
             PADEMU_LOG("PADEMU: %s port %d -> real DS2\n", both_ports ? "2-port poll" : "poll", port + 1);
         else
@@ -676,8 +676,16 @@ void pademu_mtap(sio2_transfer_data_t *td)
 
         case 0x21: // changes slot for pad
             mips_memcpy(td->out, &mtap_data, sizeof(mtap_data));
-            if (pad_route.mtap_slot != (td->in[2] & 3))
-                PADEMU_LOG("PADEMU: multitap slot %d\n", td->in[2] & 3);
+#ifdef PADEMU_DEBUG
+            {
+                static u8 slot_seen; // each slot is selected hundreds of times per second: log only the first time
+
+                if (!(slot_seen & (1 << (td->in[2] & 3)))) {
+                    slot_seen |= 1 << (td->in[2] & 3);
+                    PADEMU_LOG("PADEMU: multitap slot %d\n", td->in[2] & 3);
+                }
+            }
+#endif
             pad_route.mtap_slot = td->out[5] = td->in[2]; // slot
             td->out[6] = 0x5a;
             td->stat6c = 0x00001100;

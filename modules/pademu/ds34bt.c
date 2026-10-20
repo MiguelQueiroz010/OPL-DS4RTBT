@@ -30,6 +30,13 @@
 //#define DPRINTF(x...) printf(x)
 #define DPRINTF(x...)
 
+// Rare Bluetooth link events (a pad connecting, being refused or leaving), sent to the UDP log in debug builds only
+#ifdef PADEMU_DEBUG
+#define BTLOG(x...) printf(x)
+#else
+#define BTLOG(x...)
+#endif
+
 static int bt_probe(int devId);
 static int bt_connect(int devId);
 static int bt_disconnect(int devId);
@@ -1088,9 +1095,11 @@ static void HCI_event_task(int result)
                     if (i >= MAX_PADS) {
                         break;
                     }
+                    BTLOG("PADEMU BT: link up for pad %d\n", i);
                     pad_status_set(DS34BT_STATE_CONNECTED, i);
                     hci_remote_name(ds34pad[i].bdaddr);
                 } else {
+                    BTLOG("PADEMU BT: connection failed, status 0x%02X\n", hci_buf[2]);
                     DPRINTF("\t Error 0x%02X \n", hci_buf[2]);
                 }
                 break;
@@ -1116,6 +1125,7 @@ static void HCI_event_task(int result)
                         break;
                     }
                 }
+                BTLOG("PADEMU BT: disconnect, reason 0x%02X, pad %d\n", hci_buf[5], i < MAX_PADS ? i : -1);
                 ds34pad_clear(i);
                 bt_update_page_scan(); // a pad left: listen for connections again
                 break;
@@ -1157,6 +1167,7 @@ static void HCI_event_task(int result)
                         ds34pad[i].type = DS3;
                         DPRINTF("\t Type: Dualshock 3 \n");
                     }
+                    BTLOG("PADEMU BT: pad %d is a %s\n", i, ds34pad[i].type == DS5 ? "DualSense" : ds34pad[i].type == DS4 ? "DualShock 4" : "DualShock 3");
                     hci_change_connection_type(ds34pad[i].hci_handle);
                     if (IS_DS4_LIKE(ds34pad[i].type)) {
                         identifier++;
@@ -1192,6 +1203,8 @@ static void HCI_event_task(int result)
                         break;
                     }
                 }
+                BTLOG("PADEMU BT: connection request from %02X:%02X:%02X:%02X:%02X:%02X -> %s\n", hci_buf[7], hci_buf[6], hci_buf[5], hci_buf[4],
+                      hci_buf[3], hci_buf[2], i >= MAX_PADS ? "no free pad slot, rejected" : "pad slot assigned");
                 if (i >= MAX_PADS) { // no free slot
                     hci_reject_connection(hci_buf + 2);
                     break;
@@ -1601,6 +1614,7 @@ static int L2CAP_event_task(int result, int bytes)
                             DelayThread(CMD_DELAY);
                             hid_LEDRumbleCommand(ds34pad[pad].oldled, 0, 0, pad);
                             pad_status_set(DS34BT_STATE_RUNNING, pad);
+                            BTLOG("PADEMU BT: pad %d running\n", pad);
                             bt_update_page_scan(); // all enabled pads connected: stop listening for new ones
                         }
                         ds34pad[pad].btn_delay = 0xFF;
