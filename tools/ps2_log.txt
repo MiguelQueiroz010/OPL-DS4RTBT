@@ -118,3 +118,591 @@
 [ 128.019] loadmodule: id 41, ret 2
 [ 128.091] PADEMU: 2-port poll port 1 -> real DS2
 [ 128.091] PADEMU: 2-port poll port 2 -> emulated pad 0
+
+===== session 2026-10-20 15:33:21 =====
+[ 203.297] ETHSUPPORT ApplyConfig
+[ 206.002] CONFIG No file smb0:CFG\SLUS_214.19.cfg.
+[ 206.080] texDiscoverLoad(smb0:ART\SLUS_214.19_COV)
+[ 206.083] texDiscoverLoad(smb0:ART\SLUS_214.19_ICO)
+[ 207.216] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[ 207.220] texDiscoverLoad(smb0:ART\SLUS_216.42_COV)
+[ 207.223] texDiscoverLoad(smb0:ART\SLUS_216.42_ICO)
+[ 221.280] ETHSUPPORT ApplyConfig
+[ 224.648] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[ 229.766] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[ 247.440] DVD detected.
+[ 248.705] ETHSUPPORT CleanUp
+[ 248.711] audsrv_adpcm_init()
+[ 248.712] FNTSYS End
+[ 248.717] [CLEAREFFECTS]:
+[ 248.769] 	-- ID=73, ret=1
+[ 248.771] SYSTEM LaunchLoaderElf loading modules
+[ 248.771] IOPRP image size calculated: 49951
+[ 248.772] IOPRP image size actual:     49728
+[ 248.772] SYSTEM IRX 1 address start: 0x97070 end: 0x98751
+[ 248.773] SYSTEM IRX 2 address start: 0x98760 end: 0xa49a0
+[ 248.774] SYSTEM IRX 3 address start: 0xa49a0 end: 0xa4e89
+[ 248.774] SYSTEM IRX 4 address start: 0xa4e90 end: 0xa5379
+[ 248.775] SYSTEM IRX 5 address start: 0xa5380 end: 0xa67f9
+[ 248.776] SYSTEM IRX 6 address start: 0xa6800 end: 0xace81
+[ 248.776] SYSTEM IRX 12 address start: 0xace90 end: 0xaedd1
+[ 248.777] SYSTEM IRX 11 address start: 0xaede0 end: 0xba3cd
+[ 248.778] SYSTEM IRX 13 address start: 0xba3d0 end: 0xbcaf1
+[ 248.778] SYSTEM IRX 15 address start: 0xbcb00 end: 0xc3af1
+[ 248.779] SYSTEM IRX 16 address start: 0xc3b00 end: 0xc4739
+[ 248.780] SYSTEM IRX 17 address start: 0xc4740 end: 0xc580d
+[ 248.780] SYSTEM IRX STORAGE 0x97000 - 0xc5810
+[ 248.782] loadmodule: fname rom0:XPARAM args 12 arg SLUS_216.42
+[ 248.789] loadmodule: id 74, ret 1
+[ 248.791] EECoreConfig Values = 0x0030EBA0
+[ 248.791] Game Mode Desc = ETH_MODE
+[ 248.792] EnableDebug = 0
+[ 248.792] Exit Path = (mc0:/APPS/OPNPS2LD.ELF)
+[ 248.793] HDD Spindown = 20
+[ 248.793] IP=192.168.1.200 NM=255.255.255.0 GW=192.168.1.1 mode: 0
+[ 248.794] PS2RD Cheat Engine = Disabled
+[ 248.795] EnforceLanguage = Disabled
+[ 248.795] GSM = Disabled
+[ 248.796] PADEMU = Enabled
+[ 248.796] PADEMU wireless keys = 4
+[ 248.799] enforceLanguage = Disabled
+[ 248.799] eeloadCopy = 0x8000574C
+[ 248.800] initUserMemory = 0x8000E270
+[ 248.800] ModStorageStart = 0x00097000
+[ 248.801] ModStorageEnd = 0x000C5840
+[ 248.801] GameID = SLUS_216.42
+[ 248.802] Compat Mask = 0x00
+[ 248.803] EECORE PH COPY: 1 0x00084000 0x00303AA0 0x0000BE78
+[ 248.803] EECORE PH CLEAR: 1 0x0008FE78 0x00003C88
+[ 248.804] Starting ee_core with following argv arguments:
+[ 248.804] [0] cdrom0:\SLUS_216.42;1
+[ 248.805] Leaving OPL GUI, starting eecore = 0x00087EC0
+[ 249.718] UDPTTY loaded!
+[ 249.718] KPRTTY enabled!
+[ 249.720] ioptrap starts.
+[ 249.727] USB Driver (Version 1.6.0)
+[ 252.457] loadelf: fname cdrom0:\SLUS_216.42;1 secname all
+[ 252.494] Input ELF format filename = cdrom0:\SLUS_216.42;1
+[ 254.736] 0 00100000 005b8400 ............................................................................................
+[ 254.737] Loaded, cdrom0:\SLUS_216.42;1
+[ 254.739] start address 0x100008
+[ 254.740] gp address 00000000
+[ 255.718] Get Reboot Request From EE
+[ 256.373] UDPTTY loaded!
+[ 256.373] KPRTTY enabled!
+[ 256.375] ioptrap starts.
+[ 256.382] USB Driver (Version 1.6.0)
+[ 259.959] UDPTTY loaded!
+[ 259.959] KPRTTY enabled!
+[ 259.961] ioptrap starts.
+[ 259.968] USB Driver (Version 1.6.0)
+[ 262.713] loadmodule: fname cdrom0:\I\SIO2MAN.IRX;1 args 0 arg
+[ 262.724] loadmodule: id 33, ret 1
+[ 262.725] loadmodule: fname cdrom0:\I\MTAPMAN.IRX;1 args 0 arg
+[ 262.738] loadmodule: id 34, ret 0
+[ 262.739] loadmodule: fname cdrom0:\I\PADMAN.IRX;1 args 0 arg
+[ 262.770] loadmodule: id 35, ret 0
+[ 262.770] loadmodule: fname cdrom0:\I\LIBSD.IRX;1 args 0 arg
+[ 262.790] loadmodule: id 36, ret 0
+[ 262.791] loadmodule: fname cdrom0:\I\SDRDRV.IRX;1 args 0 arg
+[ 262.801] SDR driver version 4.0.1 (C) SCEI
+[ 262.801]  Exit rsd_main
+[ 262.802] loadmodule: id 37, ret 2
+[ 262.803] loadmodule: fname cdrom0:\I\CRI_ADXI.IRX;1 args 19 arg spucore=1
+[ 262.847] CRI ADX Driver Ver.10.02(Feb  9 2007 16:30:56)
+[ 262.847] CRI ADX Driver : sceSdInit Call = 0
+[ 262.849] CRI ADX Driver : Main Thread Priority = 39
+[ 262.849] CRI ADX Driver : PSM Thread Priority  = 39
+[ 262.850] CRI ADX Driver : DTX Thread Priority  = 48
+[ 262.851] CRI ADX Driver : SPU CORE Number = 1
+[ 262.851] loadmodule: id 38, ret 2
+[ 262.852] loadmodule: fname cdrom0:\I\SNDFI.IRX;1 args 0 arg
+[ 262.908] SNDF Driver Ver 2.29(Sep 30 2007 15:24:20)
+[ 262.911] loadmodule: id 39, ret 2
+[ 262.912] loadmodule: fname cdrom0:\I\MCMAN.IRX;1 args 0 arg
+[ 262.973] loadmodule: id 40, ret 2
+[ 262.974] loadmodule: fname cdrom0:\I\MCSERV.IRX;1 args 0 arg
+[ 262.985] loadmodule: id 41, ret 2
+[ 263.057] PADEMU: 2-port poll port 1 -> real DS2
+[ 263.057] PADEMU: 2-port poll port 2 -> emulated pad 0
+[ 283.028] padman: DMA Busy ID = 237b0005 ret = 1
+[ 283.029]         SB_STAT = 00f00160
+[ 287.032] padman: DMA Busy ID = 237b0005 ret = 1
+[ 287.033]         SB_STAT = 00f00160
+[ 291.036] padman: DMA Busy ID = 237b0005 ret = 1
+[ 292.152]         SB_STAT = 00f00160
+[ 295.040] padman: DMA Busy ID = 237b0005 ret = 1
+[ 295.041]         SB_STAT = 00f00160
+[ 299.044] padman: DMA Busy ID = 237b0005 ret = 1
+[ 299.045]         SB_STAT = 00f00160
+[ 303.049] padman: DMA Busy ID = 237b0005 ret = 1
+[ 303.049]         SB_STAT = 00f00160
+[ 307.053] padman: DMA Busy ID = 237b0005 ret = 1
+[ 307.056]         SB_STAT = 00f00160
+[ 311.057] padman: DMA Busy ID = 237b0005 ret = 1
+[ 311.058]         SB_STAT = 00f00160
+[ 315.061] padman: DMA Busy ID = 237b0005 ret = 1
+[ 315.061]         SB_STAT = 00f00160
+[ 319.065] padman: DMA Busy ID = 237b0005 ret = 1
+[ 319.065]         SB_STAT = 00f00160
+[ 323.069] padman: DMA Busy ID = 237b0005 ret = 1
+[ 323.069]         SB_STAT = 00f00160
+[ 327.075] padman: DMA Busy ID = 237b0005 ret = 1
+[ 327.075]         SB_STAT = 00f00160
+[ 331.078] padman: DMA Busy ID = 237b0005 ret = 1
+[ 331.078]         SB_STAT = 00f00160
+[ 335.081] padman: DMA Busy ID = 237b0005 ret = 1
+[ 335.081]         SB_STAT = 00f00160
+[ 339.085] padman: DMA Busy ID = 237b0005 ret = 1
+[ 339.086]         SB_STAT = 00f00160
+[ 343.090] padman: DMA Busy ID = 237b0005 ret = 1
+[ 343.091]         SB_STAT = 00f00160
+[ 347.094] padman: DMA Busy ID = 237b0005 ret = 1
+[ 347.094]         SB_STAT = 00f00160
+[ 351.098] padman: DMA Busy ID = 237b0005 ret = 1
+[ 351.098]         SB_STAT = 00f00160
+[ 355.102] padman: DMA Busy ID = 237b0005 ret = 1
+[ 355.102]         SB_STAT = 00f00160
+[ 359.106] padman: DMA Busy ID = 237b0005 ret = 1
+[ 359.106]         SB_STAT = 00f00160
+[ 363.110] padman: DMA Busy ID = 237b0005 ret = 1
+[ 363.110]         SB_STAT = 00f00160
+[ 367.114] padman: DMA Busy ID = 237b0005 ret = 1
+[ 367.115]         SB_STAT = 00f00160
+[ 371.118] padman: DMA Busy ID = 237b0005 ret = 1
+[ 371.118]         SB_STAT = 00f00160
+[ 375.123] padman: DMA Busy ID = 237b0005 ret = 1
+[ 375.123]         SB_STAT = 00f00160
+[ 379.126] padman: DMA Busy ID = 237b0005 ret = 1
+[ 379.127]         SB_STAT = 00f00160
+[ 383.130] padman: DMA Busy ID = 237b0005 ret = 1
+[ 383.131]         SB_STAT = 00f00160
+[ 387.134] padman: DMA Busy ID = 237b0005 ret = 1
+[ 387.135]         SB_STAT = 00f00160
+[ 391.138] padman: DMA Busy ID = 237b0005 ret = 1
+[ 391.139]         SB_STAT = 00f00160
+[ 395.143] padman: DMA Busy ID = 237b0005 ret = 1
+[ 395.143]         SB_STAT = 00f00160
+[ 399.147] padman: DMA Busy ID = 237b0005 ret = 1
+[ 399.147]         SB_STAT = 00f00160
+[ 403.151] padman: DMA Busy ID = 237b0005 ret = 1
+[ 403.151]         SB_STAT = 00f00160
+[ 407.155] padman: DMA Busy ID = 237b0005 ret = 1
+[ 407.156]         SB_STAT = 00f00160
+[ 411.159] padman: DMA Busy ID = 237b0005 ret = 1
+[ 411.160]         SB_STAT = 00f00160
+[ 415.163] padman: DMA Busy ID = 237b0005 ret = 1
+[ 415.163]         SB_STAT = 00f00160
+[ 419.167] padman: DMA Busy ID = 237b0005 ret = 1
+[ 419.167]         SB_STAT = 00f00160
+[ 423.171] padman: DMA Busy ID = 237b0005 ret = 1
+[ 423.171]         SB_STAT = 00f00160
+[ 427.175] padman: DMA Busy ID = 237b0005 ret = 1
+[ 427.176]         SB_STAT = 00f00160
+[ 431.179] padman: DMA Busy ID = 237b0005 ret = 1
+[ 431.180]         SB_STAT = 00f00160
+[ 435.183] padman: DMA Busy ID = 237b0005 ret = 1
+[ 435.184]         SB_STAT = 00f00160
+[ 439.188] padman: DMA Busy ID = 237b0005 ret = 1
+[ 439.188]         SB_STAT = 00f00160
+[ 443.191] padman: DMA Busy ID = 237b0005 ret = 1
+[ 443.192]         SB_STAT = 00f00160
+[ 447.204] padman: DMA Busy ID = 237b0005 ret = 1
+[ 447.294]         SB_STAT = 00f00160
+[ 451.205] padman: DMA Busy ID = 237b0005 ret = 1
+[ 451.208]         SB_STAT = 00f00160
+[ 455.204] padman: DMA Busy ID = 237b0005 ret = 1
+[ 455.204]         SB_STAT = 00f00160
+[ 459.208] padman: DMA Busy ID = 237b0005 ret = 1
+[ 459.208]         SB_STAT = 00f00160
+[ 463.212] padman: DMA Busy ID = 237b0005 ret = 1
+[ 463.212]         SB_STAT = 00f00160
+[ 467.216] padman: DMA Busy ID = 237b0005 ret = 1
+[ 467.217]         SB_STAT = 00f00160
+[ 471.221] padman: DMA Busy ID = 237b0005 ret = 1
+[ 471.221]         SB_STAT = 00f00160
+[ 475.225] padman: DMA Busy ID = 237b0005 ret = 1
+[ 475.225]         SB_STAT = 00f00160
+[ 479.228] padman: DMA Busy ID = 237b0005 ret = 1
+[ 479.228]         SB_STAT = 00f00160
+[ 483.232] padman: DMA Busy ID = 237b0005 ret = 1
+[ 483.233]         SB_STAT = 00f00160
+[ 487.237] padman: DMA Busy ID = 237b0005 ret = 1
+[ 487.237]         SB_STAT = 00f00160
+[ 491.240] padman: DMA Busy ID = 237b0005 ret = 1
+[ 491.241]         SB_STAT = 00f00160
+[ 495.245] padman: DMA Busy ID = 237b0005 ret = 1
+[ 495.245]         SB_STAT = 00f00160
+[ 499.249] padman: DMA Busy ID = 237b0005 ret = 1
+[ 499.249]         SB_STAT = 00f00160
+[ 503.253] padman: DMA Busy ID = 237b0005 ret = 1
+[ 503.254]         SB_STAT = 00f00160
+[ 507.257] padman: DMA Busy ID = 237b0005 ret = 1
+[ 507.258]         SB_STAT = 00f00160
+[ 511.261] padman: DMA Busy ID = 237b0005 ret = 1
+[ 511.261]         SB_STAT = 00f00160
+[ 515.266] padman: DMA Busy ID = 237b0005 ret = 1
+[ 515.267]         SB_STAT = 00f00160
+[ 519.269] padman: DMA Busy ID = 237b0005 ret = 1
+[ 519.269]         SB_STAT = 00f00160
+[ 523.273] padman: DMA Busy ID = 237b0005 ret = 1
+[ 523.273]         SB_STAT = 00f00160
+[ 527.278] padman: DMA Busy ID = 237b0005 ret = 1
+[ 527.278]         SB_STAT = 00f00160
+[ 531.281] padman: DMA Busy ID = 237b0005 ret = 1
+[ 531.282]         SB_STAT = 00f00160
+[ 535.286] padman: DMA Busy ID = 237b0005 ret = 1
+[ 535.286]         SB_STAT = 00f00160
+[ 539.289] padman: DMA Busy ID = 237b0005 ret = 1
+[ 539.290]         SB_STAT = 00f00160
+[ 543.294] padman: DMA Busy ID = 237b0005 ret = 1
+[ 543.294]         SB_STAT = 00f00160
+[ 547.298] padman: DMA Busy ID = 237b0005 ret = 1
+[ 547.298]         SB_STAT = 00f00160
+[ 551.302] padman: DMA Busy ID = 237b0005 ret = 1
+[ 551.302]         SB_STAT = 00f00160
+[ 555.306] padman: DMA Busy ID = 237b0005 ret = 1
+[ 555.306]         SB_STAT = 00f00160
+[ 559.310] padman: DMA Busy ID = 237b0005 ret = 1
+[ 559.310]         SB_STAT = 00f00160
+[ 563.314] padman: DMA Busy ID = 237b0005 ret = 1
+[ 563.314]         SB_STAT = 00f00160
+[ 567.319] padman: DMA Busy ID = 237b0005 ret = 1
+[ 567.319]         SB_STAT = 00f00160
+[ 571.322] padman: DMA Busy ID = 237b0005 ret = 1
+[ 571.323]         SB_STAT = 00f00160
+[ 575.326] padman: DMA Busy ID = 237b0005 ret = 1
+[ 575.326]         SB_STAT = 00f00160
+[ 579.330] padman: DMA Busy ID = 237b0005 ret = 1
+[ 579.331]         SB_STAT = 00f00160
+[ 583.334] padman: DMA Busy ID = 237b0005 ret = 1
+[ 583.335]         SB_STAT = 00f00160
+[ 587.339] padman: DMA Busy ID = 237b0005 ret = 1
+[ 587.339]         SB_STAT = 00f00160
+[ 591.343] padman: DMA Busy ID = 237b0005 ret = 1
+[ 591.343]         SB_STAT = 00f00160
+[ 595.347] padman: DMA Busy ID = 237b0005 ret = 1
+[ 595.347]         SB_STAT = 00f00160
+[ 599.351] padman: DMA Busy ID = 237b0005 ret = 1
+[ 599.352]         SB_STAT = 00f00160
+[ 603.355] padman: DMA Busy ID = 237b0005 ret = 1
+[ 603.355]         SB_STAT = 00f00160
+[ 607.359] padman: DMA Busy ID = 237b0005 ret = 1
+[ 607.359]         SB_STAT = 00f00160
+[ 611.363] padman: DMA Busy ID = 237b0005 ret = 1
+[ 611.364]         SB_STAT = 00f00160
+[ 615.367] padman: DMA Busy ID = 237b0005 ret = 1
+[ 615.368]         SB_STAT = 00f00160
+[ 619.371] padman: DMA Busy ID = 237b0005 ret = 1
+[ 619.371]         SB_STAT = 00f00160
+[ 623.375] padman: DMA Busy ID = 237b0005 ret = 1
+[ 623.375]         SB_STAT = 00f00160
+[ 627.379] padman: DMA Busy ID = 237b0005 ret = 1
+[ 627.380]         SB_STAT = 00f00160
+[ 631.384] padman: DMA Busy ID = 237b0005 ret = 1
+[ 631.385]         SB_STAT = 00f00160
+[ 635.387] padman: DMA Busy ID = 237b0005 ret = 1
+[ 635.388]         SB_STAT = 00f00160
+[ 639.392] padman: DMA Busy ID = 237b0005 ret = 1
+[ 639.392]         SB_STAT = 00f00160
+[ 643.396] padman: DMA Busy ID = 237b0005 ret = 1
+[ 643.396]         SB_STAT = 00f00160
+[ 647.400] padman: DMA Busy ID = 237b0005 ret = 1
+[ 647.400]         SB_STAT = 00f00160
+[ 651.404] padman: DMA Busy ID = 237b0005 ret = 1
+[ 651.404]         SB_STAT = 00f00160
+[ 655.408] padman: DMA Busy ID = 237b0005 ret = 1
+[ 655.408]         SB_STAT = 00f00160
+[ 659.412] padman: DMA Busy ID = 237b0005 ret = 1
+[ 659.412]         SB_STAT = 00f00160
+[ 663.416] padman: DMA Busy ID = 237b0005 ret = 1
+[ 663.417]         SB_STAT = 00f00160
+[ 667.421] padman: DMA Busy ID = 237b0005 ret = 1
+[ 667.421]         SB_STAT = 00f00160
+[ 671.424] padman: DMA Busy ID = 237b0005 ret = 1
+[ 671.425]         SB_STAT = 00f00160
+[ 675.428] padman: DMA Busy ID = 237b0005 ret = 1
+[ 675.429]         SB_STAT = 00f00160
+[ 679.432] padman: DMA Busy ID = 237b0005 ret = 1
+[ 679.433]         SB_STAT = 00f00160
+[ 683.436] padman: DMA Busy ID = 237b0005 ret = 1
+[ 683.437]         SB_STAT = 00f00160
+[ 687.441] padman: DMA Busy ID = 237b0005 ret = 1
+[ 687.441]         SB_STAT = 00f00160
+[ 691.445] padman: DMA Busy ID = 237b0005 ret = 1
+[ 691.445]         SB_STAT = 00f00160
+[ 695.449] padman: DMA Busy ID = 237b0005 ret = 1
+[ 695.449]         SB_STAT = 00f00160
+[ 699.453] padman: DMA Busy ID = 237b0005 ret = 1
+[ 699.453]         SB_STAT = 00f00160
+[ 703.457] padman: DMA Busy ID = 237b0005 ret = 1
+[ 703.458]         SB_STAT = 00f00160
+[ 707.461] padman: DMA Busy ID = 237b0005 ret = 1
+[ 707.461]         SB_STAT = 00f00160
+[ 711.465] padman: DMA Busy ID = 237b0005 ret = 1
+[ 711.465]         SB_STAT = 00f00160
+[ 715.471] padman: DMA Busy ID = 237b0005 ret = 1
+[ 715.471]         SB_STAT = 00f00160
+[ 719.473] padman: DMA Busy ID = 237b0005 ret = 1
+[ 719.474]         SB_STAT = 00f00160
+[ 723.478] padman: DMA Busy ID = 237b0005 ret = 1
+[ 723.478]         SB_STAT = 00f00160
+[ 727.482] padman: DMA Busy ID = 237b0005 ret = 1
+[ 727.482]         SB_STAT = 00f00160
+[ 731.485] padman: DMA Busy ID = 237b0005 ret = 1
+[ 731.486]         SB_STAT = 00f00160
+[ 735.490] padman: DMA Busy ID = 237b0005 ret = 1
+[ 735.490]         SB_STAT = 00f00160
+[ 739.494] padman: DMA Busy ID = 237b0005 ret = 1
+[ 739.494]         SB_STAT = 00f00160
+[ 743.498] padman: DMA Busy ID = 237b0005 ret = 1
+[ 743.499]         SB_STAT = 00f00160
+[ 747.502] padman: DMA Busy ID = 237b0005 ret = 1
+[ 747.502]         SB_STAT = 00f00160
+[ 751.506] padman: DMA Busy ID = 237b0005 ret = 1
+[ 751.507]         SB_STAT = 00f00160
+[ 755.510] padman: DMA Busy ID = 237b0005 ret = 1
+[ 755.510]         SB_STAT = 00f00160
+[ 759.527] padman: DMA Busy ID = 237b0005 ret = 1
+[ 759.540]         SB_STAT = 00f00160
+[ 763.518] padman: DMA Busy ID = 237b0005 ret = 1
+[ 763.518]         SB_STAT = 00f00160
+[ 767.522] padman: DMA Busy ID = 237b0005 ret = 1
+[ 767.523]         SB_STAT = 00f00160
+[ 771.527] padman: DMA Busy ID = 237b0005 ret = 1
+[ 771.528]         SB_STAT = 00f00160
+[ 775.530] padman: DMA Busy ID = 237b0005 ret = 1
+[ 775.531]         SB_STAT = 00f00160
+[ 779.534] padman: DMA Busy ID = 237b0005 ret = 1
+[ 779.535]         SB_STAT = 00f00160
+[ 783.539] padman: DMA Busy ID = 237b0005 ret = 1
+[ 783.539]         SB_STAT = 00f00160
+[ 787.551] padman: DMA Busy ID = 237b0005 ret = 1
+[ 787.552]         SB_STAT = 00f00160
+
+===== session 2026-10-20 16:10:55 =====
+[   9.756] UDPTTY loaded!
+[   9.758] KPRTTY enabled!
+[   9.758] 	-- ID=70, ret=0
+[   9.758] [IOPTRAP]:
+[   9.760] ioptrap starts.
+[   9.760] 	-- ID=71, ret=0
+[   9.761] [PS2LINK]:
+[   9.769] initializing host
+[   9.770] Thread id: 1ab8379
+[   9.770] host: mounted
+[   9.770] IOP cmd: Starting thread
+[   9.770] IOP cmd: Server Thread Started.
+[   9.770] IOP cmd: Listening
+[   9.770] 	-- ID=72, ret=0
+[  12.580] BGM: Input does not appear to be an Ogg bitstream.
+[  80.154] ETHSUPPORT ApplyConfig
+[  84.144] CONFIG No file smb0:CFG\SLUS_214.19.cfg.
+[  84.188] texDiscoverLoad(smb0:ART\SLUS_214.19_COV)
+[  84.191] texDiscoverLoad(smb0:ART\SLUS_214.19_ICO)
+[  85.306] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[  85.311] texDiscoverLoad(smb0:ART\SLUS_216.42_COV)
+[  85.314] texDiscoverLoad(smb0:ART\SLUS_216.42_ICO)
+[  85.539] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[  88.923] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[ 107.578] DVD detected.
+[ 108.846] ETHSUPPORT CleanUp
+[ 108.853] audsrv_adpcm_init()
+[ 108.853] FNTSYS End
+[ 108.858] [CLEAREFFECTS]:
+[ 108.909] 	-- ID=73, ret=1
+[ 108.911] SYSTEM LaunchLoaderElf loading modules
+[ 108.912] IOPRP image size calculated: 49951
+[ 108.913] IOPRP image size actual:     49728
+[ 108.913] SYSTEM IRX 1 address start: 0x97070 end: 0x98751
+[ 108.914] SYSTEM IRX 2 address start: 0x98760 end: 0xa49a0
+[ 108.916] SYSTEM IRX 3 address start: 0xa49a0 end: 0xa4e89
+[ 108.916] SYSTEM IRX 4 address start: 0xa4e90 end: 0xa5379
+[ 108.917] SYSTEM IRX 5 address start: 0xa5380 end: 0xa67f9
+[ 108.917] SYSTEM IRX 6 address start: 0xa6800 end: 0xace81
+[ 108.918] SYSTEM IRX 12 address start: 0xace90 end: 0xaedd1
+[ 108.918] SYSTEM IRX 11 address start: 0xaede0 end: 0xba3cd
+[ 108.919] SYSTEM IRX 13 address start: 0xba3d0 end: 0xbcaf1
+[ 108.919] SYSTEM IRX 15 address start: 0xbcb00 end: 0xc0a6d
+[ 108.920] SYSTEM IRX 16 address start: 0xc0a70 end: 0xc16a9
+[ 108.921] SYSTEM IRX 17 address start: 0xc16b0 end: 0xc277d
+[ 108.921] SYSTEM IRX STORAGE 0x97000 - 0xc2780
+[ 108.923] loadmodule: fname rom0:XPARAM args 12 arg SLUS_216.42
+[ 108.930] loadmodule: id 74, ret 1
+[ 108.932] EECoreConfig Values = 0x0030EBA0
+[ 108.932] Game Mode Desc = ETH_MODE
+[ 108.933] EnableDebug = 0
+[ 108.933] Exit Path = (mc0:/APPS/OPNPS2LD.ELF)
+[ 108.934] HDD Spindown = 20
+[ 108.935] IP=192.168.1.200 NM=255.255.255.0 GW=192.168.1.1 mode: 0
+[ 108.935] PS2RD Cheat Engine = Disabled
+[ 108.936] EnforceLanguage = Disabled
+[ 108.937] GSM = Disabled
+[ 108.939] PADEMU = Enabled
+[ 108.940] PADEMU wireless keys = 4
+[ 108.940] enforceLanguage = Disabled
+[ 108.941] eeloadCopy = 0x8000574C
+[ 108.941] initUserMemory = 0x8000E270
+[ 108.942] ModStorageStart = 0x00097000
+[ 108.943] ModStorageEnd = 0x000C2780
+[ 108.943] GameID = SLUS_216.42
+[ 108.944] Compat Mask = 0x00
+[ 108.944] EECORE PH COPY: 1 0x00084000 0x00303AA0 0x0000BE78
+[ 108.945] EECORE PH CLEAR: 1 0x0008FE78 0x00003C88
+[ 108.946] Starting ee_core with following argv arguments:
+[ 108.946] [0] cdrom0:\SLUS_216.42;1
+[ 108.947] Leaving OPL GUI, starting eecore = 0x00087EC0
+[ 109.859] UDPTTY loaded!
+[ 109.859] KPRTTY enabled!
+[ 109.860] ioptrap starts.
+[ 109.867] USB Driver (Version 1.6.0)
+[ 112.598] loadelf: fname cdrom0:\SLUS_216.42;1 secname all
+[ 112.635] Input ELF format filename = cdrom0:\SLUS_216.42;1
+[ 114.899] 0 00100000 005b8400 ............................................................................................
+[ 114.899] Loaded, cdrom0:\SLUS_216.42;1
+[ 114.900] start address 0x100008
+[ 114.900] gp address 00000000
+[ 115.894] Get Reboot Request From EE
+[ 116.548] UDPTTY loaded!
+[ 116.548] KPRTTY enabled!
+[ 116.549] ioptrap starts.
+[ 116.556] USB Driver (Version 1.6.0)
+[ 120.137] UDPTTY loaded!
+[ 120.137] KPRTTY enabled!
+[ 120.139] ioptrap starts.
+[ 120.146] USB Driver (Version 1.6.0)
+[ 122.889] loadmodule: fname cdrom0:\I\SIO2MAN.IRX;1 args 0 arg
+[ 122.899] loadmodule: id 33, ret 1
+[ 122.900] loadmodule: fname cdrom0:\I\MTAPMAN.IRX;1 args 0 arg
+[ 122.914] loadmodule: id 34, ret 0
+[ 122.914] loadmodule: fname cdrom0:\I\PADMAN.IRX;1 args 0 arg
+[ 122.943] loadmodule: id 35, ret 0
+[ 122.944] loadmodule: fname cdrom0:\I\LIBSD.IRX;1 args 0 arg
+[ 122.964] loadmodule: id 36, ret 0
+[ 122.964] loadmodule: fname cdrom0:\I\SDRDRV.IRX;1 args 0 arg
+[ 122.976] SDR driver version 4.0.1 (C) SCEI
+[ 122.976]  Exit rsd_main
+[ 122.977] loadmodule: id 37, ret 2
+[ 122.977] loadmodule: fname cdrom0:\I\CRI_ADXI.IRX;1 args 19 arg spucore=1
+[ 123.021] CRI ADX Driver Ver.10.02(Feb  9 2007 16:30:56)
+[ 123.021] CRI ADX Driver : sceSdInit Call = 0
+[ 123.023] CRI ADX Driver : Main Thread Priority = 39
+[ 123.023] CRI ADX Driver : PSM Thread Priority  = 39
+[ 123.024] CRI ADX Driver : DTX Thread Priority  = 48
+[ 123.024] CRI ADX Driver : SPU CORE Number = 1
+[ 123.025] loadmodule: id 38, ret 2
+[ 123.026] loadmodule: fname cdrom0:\I\SNDFI.IRX;1 args 0 arg
+[ 123.084] SNDF Driver Ver 2.29(Sep 30 2007 15:24:20)
+[ 123.087] loadmodule: id 39, ret 2
+[ 123.087] loadmodule: fname cdrom0:\I\MCMAN.IRX;1 args 0 arg
+[ 123.150] loadmodule: id 40, ret 2
+[ 123.150] loadmodule: fname cdrom0:\I\MCSERV.IRX;1 args 0 arg
+[ 123.161] loadmodule: id 41, ret 2
+[ 123.233] PADEMU: 2-port poll port 1 -> real DS2
+[ 123.234] PADEMU: 2-port poll port 2 -> emulated pad 0
+
+===== session 2026-10-20 16:36:55 =====
+[  29.321] ETHSUPPORT ApplyConfig
+[  30.392] CONFIG No file smb0:CFG\SLUS_214.19.cfg.
+[  30.455] texDiscoverLoad(smb0:ART\SLUS_214.19_COV)
+[  30.457] texDiscoverLoad(smb0:ART\SLUS_214.19_ICO)
+[  31.607] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[  31.611] texDiscoverLoad(smb0:ART\SLUS_216.42_COV)
+[  31.614] texDiscoverLoad(smb0:ART\SLUS_216.42_ICO)
+[  32.438] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[  35.507] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[  59.523] DVD detected.
+[  60.779] ETHSUPPORT CleanUp
+[  60.784] audsrv_adpcm_init()
+[  60.785] FNTSYS End
+[  60.790] [CLEAREFFECTS]:
+[  60.842] 	-- ID=73, ret=1
+[  60.844] SYSTEM LaunchLoaderElf loading modules
+[  60.844] IOPRP image size calculated: 49951
+[  60.845] IOPRP image size actual:     49728
+[  60.846] SYSTEM IRX 1 address start: 0x97070 end: 0x98751
+[  60.846] SYSTEM IRX 2 address start: 0x98760 end: 0xa49a0
+[  60.847] SYSTEM IRX 3 address start: 0xa49a0 end: 0xa4e89
+[  60.848] SYSTEM IRX 4 address start: 0xa4e90 end: 0xa5379
+[  60.849] SYSTEM IRX 5 address start: 0xa5380 end: 0xa67f9
+[  60.849] SYSTEM IRX 6 address start: 0xa6800 end: 0xace81
+[  60.850] SYSTEM IRX 12 address start: 0xace90 end: 0xaedd1
+[  60.850] SYSTEM IRX 11 address start: 0xaede0 end: 0xba3cd
+[  60.851] SYSTEM IRX 13 address start: 0xba3d0 end: 0xbcaf1
+[  60.852] SYSTEM IRX 15 address start: 0xbcb00 end: 0xc3c71
+[  60.853] SYSTEM IRX 16 address start: 0xc3c80 end: 0xc48b9
+[  60.853] SYSTEM IRX 17 address start: 0xc48c0 end: 0xc598d
+[  60.854] SYSTEM IRX STORAGE 0x97000 - 0xc5990
+[  60.856] loadmodule: fname rom0:XPARAM args 12 arg SLUS_216.42
+[  60.863] loadmodule: id 74, ret 1
+[  60.864] EECoreConfig Values = 0x0030EBA0
+[  60.865] Game Mode Desc = ETH_MODE
+[  60.865] EnableDebug = 0
+[  60.866] Exit Path = (mc0:/APPS/OPNPS2LD.ELF)
+[  60.866] HDD Spindown = 20
+[  60.867] IP=192.168.1.200 NM=255.255.255.0 GW=192.168.1.1 mode: 0
+[  60.868] PS2RD Cheat Engine = Disabled
+[  60.868] EnforceLanguage = Disabled
+[  60.869] GSM = Disabled
+[  60.869] PADEMU = Enabled
+[  60.870] PADEMU wireless keys = 4
+[  60.870] enforceLanguage = Disabled
+[  60.871] eeloadCopy = 0x8000574C
+[  60.872] initUserMemory = 0x8000E270
+[  60.872] ModStorageStart = 0x00097000
+[  60.873] ModStorageEnd = 0x000C59C0
+[  60.874] GameID = SLUS_216.42
+[  60.874] Compat Mask = 0x00
+[  60.875] EECORE PH COPY: 1 0x00084000 0x00303AA0 0x0000BE78
+[  60.875] EECORE PH CLEAR: 1 0x0008FE78 0x00003C88
+[  60.878] Starting ee_core with following argv arguments:
+[  60.879] [0] cdrom0:\SLUS_216.42;1
+[  60.879] Leaving OPL GUI, starting eecore = 0x00087EC0
+[  61.792] UDPTTY loaded!
+[  61.792] KPRTTY enabled!
+[  61.794] ioptrap starts.
+[  61.800] USB Driver (Version 1.6.0)
+[  64.532] loadelf: fname cdrom0:\SLUS_216.42;1 secname all
+[  64.568] Input ELF format filename = cdrom0:\SLUS_216.42;1
+[  66.794] 0 00100000 005b8400 ............................................................................................
+[  66.794] Loaded, cdrom0:\SLUS_216.42;1
+[  66.795] start address 0x100008
+[  66.796] gp address 00000000
+[  67.776] Get Reboot Request From EE
+[  68.430] UDPTTY loaded!
+[  68.430] KPRTTY enabled!
+[  68.432] ioptrap starts.
+[  68.439] USB Driver (Version 1.6.0)
+[  72.017] UDPTTY loaded!
+[  72.018] KPRTTY enabled!
+[  72.020] ioptrap starts.
+[  72.026] USB Driver (Version 1.6.0)
+[  74.770] loadmodule: fname cdrom0:\I\SIO2MAN.IRX;1 args 0 arg
+[  74.779] loadmodule: id 33, ret 1
+[  74.779] loadmodule: fname cdrom0:\I\MTAPMAN.IRX;1 args 0 arg
+[  74.793] loadmodule: id 34, ret 0
+[  74.793] loadmodule: fname cdrom0:\I\PADMAN.IRX;1 args 0 arg
+[  74.823] loadmodule: id 35, ret 0
+[  74.823] loadmodule: fname cdrom0:\I\LIBSD.IRX;1 args 0 arg
+[  74.843] loadmodule: id 36, ret 0
+[  74.844] loadmodule: fname cdrom0:\I\SDRDRV.IRX;1 args 0 arg
+[  74.855] SDR driver version 4.0.1 (C) SCEI
+[  74.855]  Exit rsd_main
+[  74.856] loadmodule: id 37, ret 2
+[  74.856] loadmodule: fname cdrom0:\I\CRI_ADXI.IRX;1 args 19 arg spucore=1
+[  74.900] CRI ADX Driver Ver.10.02(Feb  9 2007 16:30:56)
+[  74.900] CRI ADX Driver : sceSdInit Call = 0
+[  74.902] CRI ADX Driver : Main Thread Priority = 39
+[  74.902] CRI ADX Driver : PSM Thread Priority  = 39
+[  74.903] CRI ADX Driver : DTX Thread Priority  = 48
+[  74.904] CRI ADX Driver : SPU CORE Number = 1
+[  74.905] loadmodule: id 38, ret 2
+[  74.905] loadmodule: fname cdrom0:\I\SNDFI.IRX;1 args 0 arg
+[  74.961] SNDF Driver Ver 2.29(Sep 30 2007 15:24:20)
+[  74.964] loadmodule: id 39, ret 2
+[  74.965] loadmodule: fname cdrom0:\I\MCMAN.IRX;1 args 0 arg
+[  75.025] loadmodule: id 40, ret 2
+[  75.025] loadmodule: fname cdrom0:\I\MCSERV.IRX;1 args 0 arg
+[  75.036] loadmodule: id 41, ret 2
+[  75.108] PADEMU: 2-port poll port 1 -> real DS2
+[  75.109] PADEMU: 2-port poll port 2 -> emulated pad 0

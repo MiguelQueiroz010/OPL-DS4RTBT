@@ -388,7 +388,7 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
 #ifdef PADEMU_DEBUG
         if (td->in[0] == 0x21) { // multitap command: say once per port and result whether PADEMU answers it
             static u8 mtap_seen[2][2];
-            int match = (td->port_ctrl2[port1] == 0x00030064) && pademu_route_is_mtap_port(&pad_route, port1);
+            int match = (td->port_ctrl2[port1] == 0x00030064) && pademu_route_is_mtap_port(&pad_route, (int)(port1 & 1));
 
             if (!mtap_seen[port1 & 1][match]) {
                 mtap_seen[port1 & 1][match] = 1;
@@ -397,7 +397,8 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
             }
         }
 #endif
-        if (td->port_ctrl2[port1] == 0x00030064 && td->in[0] == 0x21 && pademu_route_is_mtap_port(&pad_route, port1)) {
+        if (td->port_ctrl2[port1] == 0x00030064 && td->in[0] == 0x21 && pademu_route_is_mtap_port(&pad_route, (int)(port1 & 1))) {
+            // MTAPMAN addresses the multitap of PS2 port N as SIO2 port N|2 (regdata port 2 or 3), so port1 is 2 or 3 here
             sio2proc = pademu_mtap;
         } else if (td->in[0] == 0x01) {
             if (port2 == 1) { // 2 sio cmds: port 1 and port 2 polled together
