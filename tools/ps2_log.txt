@@ -1,0 +1,120 @@
+
+===== session 2026-10-19 22:31:05 =====
+[   5.999] UDPTTY loaded!
+[   6.000] KPRTTY enabled!
+[   6.000] 	-- ID=70, ret=0
+[   6.000] [IOPTRAP]:
+[   6.002] ioptrap starts.
+[   6.003] 	-- ID=71, ret=0
+[   6.003] [PS2LINK]:
+[   6.010] initializing host
+[   6.010] Thread id: 1ab8379
+[   6.011] host: mounted
+[   6.011] IOP cmd: Starting thread
+[   6.011] IOP cmd: Server Thread Started.
+[   6.012] IOP cmd: Listening
+[   6.012] 	-- ID=72, ret=0
+[   8.818] BGM: Input does not appear to be an Ogg bitstream.
+[ 105.459] ETHSUPPORT ApplyConfig
+[ 109.447] CONFIG No file smb0:CFG\SLUS_214.19.cfg.
+[ 109.478] texDiscoverLoad(smb0:ART\SLUS_214.19_COV)
+[ 109.481] texDiscoverLoad(smb0:ART\SLUS_214.19_ICO)
+[ 110.577] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[ 110.582] texDiscoverLoad(smb0:ART\SLUS_216.42_COV)
+[ 110.585] texDiscoverLoad(smb0:ART\SLUS_216.42_ICO)
+[ 112.510] CONFIG No file smb0:CFG\SLUS_216.42.cfg.
+[ 112.567] DVD detected.
+[ 113.733] ETHSUPPORT CleanUp
+[ 113.741] audsrv_adpcm_init()
+[ 113.741] FNTSYS End
+[ 113.745] [CLEAREFFECTS]:
+[ 113.797] 	-- ID=73, ret=1
+[ 113.799] SYSTEM LaunchLoaderElf loading modules
+[ 113.799] IOPRP image size calculated: 49951
+[ 113.800] IOPRP image size actual:     49728
+[ 113.801] SYSTEM IRX 1 address start: 0x97070 end: 0x98751
+[ 113.802] SYSTEM IRX 2 address start: 0x98760 end: 0xa49a0
+[ 113.803] SYSTEM IRX 3 address start: 0xa49a0 end: 0xa4e89
+[ 113.803] SYSTEM IRX 4 address start: 0xa4e90 end: 0xa5379
+[ 113.804] SYSTEM IRX 5 address start: 0xa5380 end: 0xa67f9
+[ 113.804] SYSTEM IRX 6 address start: 0xa6800 end: 0xace81
+[ 113.805] SYSTEM IRX 12 address start: 0xace90 end: 0xaedd1
+[ 113.806] SYSTEM IRX 11 address start: 0xaede0 end: 0xba3cd
+[ 113.806] SYSTEM IRX 13 address start: 0xba3d0 end: 0xbcaf1
+[ 113.807] SYSTEM IRX 15 address start: 0xbcb00 end: 0xc3af1
+[ 113.808] SYSTEM IRX 16 address start: 0xc3b00 end: 0xc4739
+[ 113.808] SYSTEM IRX 17 address start: 0xc4740 end: 0xc580d
+[ 113.809] SYSTEM IRX STORAGE 0x97000 - 0xc5810
+[ 113.810] loadmodule: fname rom0:XPARAM args 12 arg SLUS_216.42
+[ 113.818] loadmodule: id 74, ret 1
+[ 113.819] EECoreConfig Values = 0x0030EBA0
+[ 113.820] Game Mode Desc = ETH_MODE
+[ 113.820] EnableDebug = 0
+[ 113.821] Exit Path = (mc0:/APPS/OPNPS2LD.ELF)
+[ 113.821] HDD Spindown = 20
+[ 113.822] IP=192.168.1.200 NM=255.255.255.0 GW=192.168.1.1 mode: 0
+[ 113.823] PS2RD Cheat Engine = Disabled
+[ 113.823] EnforceLanguage = Disabled
+[ 113.824] GSM = Disabled
+[ 113.824] PADEMU = Enabled
+[ 113.825] PADEMU wireless keys = 3
+[ 113.826] enforceLanguage = Disabled
+[ 113.826] eeloadCopy = 0x8000574C
+[ 113.827] initUserMemory = 0x8000E270
+[ 113.829] ModStorageStart = 0x00097000
+[ 113.830] ModStorageEnd = 0x000C5840
+[ 113.831] GameID = SLUS_216.42
+[ 113.831] Compat Mask = 0x00
+[ 113.832] EECORE PH COPY: 1 0x00084000 0x00303AA0 0x0000BE78
+[ 113.833] EECORE PH CLEAR: 1 0x0008FE78 0x00003C88
+[ 113.833] Starting ee_core with following argv arguments:
+[ 113.834] [0] cdrom0:\SLUS_216.42;1
+[ 113.834] Leaving OPL GUI, starting eecore = 0x00087EC0
+[ 114.746] UDPTTY loaded!
+[ 114.746] KPRTTY enabled!
+[ 114.748] ioptrap starts.
+[ 114.755] USB Driver (Version 1.6.0)
+[ 117.485] loadelf: fname cdrom0:\SLUS_216.42;1 secname all
+[ 117.521] Input ELF format filename = cdrom0:\SLUS_216.42;1
+[ 119.766] 0 00100000 005b8400 ............................................................................................
+[ 119.766] Loaded, cdrom0:\SLUS_216.42;1
+[ 119.768] start address 0x100008
+[ 119.769] gp address 00000000
+[ 120.747] Get Reboot Request From EE
+[ 121.402] UDPTTY loaded!
+[ 121.402] KPRTTY enabled!
+[ 121.404] ioptrap starts.
+[ 121.411] USB Driver (Version 1.6.0)
+[ 124.990] UDPTTY loaded!
+[ 124.991] KPRTTY enabled!
+[ 124.992] ioptrap starts.
+[ 124.999] USB Driver (Version 1.6.0)
+[ 127.746] loadmodule: fname cdrom0:\I\SIO2MAN.IRX;1 args 0 arg
+[ 127.756] loadmodule: id 33, ret 1
+[ 127.756] loadmodule: fname cdrom0:\I\MTAPMAN.IRX;1 args 0 arg
+[ 127.771] loadmodule: id 34, ret 0
+[ 127.772] loadmodule: fname cdrom0:\I\PADMAN.IRX;1 args 0 arg
+[ 127.801] loadmodule: id 35, ret 0
+[ 127.801] loadmodule: fname cdrom0:\I\LIBSD.IRX;1 args 0 arg
+[ 127.821] loadmodule: id 36, ret 0
+[ 127.822] loadmodule: fname cdrom0:\I\SDRDRV.IRX;1 args 0 arg
+[ 127.833] SDR driver version 4.0.1 (C) SCEI
+[ 127.833]  Exit rsd_main
+[ 127.833] loadmodule: id 37, ret 2
+[ 127.835] loadmodule: fname cdrom0:\I\CRI_ADXI.IRX;1 args 19 arg spucore=1
+[ 127.881] CRI ADX Driver Ver.10.02(Feb  9 2007 16:30:56)
+[ 127.881] CRI ADX Driver : sceSdInit Call = 0
+[ 127.883] CRI ADX Driver : Main Thread Priority = 39
+[ 127.883] CRI ADX Driver : PSM Thread Priority  = 39
+[ 127.884] CRI ADX Driver : DTX Thread Priority  = 48
+[ 127.884] CRI ADX Driver : SPU CORE Number = 1
+[ 127.885] loadmodule: id 38, ret 2
+[ 127.886] loadmodule: fname cdrom0:\I\SNDFI.IRX;1 args 0 arg
+[ 127.943] SNDF Driver Ver 2.29(Sep 30 2007 15:24:20)
+[ 127.946] loadmodule: id 39, ret 2
+[ 127.947] loadmodule: fname cdrom0:\I\MCMAN.IRX;1 args 0 arg
+[ 128.007] loadmodule: id 40, ret 2
+[ 128.008] loadmodule: fname cdrom0:\I\MCSERV.IRX;1 args 0 arg
+[ 128.019] loadmodule: id 41, ret 2
+[ 128.091] PADEMU: 2-port poll port 1 -> real DS2
+[ 128.091] PADEMU: 2-port poll port 2 -> emulated pad 0
