@@ -322,7 +322,9 @@ static void pademu_poll_mixed(sio2_transfer_data_t *td, Sio2McProc sio2proc, int
     int emu_pad = (real_idx == 0) ? pad2 : pad1;
 
     if (pademu_layout_two(td->regdata, td->in_size, &layout)) {
-        sio2_transfer_data_t real = *td;
+        sio2_transfer_data_t real;
+
+        mips_memcpy(&real, td, sizeof(real)); // not "real = *td": that makes the compiler call memcpy, which the module does not import
 
         pademu_split_regdata(td->regdata, real_idx, real.regdata);
         real.in_size = layout.len[real_idx];
