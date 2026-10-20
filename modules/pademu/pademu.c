@@ -9,6 +9,7 @@
 #include "pademu.h"
 #include "padmacro.h"
 #include "pademu_route.h"
+#define PADEMU_REG_T u32 // type of sio2_transfer_data_t.regdata
 #include "pademu_split.h"
 
 #ifdef BT

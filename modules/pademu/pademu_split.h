@@ -21,6 +21,12 @@
 
 #define PADEMU_CMD_LEN_MASK 0x1FF
 
+// Type of one regdata entry: the SIO2 transfer uses u32, which is not `unsigned` on the IOP toolchain.
+// The module defines PADEMU_REG_T as u32 before including this file; the PC test uses the default.
+#ifndef PADEMU_REG_T
+#define PADEMU_REG_T unsigned
+#endif
+
 typedef struct
 {
     unsigned off[2]; // offset of each command in td->in and of its answer in td->out
@@ -28,14 +34,14 @@ typedef struct
     unsigned port[2];
 } pademu_layout_t;
 
-static inline unsigned pademu_cmd_len(unsigned regdata)
+static inline unsigned pademu_cmd_len(PADEMU_REG_T regdata)
 {
     return (regdata >> 8) & PADEMU_CMD_LEN_MASK;
 }
 
 // Reads the first two commands of a transfer. Returns 1 only when they describe the whole transfer
 // (a third command, or lengths that do not add up to in_size, mean the transfer is not a plain 2 port poll).
-static inline int pademu_layout_two(const unsigned *regdata, unsigned in_size, pademu_layout_t *l)
+static inline int pademu_layout_two(const PADEMU_REG_T *regdata, unsigned in_size, pademu_layout_t *l)
 {
     unsigned len0 = pademu_cmd_len(regdata[0]);
     unsigned len1 = pademu_cmd_len(regdata[1]);
@@ -58,7 +64,7 @@ static inline int pademu_layout_two(const unsigned *regdata, unsigned in_size, p
 }
 
 // Fills `regdata_out` (16 entries) with the queue that holds only command `keep` (0 or 1) of the transfer
-static inline void pademu_split_regdata(const unsigned *regdata, int keep, unsigned *regdata_out)
+static inline void pademu_split_regdata(const PADEMU_REG_T *regdata, int keep, PADEMU_REG_T *regdata_out)
 {
     int i;
 
