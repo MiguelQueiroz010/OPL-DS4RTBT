@@ -792,6 +792,9 @@ void sysPrintEECoreConfig(struct EECoreConfig_t *config)
     LOG("PADEMU = %s\n", config->EnablePadEmuOp == 0 ? "Disabled" : "Enabled");
 #ifdef PADEMU
     LOG("PADEMU wireless keys = %d\n", config->PadEmuBtKeys[0] ? (int)((strlen(config->PadEmuBtKeys) - 3) / BTKEYS_ENTRY_HEX) : 0);
+    // what the game gets: byte 0 = mode (0 USB, 1 Bluetooth), bits 8-11 emulated slots, bits 16-19 vibration, bit 24 multitap, bit 25 its port, bit 26 workaround
+    LOG("PADEMU settings = 0x%08X (mode %d, slots %X, vibration %X, multitap %d on port %d)\n", gPadEmuSettings, gPadEmuSettings & 0xFF, (gPadEmuSettings >> 8) & 0xF,
+        (gPadEmuSettings >> 16) & 0xF, (gPadEmuSettings >> 24) & 1, ((gPadEmuSettings >> 25) & 1) + 1);
 #endif
 
     LOG("enforceLanguage = %s\n", config->enforceLanguage == 0 ? "Disabled" : "Enabled");
