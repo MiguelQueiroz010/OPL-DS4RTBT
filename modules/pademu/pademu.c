@@ -9,6 +9,7 @@
 #include "pademu.h"
 #include "padmacro.h"
 #include "pademu_route.h"
+#include "pademu_split.h"
 
 #ifdef BT
 
@@ -83,6 +84,19 @@ static u8 pad_enable = 0;
 static u8 pad_options = 0;
 
 static pademu_route_t pad_route; // which controller answers which port / multitap slot (pademu_route.h)
+
+/*
+ * The pad driver (Bluetooth adapter or USB pads) is started by the first pad command, not at module start.
+ * It used to start only when a command reached an emulated pad. With the multitap emulated and slot A left to the
+ * real controller, the first commands go to the real pad or to the multitap itself, so a wireless pad had nothing
+ * to connect to until the game happened to poll slot B or C. It now starts on the first pad or multitap command
+ * as soon as any pad is enabled in the menu.
+ */
+static void pademu_start_pads(void)
+{
+    if (!pad_inited)
+        pad_inited = PAD_INIT(pad_enable, pad_options);
+}
 
 int install_sio2hook();
 
@@ -253,10 +267,15 @@ static void hookSio2man51_2(sio2_transfer_data_t *sd)
     pademu_hookSio2man(sd, pSio2man51[1]);
 }
 
-// Offset of the second command of a transfer that polls port 1 and port 2 together, 0 when it can't be found
+// Offset of the second command of a transfer that polls port 1 and port 2 together, 0 when it can't be found.
+// The command lengths in regdata give it exactly; the byte scan is only the fallback for transfers they do not describe.
 static int pademu_second_cmd(const sio2_transfer_data_t *td)
 {
+    pademu_layout_t layout;
     u32 off;
+
+    if (pademu_layout_two(td->regdata, td->in_size, &layout))
+        return (int)layout.off[1];
 
     for (off = 5; off < td->in_size - 3; off++) {
         if (td->in[off] == 0x01 && (td->in[off + 1] & 0xF0) == 0x40 && td->in[off + 2] == 0x00) {
@@ -292,6 +311,45 @@ static void pademu_log_route(int both_ports, int port, int pad_idx)
 #define pademu_log_route(both_ports, port, pad_idx)
 #endif
 
+// 2 port poll where one port is a real controller and the other one is emulated.
+// The real command is sent to the hardware as a transfer of its own: same buffers, only that command in the queue, so
+// no device is addressed that is not there. The emulated command is then answered in software.
+static void pademu_poll_mixed(sio2_transfer_data_t *td, Sio2McProc sio2proc, int pad1, int pad2, int cmd2)
+{
+    pademu_layout_t layout;
+    int real_idx = (pad1 == PADEMU_ROUTE_REAL) ? 0 : 1; // command that stays with the real controller
+    int emu_pad = (real_idx == 0) ? pad2 : pad1;
+
+    if (pademu_layout_two(td->regdata, td->in_size, &layout)) {
+        sio2_transfer_data_t real = *td;
+
+        pademu_split_regdata(td->regdata, real_idx, real.regdata);
+        real.in_size = layout.len[real_idx];
+        real.out_size = layout.len[real_idx];
+        real.in = td->in + layout.off[real_idx];
+        real.out = td->out + layout.off[real_idx];
+
+        sio2proc(&real);
+    } else {
+        // not a transfer the command lengths describe: keep the old way, the emulated command's device is switched off
+        int off = (real_idx == 0) ? cmd2 : 0;
+
+        td->in[off] = 0x00;
+        sio2proc(td);
+        td->in[off] = 0x01;
+    }
+
+    pademu_start_pads();
+
+    if (real_idx == 0)
+        pademu_cmd(emu_pad, &td->in[cmd2], &td->out[cmd2], td->in_size - cmd2);
+    else
+        pademu_cmd(emu_pad, td->in, td->out, cmd2);
+
+    td->stat6c = 0x1100;
+    td->stat70 = 0x0F;
+}
+
 void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
 {
     register u32 ctrl, port1, port2;
@@ -301,6 +359,9 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
     port2 = td->regdata[1] & 0x03;
 
     if ((ctrl & 0xF0) == 0x40) {
+        if (pad_route.enabled && (td->in[0] == 0x01 || td->in[0] == 0x21))
+            pademu_start_pads();
+
         if (td->port_ctrl2[port1] == 0x00030064 && td->in[0] == 0x21 && pademu_route_is_mtap_port(&pad_route, port1)) {
             sio2proc = pademu_mtap;
         } else if (td->in[0] == 0x01) {
@@ -323,14 +384,10 @@ void pademu_hookSio2man(sio2_transfer_data_t *td, Sio2McProc sio2proc)
                     if (pad1 != PADEMU_ROUTE_REAL && pad2 != PADEMU_ROUTE_REAL) { // both emulated
                         sio2proc = pademu;
                     } else if (pad1 != PADEMU_ROUTE_REAL || pad2 != PADEMU_ROUTE_REAL) {
-                        // One real pad and one emulated: the hardware runs the transfer with the emulated command
-                        // switched off, so only the real pad answers, then pademu fills in the emulated one.
-                        int off = (pad1 != PADEMU_ROUTE_REAL) ? 0 : cmd2;
-
-                        td->in[off] = 0x00;
-                        sio2proc(td);
-                        td->in[off] = 0x01;
-                        sio2proc = pademu;
+                        // One real pad and one emulated. The real command goes alone through the console's SIO2
+                        // (pademu_poll_mixed), the emulated one is answered here.
+                        pademu_poll_mixed(td, sio2proc, pad1, pad2, cmd2);
+                        return;
                     }
                 }
             } else {
@@ -393,9 +450,7 @@ void pademu(sio2_transfer_data_t *td)
     td->stat6c = 0x1100; //?
     td->stat70 = 0x0F;   //?
 
-    if (!pad_inited) {
-        pad_inited = PAD_INIT(pad_enable, pad_options);
-    }
+    pademu_start_pads();
 
     if (port2 == 1) { // port 1 and port 2 polled together
         cmd2 = pademu_second_cmd(td);
