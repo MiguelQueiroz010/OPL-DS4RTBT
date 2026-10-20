@@ -88,4 +88,4 @@ clean_all:
 
 include $(PS2SDK)/samples/Makefile.pref
 
--include $(EE_OBJS:%.o=%.d)
+-include $(patsubst %.o,%.d,$(filter %.o,$(EE_OBJS)))

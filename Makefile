@@ -229,7 +229,7 @@ EE_CFLAGS += -MMD -MP
 EE_OBJS += $(FRONTEND_OBJS) $(GFX_OBJS) $(AUDIO_OBJS) $(MISC_OBJS) $(EECORE_OBJS) $(IOP_OBJS)
 EE_OBJS := $(EE_OBJS:%=$(EE_OBJS_DIR)%)
 # (a header change must rebuild every object that includes it: coreconfig.h / btkeys.h change struct layouts shared with ee_core)
-EE_DEPS = $(EE_OBJS:%.o=%.d)
+EE_DEPS = $(patsubst %.o,%.d,$(filter %.o,$(EE_OBJS)))
 
 # To help linking getting rid off unused functions and data
 EE_CFLAGS += -fdata-sections -ffunction-sections
