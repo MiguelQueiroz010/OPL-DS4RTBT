@@ -1108,6 +1108,16 @@ struct UIItem diaAbout[] = {
     {UI_LABEL, 0, 1, 1, -1, 0, 15, {.label = {"icyson55", -1}}},
     {UI_BREAK},
 
+    {UI_BREAK},
+
+    // Bluetooth pads (this fork)
+    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"Bluetooth / DualSense", -1}}},
+    {UI_BREAK},
+
+    {UI_SPACER},
+    {UI_LABEL, 0, 1, 1, -1, 0, 15, {.label = {"Miguel Queiroz (MiguelQueiroz010) - Rodrigo Galvan (rodrigoGalvanDev)", -1}}},
+    {UI_BREAK},
+
     // Build Options
     {UI_BREAK},
     {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_BUILD_DETAILS}}},
