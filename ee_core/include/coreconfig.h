@@ -6,7 +6,7 @@
 #define CORE_GAME_MODE_DESC_MAX_LEN (16)
 #define CORE_GAME_ID_MAX_LEN        (16)
 #define CORE_PADEMU_BTKEYS_LEN      (192)
-#define CORE_PADEMU_SETUP_LEN       (28) // PADSETUP_ARG_LEN (include/padsetup.h)
+#define CORE_PADEMU_SETUP_LEN       (32) // PADSETUP_ARG_LEN (include/padsetup.h)
 
 // Do not use "EE" as it might catch a string.
 #define EE_CORE_MAGIC_0 (0x4D614730)

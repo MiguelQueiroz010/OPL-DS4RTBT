@@ -759,6 +759,9 @@ struct UIItem diaPadEmuSetup[] = {
     {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"Lightbar slot 4", -1}}},
     {UI_ENUM, PADSET_LED3, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
     {UI_BREAK},
+    {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"Custom colour", -1}}},
+    {UI_COLOUR, PADSET_LEDCUSTOM, 1, 1, -1, 0, 0, {.colourvalue = {128, 0, 255}}},
+    {UI_BREAK},
     {UI_BREAK},
 
     {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"Button remapping", -1}}},

@@ -986,9 +986,7 @@ void guiGameBtLedApply(int slot)
     u8 led[4];
     int idx = guiGameBtLedIdx(slot);
 
-    led[0] = padsetup_led_rgb(idx)[0];
-    led[1] = padsetup_led_rgb(idx)[1];
-    led[2] = padsetup_led_rgb(idx)[2];
+    padsetup_led_rgb_of(&gPadSetup, idx, led);
     led[3] = idx ? 0x02 : 0x00; // bit1: colour chosen by the user (kept by the driver), 0 = default pattern of the slot
     ds34bt_set_led(slot, led);
 }
@@ -1016,9 +1014,7 @@ int guiGameBtLedGet(int slot, u8 *rgb)
     if (!idx)
         return 0;
 
-    rgb[0] = padsetup_led_rgb(idx)[0];
-    rgb[1] = padsetup_led_rgb(idx)[1];
-    rgb[2] = padsetup_led_rgb(idx)[2];
+    padsetup_led_rgb_of(&gPadSetup, idx, rgb);
     return 1;
 }
 
@@ -1210,7 +1206,7 @@ static void guiGameShowBtSearch(void)
 }
 
 // lightbar colours, shared with the Controller Setup dialog
-static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta", "White", "Orange", "Off", NULL};
+static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta", "White", "Orange", "Off", "Custom", NULL};
 
 /*
  * Controller Setup dialogs
@@ -1267,6 +1263,7 @@ static void guiGameSetupToDialog(void)
 {
     for (int p = 0; p < PADSETUP_P_COUNT; p++)
         diaSetInt(diaPadEmuSetup, SETUP_DIA_ID(p), padsetup_get(&gPadSetup, p));
+    diaSetColor(diaPadEmuSetup, PADSET_LEDCUSTOM, gPadSetup.led_custom);
 }
 
 static void guiGameSetupFromDialog(void)
@@ -1277,6 +1274,7 @@ static void guiGameSetupFromDialog(void)
         if (diaGetInt(diaPadEmuSetup, SETUP_DIA_ID(p), &v))
             padsetup_set(&gPadSetup, p, v); // out-of-range values are ignored
     }
+    diaGetColor(diaPadEmuSetup, PADSET_LEDCUSTOM, gPadSetup.led_custom);
 }
 
 static void guiGameShowPadRemap(void)
