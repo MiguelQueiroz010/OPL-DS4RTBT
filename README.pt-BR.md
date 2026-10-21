@@ -12,7 +12,7 @@ Fork do [Open PS2 Loader](https://github.com/ps2homebrew/Open-PS2-Loader) com **
 - Dongles Realtek (RTL8761B/BU): firmware carregado automaticamente.
 - `Controller Setup`: cor da lightbar por slot e remapeamento de botões.
 - Vibração que funciona em clones de DS4 e tela `Controller Test`.
-- Emulação de multitap (experimental, ainda não validada em hardware).
+- Emulação de multitap.
 
 ## Início rápido
 
