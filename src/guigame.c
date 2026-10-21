@@ -986,7 +986,7 @@ void guiGameBtLedApply(int slot)
     u8 led[4];
     int idx = guiGameBtLedIdx(slot);
 
-    padsetup_led_rgb_of(&gPadSetup, idx, led);
+    padsetup_led_rgb_of(&gPadSetup, slot, idx, led);
     led[3] = idx ? 0x02 : 0x00; // bit1: colour chosen by the user (kept by the driver), 0 = default pattern of the slot
     ds34bt_set_led(slot, led);
 }
@@ -1014,7 +1014,7 @@ int guiGameBtLedGet(int slot, u8 *rgb)
     if (!idx)
         return 0;
 
-    padsetup_led_rgb_of(&gPadSetup, idx, rgb);
+    padsetup_led_rgb_of(&gPadSetup, slot, idx, rgb);
     return 1;
 }
 
@@ -1259,11 +1259,71 @@ static void guiGameSetupEnumsToDialog(void)
     }
 }
 
+/*
+ * Live preview: while Controller Setup is open the lightbar of each connected pad follows what is selected in its row
+ * (palette entry and, for "Custom", the colour of the picker), without waiting for OK. Cancel puts the saved colours back.
+ */
+static int gLedPrevIdx[PADSETUP_LED_SLOTS];
+static u8 gLedPrevRgb[PADSETUP_LED_SLOTS][3];
+
+static void guiGameSetupLedPreview(int slot, int idx, const u8 *rgb)
+{
+    u8 led[4];
+
+    if (gLedPrevIdx[slot] == idx && !memcmp(gLedPrevRgb[slot], rgb, 3))
+        return;
+
+    gLedPrevIdx[slot] = idx;
+    memcpy(gLedPrevRgb[slot], rgb, 3);
+    if (!ds34bt_cached_info(slot)->connected)
+        return;
+
+    led[0] = rgb[0];
+    led[1] = rgb[1];
+    led[2] = rgb[2];
+    led[3] = idx ? 0x02 : 0x00; // 0 = back to the default pattern of the slot
+    ds34bt_set_led(slot, led);
+}
+
+// Shows the colour picker only on the rows set to Custom, and previews every row.
+static void guiGameSetupLedSync(void)
+{
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++) {
+        int idx = 0;
+        u8 rgb[3] = {0, 0, 0};
+
+        diaGetInt(diaPadEmuSetup, PADSET_LED0 + i, &idx);
+        if (idx < 0 || idx >= PADSETUP_LED_COUNT)
+            idx = 0;
+        diaSetVisible(diaPadEmuSetup, PADSET_LEDCOL0 + i, idx == PADSETUP_LED_CUSTOM);
+        if (idx == PADSETUP_LED_CUSTOM)
+            diaGetColor(diaPadEmuSetup, PADSET_LEDCOL0 + i, rgb);
+        else
+            memcpy(rgb, padsetup_led_rgb(idx), 3);
+        guiGameSetupLedPreview(i, idx, rgb);
+    }
+}
+
+static int guiGameSetupUpdater(int modified)
+{
+    guiGameSetupLedSync();
+    return 0;
+}
+
+// Called by the colour selector on every frame while a picker is open (its value is not in the dialog until confirmed)
+static void guiGameSetupColourHook(int id, const unsigned char *rgb)
+{
+    if (id >= PADSET_LEDCOL0 && id < PADSET_LEDCOL0 + PADSETUP_LED_SLOTS)
+        guiGameSetupLedPreview(id - PADSET_LEDCOL0, PADSETUP_LED_CUSTOM, rgb);
+}
+
 static void guiGameSetupToDialog(void)
 {
     for (int p = 0; p < PADSETUP_P_COUNT; p++)
         diaSetInt(diaPadEmuSetup, SETUP_DIA_ID(p), padsetup_get(&gPadSetup, p));
-    diaSetColor(diaPadEmuSetup, PADSET_LEDCUSTOM, gPadSetup.led_custom);
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
+        diaSetColor(diaPadEmuSetup, PADSET_LEDCOL0 + i, &gPadSetup.led_custom[i * 3]);
+    guiGameSetupLedSync();
 }
 
 static void guiGameSetupFromDialog(void)
@@ -1274,7 +1334,8 @@ static void guiGameSetupFromDialog(void)
         if (diaGetInt(diaPadEmuSetup, SETUP_DIA_ID(p), &v))
             padsetup_set(&gPadSetup, p, v); // out-of-range values are ignored
     }
-    diaGetColor(diaPadEmuSetup, PADSET_LEDCUSTOM, gPadSetup.led_custom);
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
+        diaGetColor(diaPadEmuSetup, PADSET_LEDCOL0 + i, &gPadSetup.led_custom[i * 3]);
 }
 
 static void guiGameShowPadRemap(void)
@@ -1384,10 +1445,13 @@ static void guiGameShowPadSetup(void)
 
     backup = gPadSetup; // Cancel puts this back
     guiGameSetupEnumsToDialog();
+    for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
+        gLedPrevIdx[i] = -1; // first sync always sends
     guiGameSetupToDialog();
+    diaSetColourPreview(guiGameSetupColourHook);
 
     while (1) {
-        result = diaExecuteDialog(diaPadEmuSetup, result, 1, NULL);
+        result = diaExecuteDialog(diaPadEmuSetup, result, 1, guiGameSetupUpdater);
 
         if (result == PADSET_REMAP) {
             guiGameSetupFromDialog();
@@ -1403,11 +1467,16 @@ static void guiGameShowPadSetup(void)
         }
     }
 
+    diaSetColourPreview(NULL);
+
     if (saved) {
         guiGameSetupFromDialog();
         guiGameSetupCommit();
     } else {
         gPadSetup = backup; // cancelled: nothing changes (the remap dialog edits gPadSetup directly)
+        for (int i = 0; i < PADSETUP_LED_SLOTS; i++)
+            if (ds34bt_cached_info(i)->connected)
+                guiGameBtLedApply(i); // put the saved colours back
     }
 }
 

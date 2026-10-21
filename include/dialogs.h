@@ -221,7 +221,10 @@ enum UI_ITEMS {
     PADSET_LED1,
     PADSET_LED2,
     PADSET_LED3,
-    PADSET_LEDCUSTOM, // colour picker of the "Custom" lightbar entry
+    PADSET_LEDCOL0, // colour picker of slots 1 to 4, shown only when the slot is set to Custom
+    PADSET_LEDCOL1,
+    PADSET_LEDCOL2,
+    PADSET_LEDCOL3,
     PADSET_REMAP,
     PADSET_RESET,
     PADREM_BASE, // 16 rows: one per DS2 button

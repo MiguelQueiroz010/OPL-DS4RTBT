@@ -8,7 +8,7 @@
  * stores it as a hex string (conf_opl.cfg, CONFIG_ITEM_PADEMU_SETUP).
  */
 
-#define PADSETUP_ARG_LEN     32
+#define PADSETUP_ARG_LEN     40
 #define PADSETUP_ARG_LEN_V1  28 // blobs saved before the custom lightbar colour (still accepted, the new bytes take their defaults)
 #define PADSETUP_HEX_LEN (PADSETUP_ARG_LEN * 2)
 #define PADSETUP_MAGIC0  'C'
@@ -43,7 +43,7 @@ enum {
 // Stored in led[2] (slot 0 = low nibble of led[0], ... slot 3 = high nibble of led[1]); it travels to the in-game pad emulator with the rest of the blob.
 #define PADSETUP_LED_SLOTS 4
 #define PADSETUP_LED_COUNT 11 // Default, Red, Green, Blue, Yellow, Cyan, Magenta, White, Orange, Off, Custom
-#define PADSETUP_LED_CUSTOM 10 // colour picked in Controller Setup (led_custom[] of the blob)
+#define PADSETUP_LED_CUSTOM 10 // colour picked in Controller Setup for that slot (led_custom[slot * 3] of the blob)
 
 static inline const unsigned char *padsetup_led_rgb(int idx)
 {
@@ -66,16 +66,15 @@ typedef struct
     unsigned char reserved0;
     unsigned char remap[16];     // per DS2 button: 0 = unchanged, 0xFF = disabled, else target + 1
     unsigned char led[2];        // lightbar colour per slot (DS4/DualSense), 4 bits each, see padsetup_get_led()
-    unsigned char led_custom[3]; // R, G, B used by the "Custom" palette entry (PADSETUP_LED_CUSTOM)
-    unsigned char reserved1;
+    unsigned char led_custom[12]; // R, G, B of each slot, used when the slot (or its pad) is set to "Custom"
 } __attribute__((packed)) padsetup_t;
 
 _Static_assert(sizeof(padsetup_t) == PADSETUP_ARG_LEN, "padsetup_t size");
 
 // RGB of a palette entry of this setup (the Custom entry reads the colour picked by the user)
-static inline void padsetup_led_rgb_of(const padsetup_t *s, int idx, unsigned char *rgb)
+static inline void padsetup_led_rgb_of(const padsetup_t *s, int slot, int idx, unsigned char *rgb)
 {
-    const unsigned char *c = (idx == PADSETUP_LED_CUSTOM) ? s->led_custom : padsetup_led_rgb(idx);
+    const unsigned char *c = (idx == PADSETUP_LED_CUSTOM && slot >= 0 && slot < PADSETUP_LED_SLOTS) ? &s->led_custom[slot * 3] : padsetup_led_rgb(idx);
 
     rgb[0] = c[0];
     rgb[1] = c[1];
@@ -240,9 +239,11 @@ static inline void padsetup_default(padsetup_t *s)
     s->magic[0] = PADSETUP_MAGIC0;
     s->magic[1] = PADSETUP_MAGIC1;
     s->version = PADSETUP_VERSION;
-    s->led_custom[0] = 128; // default custom colour: violet
-    s->led_custom[1] = 0;
-    s->led_custom[2] = 255;
+    for (i = 0; i < PADSETUP_LED_SLOTS; i++) { // default custom colour of every slot: violet
+        s->led_custom[i * 3] = 128;
+        s->led_custom[i * 3 + 1] = 0;
+        s->led_custom[i * 3 + 2] = 255;
+    }
     for (i = 0; i < PADSETUP_P_COUNT; i++)
         p[padsetup_params[i].off] |= (unsigned char)(padsetup_params[i].def << padsetup_params[i].shift);
 }

@@ -370,7 +370,7 @@ static void led_slot_color(int slot, int bright, u8 *rgb)
         idx = padsetup_get_led(&g_setup, slot); // out of range = default
 
     if (idx) {
-        padsetup_led_rgb_of(&g_setup, idx, rgb);
+        padsetup_led_rgb_of(&g_setup, slot, idx, rgb);
     } else {
         rgb[0] = rgbled_patterns[slot][bright][0];
         rgb[1] = rgbled_patterns[slot][bright][1];
