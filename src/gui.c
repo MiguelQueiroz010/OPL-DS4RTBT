@@ -896,14 +896,17 @@ static const char *guiNetNoSessionText(void)
 static void guiNetBrowseShares(void)
 {
     char (*names)[32] = (char(*)[32])malloc(NETSHARE_MAX * 32);
-    char picked[32];
-    int count;
+    char picked[32], msg[200];
+    int count, err = 0;
 
     if (!names)
         return;
 
-    count = ethGetShareNames(names, NETSHARE_MAX);
-    if (count < 0)
+    count = ethGetShareNames(names, NETSHARE_MAX, &err);
+    if (count == -2) {
+        snprintf(msg, sizeof(msg), "The server did not give the list of shares (error %d). Windows usually lists shares only for a real user account, not for guest. Type the share name by hand.", err);
+        guiNetNotice(msg);
+    } else if (count < 0)
         guiNetNotice(guiNetNoSessionText());
     else if (count == 0)
         guiNetNotice("The server did not list any shares.");
