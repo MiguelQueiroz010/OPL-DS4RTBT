@@ -114,7 +114,7 @@ struct UIItem diaNetConfig[] = {
     {UI_SPACER},
     {UI_STRING, NETCFG_SHARE_NAME, 1, 1, _STR_HINT_SHARENAME, 0, 0, {.stringvalue = {"PS2SMB", "PS2SMB", NULL}}},
     {UI_BREAK},
-    {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"", -1}}},
+    {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {" ", -1}}}, // not "": an empty label is drawn as "<not set>"
     {UI_SPACER},
     {UI_BUTTON, NETCFG_SHARE_BROWSE, 1, 1, -1, 0, 0, {.label = {"Browse shares", -1}}},
     {UI_BREAK},

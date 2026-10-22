@@ -830,6 +830,68 @@ static int guiSelectShare(char names[][32], int count, char *out, size_t outSize
     return 1;
 }
 
+// Message box for Network Config. guiMsgBox draws one unwrapped line (fntRenderString ignores '\n' without a width),
+// so the long texts of the Browse button ran off both sides of the screen. Here the text is wrapped and drawn line by line.
+static void guiNetNotice(const char *text)
+{
+    char buf[320];
+    char *line, *next;
+    int lines = 1, terminate = 0, y0, i;
+    const int lineH = 24;
+
+    snprintf(buf, sizeof(buf), "%s", text);
+    fntFitString(gTheme->fonts[0], buf, screenWidth - 160);
+    for (line = buf; *line; line++)
+        if (*line == '\n')
+            lines++;
+
+    sfxPlay(SFX_MESSAGE);
+
+    while (!terminate) {
+        guiStartFrame();
+        readPads();
+
+        if (getKeyOn(KEY_CIRCLE) || getKeyOn(KEY_CROSS))
+            terminate = 1;
+
+        diaRenderUI(diaNetConfig, screenHandler->inMenu, NULL, 0);
+        rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
+        rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
+        rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+
+        y0 = (gTheme->usedHeight >> 1) - ((lines - 1) * lineH >> 1);
+        for (i = 0, line = buf; line && *line; i++, line = next) {
+            next = strchr(line, '\n');
+            if (next)
+                *next++ = '\0';
+            fntRenderString(gTheme->fonts[0], screenWidth >> 1, y0 + i * lineH, ALIGN_CENTER, 0, 0, line, gTheme->textColor);
+            // keep buf intact for the next frame
+            if (next)
+                *(next - 1) = '\n';
+        }
+
+        guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? CROSS_ICON : CIRCLE_ICON, _STR_BACK, gTheme->fonts[0], 500, 417, gTheme->selTextColor);
+        guiEndFrame();
+    }
+
+    sfxPlay(SFX_CANCEL);
+}
+
+// Why there is no SMB session to ask for the share list. The text follows the state of the last connection attempt.
+static const char *guiNetNoSessionText(void)
+{
+    switch (gNetworkStartup) {
+        case ERROR_ETH_SMB_CONN:
+            return "Could not reach the server. Check the address and port, and that SMB 1.0 is enabled on the server. Then press Reconnect.";
+        case ERROR_ETH_SMB_LOGON:
+            return "The server refused the login. Check user and password, and that SMB 1.0 is enabled on the server. Then press Reconnect.";
+        case ERROR_ETH_SMB_ECHO:
+            return "The server stopped answering. Press Reconnect and try again.";
+        default:
+            return "The network is not up yet. Press Reconnect (or OK) and open Browse shares again.";
+    }
+}
+
 // "Browse shares" button of Network Config: asks the connected server for its shares and puts the chosen one in the share name field.
 static void guiNetBrowseShares(void)
 {
@@ -842,9 +904,9 @@ static void guiNetBrowseShares(void)
 
     count = ethGetShareNames(names, NETSHARE_MAX);
     if (count < 0)
-        guiMsgBox("Not connected to the server yet. Fill in the address, user and password, press Reconnect (or OK), then open this dialog again and press Browse shares.", 0, diaNetConfig);
+        guiNetNotice(guiNetNoSessionText());
     else if (count == 0)
-        guiMsgBox("The server did not list any shares.", 0, diaNetConfig);
+        guiNetNotice("The server did not list any shares.");
     else if (guiSelectShare(names, count, picked, sizeof(picked)))
         diaSetString(diaNetConfig, NETCFG_SHARE_NAME, picked);
 

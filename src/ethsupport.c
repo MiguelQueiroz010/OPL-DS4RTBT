@@ -456,9 +456,12 @@ int ethGetShareNames(char names[][32], int max)
     if (!(gNetworkStartup == 0 || (gNetworkStartup >= ERROR_ETH_SMB_OPENSHARE && gNetworkStartup <= ERROR_ETH_SMB_LISTGAMES)))
         return -1;
 
-    list = (ShareEntry_t *)malloc(sizeof(ShareEntry_t) * max);
+    // the IOP fills this buffer by DMA: aligned to 64 bytes and written back from the cache first (as in labs/smblab)
+    list = (ShareEntry_t *)memalign(64, (sizeof(ShareEntry_t) * max + 63) & ~63);
     if (list == NULL)
         return -1;
+    memset(list, 0, sizeof(ShareEntry_t) * max);
+    SifWriteBackDCache(list, sizeof(ShareEntry_t) * max);
 
     memset(&req, 0, sizeof(req));
     req.EE_addr = (void *)list;
