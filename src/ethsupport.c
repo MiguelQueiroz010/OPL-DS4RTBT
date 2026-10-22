@@ -442,6 +442,44 @@ void ethInit(item_list_t *itemList)
     }
 }
 
+// Names of the shares offered by the server we are logged on to (for the Network Config "Browse" button).
+// Returns the number of names copied into names[][32] (administrative shares ending in '$' are skipped),
+// or -1 when there is no logged on SMB session (the settings have to be connected first).
+int ethGetShareNames(char names[][32], int max)
+{
+    ShareEntry_t *list;
+    smbGetShareList_in_t req;
+    int i, count, n = 0;
+
+    if (ethBase == NULL || max <= 0)
+        return -1;
+    if (!(gNetworkStartup == 0 || (gNetworkStartup >= ERROR_ETH_SMB_OPENSHARE && gNetworkStartup <= ERROR_ETH_SMB_LISTGAMES)))
+        return -1;
+
+    list = (ShareEntry_t *)malloc(sizeof(ShareEntry_t) * max);
+    if (list == NULL)
+        return -1;
+
+    memset(&req, 0, sizeof(req));
+    req.EE_addr = (void *)list;
+    req.maxent = max;
+    count = fileXioDevctl(ethBase, SMB_DEVCTL_GETSHARELIST, (void *)&req, sizeof(req), NULL, 0);
+    if (count > max)
+        count = max;
+    for (i = 0; i < count; i++) {
+        size_t len = strnlen(list[i].ShareName, 255);
+
+        if (len == 0 || list[i].ShareName[len - 1] == '$')
+            continue;
+        memcpy(names[n], list[i].ShareName, len < 31 ? len : 31);
+        names[n][len < 31 ? len : 31] = '\0';
+        n++;
+    }
+    free(list);
+
+    return count < 0 ? -1 : n;
+}
+
 item_list_t *ethGetObject(int initOnly)
 {
     if (initOnly && !ethGameList.enabled)

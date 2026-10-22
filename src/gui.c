@@ -764,6 +764,93 @@ static int netConfigUpdater(int modified)
     return 0;
 }
 
+// Folder icon drawn with rectangles (no texture needed)
+static void guiDrawFolderIcon(int x, int y, u64 colour)
+{
+    rmDrawRect(x, y, 14, 5, colour);       // tab
+    rmDrawRect(x, y + 4, 28, 18, colour);  // body
+}
+
+// Lists the shares of the connected server and lets the user pick one. Returns 1 and fills out when one is selected.
+#define NETSHARE_MAX  32
+#define NETSHARE_ROWS 9
+static int guiSelectShare(char names[][32], int count, char *out, size_t outSize)
+{
+    int sel = 0, top = 0, result = 0, i;
+
+    sfxPlay(SFX_MESSAGE);
+
+    while (!result) {
+        guiStartFrame();
+        readPads();
+
+        if (getKeyOn(gSelectButton == KEY_CIRCLE ? KEY_CROSS : KEY_CIRCLE)) {
+            result = -1;
+        } else if (getKeyOn(gSelectButton)) {
+            result = 1;
+        } else if (getKey(KEY_UP)) {
+            if (sel > 0)
+                sel--;
+        } else if (getKey(KEY_DOWN)) {
+            if (sel < count - 1)
+                sel++;
+        }
+
+        if (sel < top)
+            top = sel;
+        if (sel >= top + NETSHARE_ROWS)
+            top = sel - NETSHARE_ROWS + 1;
+
+        guiShow();
+        rmDrawRect(0, 0, screenWidth, screenHeight, gColDarker);
+        rmDrawLine(50, 75, screenWidth - 50, 75, gColWhite);
+        rmDrawLine(50, 410, screenWidth - 50, 410, gColWhite);
+        fntRenderString(gTheme->fonts[0], 50, 50, ALIGN_NONE, 0, 0, "Network shares", gTheme->textColor);
+
+        for (i = 0; i < NETSHARE_ROWS && top + i < count; i++) {
+            int y = 85 + i * 34;
+            int on = (top + i == sel);
+
+            if (on)
+                rmDrawRect(60, y - 2, screenWidth - 120, 30, GS_SETREG_RGBA(0x40, 0x40, 0x40, 0x60));
+            guiDrawFolderIcon(70, y + 2, on ? GS_SETREG_RGBA(0xFF, 0xD0, 0x40, 0x80) : GS_SETREG_RGBA(0xC0, 0xA0, 0x30, 0x70));
+            fntRenderString(gTheme->fonts[0], 115, y + 2, ALIGN_NONE, 0, 0, names[top + i], on ? gTheme->selTextColor : gTheme->textColor);
+        }
+
+        guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? CIRCLE_ICON : CROSS_ICON, _STR_ACCEPT, gTheme->fonts[0], 70, 417, gTheme->selTextColor);
+        guiDrawIconAndText(gSelectButton == KEY_CIRCLE ? CROSS_ICON : CIRCLE_ICON, _STR_BACK, gTheme->fonts[0], 500, 417, gTheme->selTextColor);
+        guiEndFrame();
+    }
+
+    sfxPlay(result == 1 ? SFX_CONFIRM : SFX_CANCEL);
+    if (result != 1)
+        return 0;
+
+    snprintf(out, outSize, "%s", names[sel]);
+    return 1;
+}
+
+// "Browse shares" button of Network Config: asks the connected server for its shares and puts the chosen one in the share name field.
+static void guiNetBrowseShares(void)
+{
+    char (*names)[32] = (char(*)[32])malloc(NETSHARE_MAX * 32);
+    char picked[32];
+    int count;
+
+    if (!names)
+        return;
+
+    count = ethGetShareNames(names, NETSHARE_MAX);
+    if (count < 0)
+        guiMsgBox("Not connected to the server yet. Fill in the address, user and password, press Reconnect (or OK), then open this dialog again and press Browse shares.", 0, diaNetConfig);
+    else if (count == 0)
+        guiMsgBox("The server did not list any shares.", 0, diaNetConfig);
+    else if (guiSelectShare(names, count, picked, sizeof(picked)))
+        diaSetString(diaNetConfig, NETCFG_SHARE_NAME, picked);
+
+    free(names);
+}
+
 void guiShowNetConfig(void)
 {
     size_t i;
@@ -820,7 +907,16 @@ void guiShowNetConfig(void)
         diaSetVisible(diaNetConfig, NETCFG_RECONNECT, 0);
     }
 
-    int result = diaExecuteDialog(diaNetConfig, -1, 1, &netConfigUpdater);
+    int result, focus = -1;
+
+    for (;;) {
+        result = diaExecuteDialog(diaNetConfig, focus, 1, &netConfigUpdater);
+        if (result != NETCFG_SHARE_BROWSE)
+            break;
+        guiNetBrowseShares();
+        focus = NETCFG_SHARE_BROWSE;
+    }
+
     if (result) {
         // Store values
         diaGetInt(diaNetConfig, NETCFG_PS2_IP_ADDR_TYPE, &ps2_ip_use_dhcp);
