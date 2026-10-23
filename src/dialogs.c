@@ -743,7 +743,7 @@ struct UIItem diaPadEmuSetup[] = {
     {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"PS button: short press", -1}}},
     {UI_ENUM, PADSET_PS_TAP, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
     {UI_BREAK},
-    {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"PS button: hold (IGR)", -1}}},
+    {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"PS button: hold", -1}}},
     {UI_ENUM, PADSET_PS_HOLD, 1, 1, -1, 0, 0, {.intvalue = {0, 0}}},
     {UI_BREAK},
     {UI_LABEL, 0, 1, 1, -1, -40, 0, {.label = {"PS button: hold time", -1}}},

@@ -1215,7 +1215,7 @@ static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", 
 // index = value stored in the blob: 0 = none, 1..16 = DS2 button + 1
 static const char *setupTargetNames[] = {BTN16("None")};
 static const char *setupTouchModes[] = {"Select/Start halves (original)", "Click = button only", "Right stick: drag", "Left stick: drag", "Right stick: mouse", "Left stick: mouse", NULL};
-static const char *setupPsHold[] = {"Nothing", "Exit to OPL (IGR)", "Power off", "Screenshot (needs GSM)", NULL};
+static const char *setupPsHold[] = {"Nothing", "Exit to OPL (IGR)", "Power off", "Screenshot (needs GSM)", "Turn off controller", NULL};
 static const char *setupPsTime[] = {"1 second", "2 seconds", "3 seconds", NULL};
 static const char *setupRemapEnum[19];
 

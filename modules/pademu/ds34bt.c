@@ -543,17 +543,26 @@ static void pad_postprocess(ds34bt_pad_t *pad, int ps_pressed, const struct ds4r
     pad->ps_down = ps_pressed;
     pad->ps_alone = ps_pressed && (pad->ds2.nButtonState == 0xFFFF); // before anything below changes the buttons
 
-    // PS held long enough = IGR combination. Timed here with the real clock (reports arrive all the time), so it does
-    // not depend on how often the game polls the pad.
+    // PS held long enough = IGR combination or controller off. Timed here with the real clock (reports arrive all the
+    // time), so it does not depend on how often the game polls the pad.
     if (ps_pressed) {
+        int held;
+
         if (!was_down) {
             pad->ps_t0 = ds_now();
             pad->ps_rep_dirty = 0;
         }
         if (!pad->ps_alone)
             pad->ps_rep_dirty = 1;
-        pad->igr_on = g_setup.ps_hold != PADSETUP_PSHOLD_NONE && !pad->ps_rep_dirty &&
-                      (u32)(ds_now() - pad->ps_t0) >= 1125u * (g_setup.ps_hold_time + 1);
+        held = g_setup.ps_hold != PADSETUP_PSHOLD_NONE && !pad->ps_rep_dirty &&
+               (u32)(ds_now() - pad->ps_t0) >= 1125u * (g_setup.ps_hold_time + 1);
+        if (held && g_setup.ps_hold == PADSETUP_PSHOLD_PADOFF) {
+            // close the link (serviced at the end of this L2CAP callback): the pad switches itself off, PS reconnects it
+            pad->status |= DS34BT_STATE_DISCONNECT_REQUEST;
+            pad->ps_rep_dirty = 1; // once per press
+            held = 0;
+        }
+        pad->igr_on = held;
     } else {
         pad->igr_on = 0;
         pad->ps_rep_dirty = 0;

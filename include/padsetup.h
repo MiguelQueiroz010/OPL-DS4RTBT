@@ -32,7 +32,8 @@ enum {
     PADSETUP_PSHOLD_EXIT = 1,       // L1+L2+R1+R2+Start+Select: back to the OPL menu
     PADSETUP_PSHOLD_POWEROFF = 2,   // L1+L2+R1+R2+L3+R3: power off
     PADSETUP_PSHOLD_SCREENSHOT = 3, // L1+L2+R1+R2+Up: in-game screenshot (GSM/IGS)
-    PADSETUP_PSHOLD_COUNT = 4,
+    PADSETUP_PSHOLD_PADOFF = 4,     // disconnect the pad, which switches it off (default; PS reconnects it)
+    PADSETUP_PSHOLD_COUNT = 5,
 };
 
 // Button targets: 0 = no change/none, 1..16 = DS2 button bit number + 1 (select, l3, r3, start, up, right, down,
@@ -121,7 +122,7 @@ static const padsetup_param_t padsetup_params[PADSETUP_P_COUNT] = {
     /* TOUCH_SENS  */ PADSETUP_PARAM_ROW(touch_sens, 0, 0xFF, 1, 8, 4),
     /* TOUCH_CLICK */ PADSETUP_PARAM_ROW(touch_click, 0, 0xFF, 0, 16, 0),
     /* PS_TAP      */ PADSETUP_PARAM_ROW(ps_tap, 0, 0xFF, 0, 16, 0),
-    /* PS_HOLD     */ PADSETUP_PARAM_ROW(ps_hold, 0, 0xFF, 0, PADSETUP_PSHOLD_COUNT - 1, PADSETUP_PSHOLD_EXIT), // basic IGR: hold PS to go back to the OPL menu
+    /* PS_HOLD     */ PADSETUP_PARAM_ROW(ps_hold, 0, 0xFF, 0, PADSETUP_PSHOLD_COUNT - 1, PADSETUP_PSHOLD_PADOFF), // like a PS4/PS5: hold PS to switch the pad off
     /* PS_TIME     */ PADSETUP_PARAM_ROW(ps_hold_time, 0, 0xFF, 0, 2, 1),                                       // 2 seconds
     /* LED0        */ PADSETUP_PARAM_ROW(led[0], 0, 0x0F, 0, PADSETUP_LED_COUNT - 1, 0),
     /* LED1        */ PADSETUP_PARAM_ROW(led[0], 4, 0x0F, 0, PADSETUP_LED_COUNT - 1, 0),
