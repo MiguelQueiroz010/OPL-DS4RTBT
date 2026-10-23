@@ -460,6 +460,10 @@ gui_strings:
   string: DualShock3/4 USB
 - label: DS34BT_MODE
   string: DualShock3/4 BT
+- label: PADPORT
+  string: 'Settings For Port:'
+- label: HINT_PAD_PORT
+  string: Select Pad Emulator port for settings.
 - label: PADEMU_PORT
   string: Emulation
 - label: HINT_PADEMU_PORT
