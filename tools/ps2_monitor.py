@@ -180,6 +180,11 @@ def main():
     ap.add_argument("--outdir", default=".")
     args = ap.parse_args()
 
+    try:  # nao deixa um caractere estranho derrubar o console do Windows
+        sys.stdout.reconfigure(errors="replace")
+    except Exception:  # noqa: BLE001
+        pass
+
     if args.summary:
         read_summary_file(args.summary)
         return

@@ -30,10 +30,20 @@ SONY_CONTROLLERS = {
 }
 
 
+def decode(raw):
+    """Saida de programas do Windows nem sempre e UTF-8 (cp850/cp1252): tenta algumas e nunca falha."""
+    for enc in ("utf-8", "cp1252", "cp850"):
+        try:
+            return raw.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", errors="replace")
+
+
 def run(cmd, timeout=25):
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, shell=isinstance(cmd, str))
-        return (r.stdout or "") + (r.stderr or "")
+        r = subprocess.run(cmd, capture_output=True, timeout=timeout, shell=isinstance(cmd, str))
+        return decode(r.stdout or b"") + decode(r.stderr or b"")
     except Exception as e:  # noqa: BLE001
         return f"(falhou: {e})"
 
@@ -44,7 +54,7 @@ def fmt(vid, pid):
 
 # ------------------------------------------------------------------------------------------------ Windows
 def windows():
-    ps = ("Get-PnpDevice -PresentOnly | Select-Object InstanceId,FriendlyName,Class,Manufacturer,Status | "
+    ps = ("[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-PnpDevice -PresentOnly | Select-Object InstanceId,FriendlyName,Class,Manufacturer,Status | "
           "ConvertTo-Json -Compress")
     raw = run(["powershell", "-NoProfile", "-Command", ps], timeout=60)
     try:
@@ -138,6 +148,11 @@ def macos():
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):  # nomes com acento nao podem derrubar o script no console do Windows
+        try:
+            stream.reconfigure(errors="replace")
+        except Exception:  # noqa: BLE001
+            pass
     osn = platform.system()
     if osn == "Windows":
         dongles, pads, extra = windows()
