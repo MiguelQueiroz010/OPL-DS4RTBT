@@ -1,0 +1,42 @@
+name: Debug-BT
+
+# Builds the in-game debug OPL (UDP log with the compact "BT:" lines about the dongle and the pads) and uploads it as an artifact.
+# Runs on every push to debug-dongle, or by hand (Actions > Debug-BT > Run workflow).
+# Use it with tools/ps2_monitor.py (see tools/DEBUG_BT.md).
+
+on:
+  push:
+    branches: [debug-dongle]
+  workflow_dispatch:
+    inputs:
+      verbose:
+        description: 'Also log every HCI/L2CAP detail (much more output)'
+        type: boolean
+        default: false
+
+jobs:
+  build-debug:
+    runs-on: ubuntu-latest
+    container: ghcr.io/ps2homebrew/ps2homebrew:main
+    steps:
+    - uses: actions/checkout@v4
+
+    - run: |
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        git fetch --prune --unshallow
+
+    - name: Compile -> make clean ingame_debug
+      run: |
+        if [ "${{ github.event.inputs.verbose }}" = "true" ]; then export BT_VERBOSE=1; fi
+        make --trace clean ingame_debug
+
+    - name: Name the ELF
+      run: |
+        ELF=$(ls OPNPS2LD*.ELF | head -n 1)
+        SHA=$(git rev-parse --short HEAD)
+        cp "$ELF" "OPL-BT-INGAMEDEBUG-$SHA.ELF"
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: OPL-BT-INGAMEDEBUG
+        path: OPL-BT-INGAMEDEBUG-*.ELF

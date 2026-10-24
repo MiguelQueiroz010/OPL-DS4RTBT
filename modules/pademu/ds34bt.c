@@ -129,6 +129,9 @@ static int bt_connect(int devId)
     config = (UsbConfigDescriptor *)UsbGetDeviceStaticDescriptor(devId, device, USB_DT_CONFIG);
     interface = (UsbInterfaceDescriptor *)((char *)config + config->bLength);
 
+    BTLOG("PADEMU BT: USB dongle attached %04X:%04X rev %04X, class %02X/%02X/%02X, %d endpoints\n", device->idVendor, device->idProduct,
+          device->bcdDevice, interface->bInterfaceClass, interface->bInterfaceSubClass, interface->bInterfaceProtocol, interface->bNumEndpoints);
+
     epCount = interface->bNumEndpoints - 1;
 
     DPRINTF("DS34BT: Endpoint Count %d \n", epCount + 1);
@@ -984,6 +987,8 @@ static int rtl_command_complete(void)
         if (rtl_state != RTL_WAIT_VERSION)
             return 0;
         // [6] hci_ver, [7..8] hci_rev, [9] lmp_ver, [10..11] manufacturer, [12..13] lmp_subversion
+        BTLOG("PADEMU BT: version status %02X | HCI ver %02X rev %04X | LMP ver %02X sub %04X | manufacturer %04X\n", hci_buf[5], hci_buf[6],
+              rtl_rd16(&hci_buf[7]), hci_buf[9], rtl_rd16(&hci_buf[12]), rtl_rd16(&hci_buf[10]));
         if (hci_buf[5] == 0 && rtl_rd16(&hci_buf[10]) == RTL_MFNAME && rtl_rd16(&hci_buf[12]) == RTL_ROM_LMP_8761 && rtl_rd16(&hci_buf[7]) == RTL_ROM_HCI_REV) {
             rtl_state = RTL_WAIT_ROMVER;
             rtl_cmd_buf[0] = RTL_OCF_ROMVER;
@@ -991,6 +996,7 @@ static int rtl_command_complete(void)
             rtl_cmd_buf[2] = 0;
             HCI_Command(3, rtl_cmd_buf);
         } else {
+            BTLOG("PADEMU BT: no Realtek RTL8761B ROM state (expected manufacturer 005D, LMP sub 8761, HCI rev 000B): firmware step skipped\n");
             rtl_state = RTL_DONE; // not a Realtek chip in ROM state (or firmware already loaded)
             hci_after_reset();
         }

@@ -28,6 +28,18 @@ IRX_ID("ds34bt", 1, 1);
 //#define DPRINTF(x...) printf(x)
 #define DPRINTF(x...)
 
+// Debug builds (make DEBUG=1 INGAME_DEBUG=1): compact "BT:" lines about the dongle and the pad links, sent to the UDP log
+// (tools/ps2_monitor.py). BT_DEBUG=2 also turns on the old verbose HCI/L2CAP DPRINTF lines.
+#ifdef BT_DEBUG
+#define BTDBG(x...) printf(x)
+#if BT_DEBUG >= 2
+#undef DPRINTF
+#define DPRINTF(x...) printf(x)
+#endif
+#else
+#define BTDBG(x...)
+#endif
+
 static int bt_probe(int devId);
 static int bt_connect(int devId);
 static int bt_disconnect(int devId);
@@ -123,6 +135,8 @@ static int bt_connect(int devId)
     bt_dev.vid = device->idVendor;
     bt_dev.pid = device->idProduct;
     bt_dev.rev = device->bcdDevice;
+    BTDBG("BT: USB dongle attached: %04X:%04X rev %04X, class %02X/%02X/%02X, %d endpoints\n", bt_dev.vid, bt_dev.pid, bt_dev.rev,
+          interface->bInterfaceClass, interface->bInterfaceSubClass, interface->bInterfaceProtocol, interface->bNumEndpoints);
 
     epCount = interface->bNumEndpoints - 1;
 
@@ -618,8 +632,16 @@ static int rtl_maybe_start(void)
 {
     if (rtl_state != RTL_IDLE)
         return 0;
-    if (bt_version.mf_name != RTL_MFNAME || bt_version.lmp_subver != RTL_ROM_LMP_8761 || bt_version.hci_rev != RTL_ROM_HCI_REV)
-        return 0; // not a Realtek chip still in ROM state (or firmware already loaded)
+    if (bt_version.mf_name != RTL_MFNAME || bt_version.lmp_subver != RTL_ROM_LMP_8761 || bt_version.hci_rev != RTL_ROM_HCI_REV) {
+        // not a Realtek chip still in ROM state (or firmware already loaded)
+        if (bt_version.mf_name == RTL_MFNAME)
+            BTDBG("BT: Realtek adapter, but NOT in RTL8761B ROM state (lmp sub %04X, hci rev %04X; expected 8761 / 000B): firmware NOT loaded\n",
+                  bt_version.lmp_subver, bt_version.hci_rev);
+        else
+            BTDBG("BT: manufacturer %04X is not Realtek (005D): no firmware step\n", bt_version.mf_name);
+        return 0;
+    }
+    BTDBG("BT: Realtek RTL8761B in ROM state, loading firmware\n");
 
     rtl_state = RTL_WAIT_ROMVER;
     rtl_cmd_buf[0] = RTL_OCF_ROMVER;
@@ -634,7 +656,9 @@ static void rtl_command_complete(void)
     if (hci_buf[3] == RTL_OCF_ROMVER) {
         if (rtl_state != RTL_WAIT_ROMVER)
             return;
+        BTDBG("BT: RTL ROM version status %02X value %02X\n", hci_buf[5], hci_buf[6]);
         if (hci_buf[5] != 0 || !rtl_find_patch(hci_buf[6])) {
+            BTDBG("BT: RTL: no firmware patch for this ROM version, continuing without it\n");
             rtl_state = RTL_FAILED;
             hci_read_local_supported_features(); // carry on without firmware
             return;
@@ -648,11 +672,13 @@ static void rtl_command_complete(void)
         if (rtl_state != RTL_DOWNLOADING)
             return;
         if (hci_buf[5] != 0) {
+            BTDBG("BT: RTL: fragment %d refused (status %02X), firmware load FAILED\n", (int)rtl_frag_no, hci_buf[5]);
             rtl_state = RTL_FAILED;
             hci_reset(); // restart the normal init chain
         } else if (rtl_pos < rtl_total) {
             rtl_send_fragment();
         } else {
+            BTDBG("BT: RTL: firmware downloaded (%d fragments), restarting the init chain\n", (int)rtl_frag_no);
             rtl_state = RTL_DONE;
             hci_reset(); // restart the init chain; the version read again now shows the patched chip
         }
@@ -1095,6 +1121,64 @@ static void bt_pair_fail(void)
     bt_pair_state = BT_PAIR_FAILED;
 }
 
+#ifdef BT_DEBUG
+static u8 bt_dbg_stage_logged = 0xFF;
+
+// One line per HCI event (the very frequent ones are skipped): code, length and the first payload bytes
+static void bt_dbg_event(void)
+{
+    u8 code = hci_buf[0], len = hci_buf[1], n = len > 10 ? 10 : len;
+    char hex[3 * 10 + 1];
+    int i;
+
+    if (dbg[DBG_STAGE] != bt_dbg_stage_logged) {
+        bt_dbg_stage_logged = dbg[DBG_STAGE];
+        BTDBG("BT: init stage %d\n", bt_dbg_stage_logged);
+    }
+    if (code == HCI_EVENT_NUM_COMPLETED_PKT || code == HCI_EVENT_MAX_SLOT_CHANGE)
+        return;
+    for (i = 0; i < n; i++) {
+        static const char h[] = "0123456789ABCDEF";
+        hex[3 * i] = h[hci_buf[2 + i] >> 4];
+        hex[3 * i + 1] = h[hci_buf[2 + i] & 15];
+        hex[3 * i + 2] = ' ';
+    }
+    hex[3 * n] = '\0';
+    if (code == HCI_EVENT_REMOTE_NAME_COMPLETE && len > 8) {
+        char name[25];
+        int k;
+
+        for (k = 0; k < 24 && 8 + k < len + 2 && hci_buf[8 + k]; k++)
+            name[k] = (hci_buf[8 + k] >= 32 && hci_buf[8 + k] < 127) ? hci_buf[8 + k] : '?';
+        name[k] = '\0';
+        BTDBG("BT: ev %02X remote name \"%s\" (status %02X)\n", code, name, hci_buf[2]);
+        return;
+    }
+    BTDBG("BT: ev %02X len %d: %s\n", code, len, hex);
+}
+
+static void bt_dbg_version(void)
+{
+    BTDBG("BT: dongle %04X:%04X rev %04X | HCI ver %02X rev %04X | LMP ver %02X sub %04X | manufacturer %04X\n", bt_dev.vid, bt_dev.pid,
+          bt_dev.rev, bt_version.hci_ver, bt_version.hci_rev, bt_version.lmp_ver, bt_version.lmp_subver, bt_version.mf_name);
+}
+
+static void bt_dbg_features(void)
+{
+    // LMP feature bits worth knowing: 51 Simple Pairing, 38 LE, 25 EDR 2M, 28 inquiry RSSI
+    BTDBG("BT: features %02X %02X %02X %02X %02X %02X %02X %02X | SSP %d LE %d RSSI-inquiry %d\n", bt_features[0], bt_features[1], bt_features[2],
+          bt_features[3], bt_features[4], bt_features[5], bt_features[6], bt_features[7], (bt_features[6] >> 3) & 1, (bt_features[4] >> 6) & 1,
+          (bt_features[3] >> 4) & 1);
+}
+#define BT_DBG_EVENT()    bt_dbg_event()
+#define BT_DBG_VERSION()  bt_dbg_version()
+#define BT_DBG_FEATURES() bt_dbg_features()
+#else
+#define BT_DBG_EVENT()
+#define BT_DBG_VERSION()
+#define BT_DBG_FEATURES()
+#endif
+
 static void HCI_event_task(int result)
 {
     int i, pad;
@@ -1106,6 +1190,7 @@ static void HCI_event_task(int result)
         /*  buf[1] = Parameter Total Length                */
         /*  buf[n] = Event Parameters based on each event  */
         DPRINTF("HCI event = 0x%02X \n", hci_buf[0]);
+        BT_DBG_EVENT();
         dbg[DBG_LAST_EVENT] = hci_buf[0];
         if (++dbg[DBG_EVENTS_LO] == 0 && dbg[DBG_EVENTS_HI] < 0xFF)
             dbg[DBG_EVENTS_HI]++;
@@ -1126,6 +1211,7 @@ static void HCI_event_task(int result)
                         dbg[DBG_STAGE] = 1;
                         hci_read_bdaddr();
                     } else {
+                        BTDBG("BT: init command %02X%02X failed with status %02X, resetting the adapter\n", hci_buf[4], hci_buf[3], hci_buf[5]);
                         DelayThread(500);
                         hci_reset();
                     }
@@ -1135,25 +1221,30 @@ static void HCI_event_task(int result)
                         dbg[DBG_STAGE] = 2;
                         hci_read_local_version_information();
                     } else {
+                        BTDBG("BT: init command %02X%02X failed with status %02X, resetting the adapter\n", hci_buf[4], hci_buf[3], hci_buf[5]);
                         DelayThread(500);
                         hci_reset();
                     }
                 } else if ((hci_buf[3] == HCI_OCF_READ_VERSION) && (hci_buf[4] == HCI_OGF_INFO_PARAM)) {
                     if (hci_buf[5] == 0) {
                         mips_memcpy(&bt_version, &hci_buf[6], sizeof(hci_information_t));
+                        BT_DBG_VERSION();
                         dbg[DBG_STAGE] = 3;
                         if (!rtl_maybe_start())
                             hci_read_local_supported_features();
                     } else {
+                        BTDBG("BT: init command %02X%02X failed with status %02X, resetting the adapter\n", hci_buf[4], hci_buf[3], hci_buf[5]);
                         DelayThread(500);
                         hci_reset();
                     }
                 } else if ((hci_buf[3] == HCI_OCF_READ_FEATURES) && (hci_buf[4] == HCI_OGF_INFO_PARAM)) {
                     if (hci_buf[5] == 0) {
                         mips_memcpy(bt_features, &hci_buf[6], sizeof(bt_features));
+                        BT_DBG_FEATURES();
                         dbg[DBG_STAGE] = 4;
                         hci_set_event_mask();
                     } else {
+                        BTDBG("BT: init command %02X%02X failed with status %02X, resetting the adapter\n", hci_buf[4], hci_buf[3], hci_buf[5]);
                         DelayThread(500);
                         hci_reset();
                     }
@@ -1180,11 +1271,13 @@ static void HCI_event_task(int result)
                 } else if ((hci_buf[3] == HCI_OCF_WRITE_SCAN_ENABLE) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
                     if (hci_buf[5] == 0) {
                         dbg[DBG_STAGE] = 7;
+                        BTDBG("BT: adapter ready (init chain finished)\n");
                         bt_dev.status |= DS34BT_STATE_USB_CONFIGURED;
                         // Not part of the required init chain: if an adapter never answers it, it stays usable
                         if (bt_features[3] & 0x10) // feature 28: inquiry with RSSI supported
                             hci_write_inquiry_mode();
                     } else {
+                        BTDBG("BT: init command %02X%02X failed with status %02X, resetting the adapter\n", hci_buf[4], hci_buf[3], hci_buf[5]);
                         DelayThread(500);
                         hci_reset();
                     }
@@ -1766,6 +1859,7 @@ static int L2CAP_event_task(int result, int bytes)
 
             if (l2cap_control_channel) {
                 DPRINTF("L2CAP Signaling Command = 0x%02X, pad %d \n", l2cap_buf[8], pad);
+                BTDBG("BT: L2CAP signalling %02X pad %d\n", l2cap_buf[8], pad);
 
                 switch (l2cap_buf[8]) {
                     case L2CAP_CMD_COMMAND_REJECT:
@@ -1865,6 +1959,7 @@ static int L2CAP_event_task(int result, int bytes)
                             DelayThread(CMD_DELAY);
                             hid_LEDRumble(ds34pad[pad].oldled, 0, 0, pad);
                             pad_status_set(DS34BT_STATE_RUNNING, pad);
+                            BTDBG("BT: pad %d channels open, pad running (type %d)\n", pad, ds34pad[pad].type);
                         }
                         break;
 
@@ -1903,6 +1998,8 @@ static int L2CAP_event_task(int result, int bytes)
                 pad = MAX_PADS;
             } else if (l2cap_interrupt_channel) {
                 pdbg[pad].rx_int++;
+                if (pdbg[pad].rx_int == 1 || (pdbg[pad].rx_int % 1000) == 0)
+                    BTDBG("BT: pad %d HID reports received: %d (last len %d, header %02X id %02X)\n", pad, (int)pdbg[pad].rx_int, bytes, l2cap_buf[8], l2cap_buf[9]);
                 pdbg[pad].last_rx_thdr = l2cap_buf[8];
                 pdbg[pad].last_rx_id = l2cap_buf[9];
                 pdbg[pad].rx_len = (u16)bytes;
