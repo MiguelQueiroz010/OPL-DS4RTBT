@@ -64,8 +64,11 @@ def windows():
     except Exception:  # noqa: BLE001
         return [], [], "Nao consegui listar os dispositivos pelo PowerShell:\n" + raw[:500]
     dongles, pads = [], []
+    paired = []
     for d in devs:
         iid = d.get("InstanceId") or ""
+        if iid.upper().startswith("BTHENUM\\DEV_") and d.get("FriendlyName"):
+            paired.append(f"{d.get('FriendlyName')}  [{d.get('Status')}]")
         name = d.get("FriendlyName") or ""
         cls = d.get("Class") or ""
         m = re.search(r"USB\\VID_([0-9A-F]{4})&PID_([0-9A-F]{4})", iid, re.I)
@@ -78,7 +81,7 @@ def windows():
         if mm and (cls in ("HIDClass", "XboxComposite", "") or "controller" in name.lower() or "game" in name.lower()):
             if "controller" in name.lower() or "game" in name.lower() or mm.group(1).upper() == "054C":
                 pads.append({"id": fmt(*mm.groups()), "name": name, "via": "Bluetooth" if m3 else "USB", "instance": iid})
-    return dongles, pads, ""
+    return dongles, pads, ("Dispositivos Bluetooth pareados no Windows: " + ("; ".join(paired) if paired else "nenhum") if paired is not None else "")
 
 
 # ------------------------------------------------------------------------------------------------ Linux
@@ -188,13 +191,17 @@ def main():
         known = SONY_CONTROLLERS.get(p["id"].upper())
         L.append(f"- {p['id']}  {p['name']}  (via {p['via']})")
         if known:
-            L.append(f"    VID:PID de um controle Sony de verdade: {known}.")
+            L.append(f"    VID:PID de {known}. ATENCAO: clones copiam esse VID:PID, entao isto NAO prova que e original "
+                     "(veja o nome real nos 'Dispositivos Bluetooth pareados' abaixo).")
         elif p["id"].upper().startswith("054C:"):
             L.append("    VID da Sony com PID diferente dos conhecidos: pode ser clone ou modelo novo.")
         else:
             L.append("    VID diferente da Sony: provavelmente CLONE (a maioria usa o nome 'Wireless Controller').")
     if extra:
         L += ["", "== INFO EXTRA ==", extra]
+    L += ["", "Obs.: 'Realtek Bluetooth 5.3 Adapter' indica um chip Realtek de geracao mais nova que o RTL8761B (BT 5.1)."]
+    if any(d["id"].upper().startswith("0BDA:") for d in dongles) and not any(d["id"].upper() == "0BDA:8771" for d in dongles):
+        L.append("O firmware embutido no OPL e do RTL8761B: para este Realtek o log do OPL de debug vai dizer se o firmware e carregado.")
     text = "\n".join(L)
     print(text)
     with open("bt_identify_report.txt", "w", encoding="utf-8") as f:
