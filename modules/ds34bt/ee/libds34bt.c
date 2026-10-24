@@ -34,9 +34,14 @@ static u8 ds34bt_inited = 0;
 
 int ds34bt_init()
 {
+    int tries = 1000; // the module registers its RPC before it finishes loading: if it is not there by now it failed to load, and waiting forever freezes the OPL at the logo
+
     ds34bt.server = NULL;
 
     do {
+        if (--tries < 0)
+            return 0;
+
         if (SifBindRpc(&ds34bt, DS34BT_BIND_RPC_ID, 0) < 0)
             return 0;
 

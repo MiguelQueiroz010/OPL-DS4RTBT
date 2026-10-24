@@ -21,9 +21,14 @@ static u8 ds34usb_inited = 0;
 
 int ds34usb_init()
 {
+    int tries = 1000; // the module registers its RPC before it finishes loading: if it is not there by now it failed to load, and waiting forever freezes the OPL at the logo
+
     ds34usb.server = NULL;
 
     do {
+        if (--tries < 0)
+            return 0;
+
         if (SifBindRpc(&ds34usb, DS34USB_BIND_RPC_ID, 0) < 0)
             return 0;
 
