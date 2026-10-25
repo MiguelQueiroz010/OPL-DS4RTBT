@@ -1,5 +1,6 @@
 #include "include/opl.h"
 #include "include/ioman.h"
+#include "include/bootlog.h"
 #include <kernel.h>
 #include <string.h>
 #include <malloc.h>
@@ -308,24 +309,25 @@ int ioHasPendingRequests(void)
     return gReqList != NULL ? 1 : 0;
 }
 
-#ifdef __EESIO_DEBUG
-static char tbuf[2048];
-#endif
-
 int ioPrintf(const char *format, ...)
 {
+    char line[160];
+    int ret;
+    va_list args;
+
     if (isIORunning == 1)
         WaitSema(gIOPrintfSemaId);
 
-    va_list args;
     va_start(args, format);
-#ifdef __EESIO_DEBUG
-    int ret = vsnprintf((char *)tbuf, sizeof(tbuf), format, args);
-    sio_putsn(tbuf);
-#else
-    int ret = vprintf(format, args);
-#endif
+    ret = vsnprintf(line, sizeof(line), format, args);
     va_end(args);
+
+    bootLogAdd(line); // kept for the on-screen log of the debug build
+#ifdef __EESIO_DEBUG
+    sio_putsn(line);
+#else
+    printf("%s", line);
+#endif
 
     if (isIORunning == 1)
         SignalSema(gIOPrintfSemaId);

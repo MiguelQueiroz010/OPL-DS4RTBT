@@ -17,6 +17,7 @@
 #include "include/util.h"
 #include "include/config.h"
 #include "include/system.h"
+#include "include/bootlog.h"
 #include "include/ethsupport.h"
 #include "include/compatupd.h"
 #include "include/pggsm.h"
@@ -1774,6 +1775,15 @@ static void guiDrawOverlays()
         snprintf(text, sizeof(text), "%.1f FPS", fps);
         fntRenderString(gTheme->fonts[0], x, y, ALIGN_LEFT, 0, 0, text, GS_SETREG_RGBA(0x60, 0x60, 0x60, 0x80));
         y += yadd;
+    }
+
+    // Last lines of the log (start-up steps, module loads): if the OPL stops, this is where it stopped
+    y += yadd;
+    {
+        char line[BOOTLOG_WIDTH + 1];
+
+        for (int i = 0; bootLogGet(i, line, sizeof(line)); i++, y += 12)
+            fntRenderString(gTheme->fonts[0], screenWidth - 20 - fntCalcDimensions(gTheme->fonts[0], line), y, ALIGN_LEFT, 0, 0, line, GS_SETREG_RGBA(0xC0, 0xC0, 0x60, 0x80));
     }
 #endif
 
