@@ -396,6 +396,28 @@ void ds34bt_set_setup(const void *blob)
             g_remap_active = 1;
 }
 
+#ifdef MOTIONPAD
+// ---- Motion pad: a phone used as a steering wheel --------------------------------------------------------------
+// The phone is a Bluetooth HID device that connects like a DualShock 3 (it opens the control/interrupt channels
+// itself). It only sends steering/throttle/brake, which are merged into the report of the first real pad, so
+// PADEMU keeps working as usual. Report layout: A1 01 | steer (80 = centre) | throttle | brake | buttons
+#define WHEEL_REPORT_ID 0x01
+#define WHEEL_STALE_POLLS 120 // polls without a report (about 2 s) before the wheel is released
+static u8 wheel_steer = 0x80, wheel_thr, wheel_brk, wheel_btn;
+static int wheel_age = WHEEL_STALE_POLLS;
+
+static void wheel_read_report(const u8 *data, int bytes)
+{
+    if (bytes < 14 || data[8] != HID_THDR_DATA_INPUT || data[9] != WHEEL_REPORT_ID)
+        return;
+    wheel_steer = data[10];
+    wheel_thr = data[11];
+    wheel_brk = data[12];
+    wheel_btn = data[13];
+    wheel_age = 0;
+}
+#endif
+
 // Offset (in the 18 bytes of ds2report) of the pressure byte of a DS2 button (bit number in the button word), -1 = none
 static int ds2_pressure_off(int bit)
 {
@@ -415,6 +437,43 @@ static void ds2_press(u8 *d, int bit, u8 pressure)
     if (po >= 0 && d[po] < pressure)
         d[po] = pressure;
 }
+
+#ifdef MOTIONPAD
+// Merge the wheel into the report handed to the game (port = first real pad only)
+static void wheel_overlay(u8 *dst, int size, int port)
+{
+    int i, first = -1;
+
+    for (i = 0; i < MAX_PADS; i++) {
+        if (ds34pad[i].enabled && ds34pad[i].type != WHEEL) {
+            first = i;
+            break;
+        }
+    }
+    if (port != first || size < 2)
+        return;
+    if (wheel_age < WHEEL_STALE_POLLS)
+        wheel_age++;
+    if (wheel_age >= WHEEL_STALE_POLLS)
+        return; // no wheel: leave the real pad alone
+
+    if (size >= 6) {
+        dst[4] = wheel_steer; // left stick X
+    } else if (wheel_steer < 0x50) {
+        ds2_press(dst, 7, 255); // digital mode: D-pad left / right
+    } else if (wheel_steer > 0xB0) {
+        ds2_press(dst, 5, 255);
+    }
+    if (wheel_thr > 16)
+        ds2_press(dst, 14, wheel_thr); // Cross = accelerate (pressure follows the tilt)
+    if (wheel_brk > 16)
+        ds2_press(dst, 15, wheel_brk); // Square = brake / reverse
+    if (wheel_btn & 1)
+        ds2_press(dst, 12, 255); // Triangle
+    if (wheel_btn & 2)
+        ds2_press(dst, 13, 255); // Circle
+}
+#endif
 
 static void pad_apply_remap(u8 *d)
 {
@@ -1164,6 +1223,12 @@ static void HCI_event_task(int result)
                         ds34pad[i].type = DS5;
                         ds34pad[i].isfake = 0;
                         DPRINTF("\t Type: DualSense \n");
+#ifdef MOTIONPAD
+                    } else if (ds34pad[i].is_phone) {
+                        ds34pad[i].type = WHEEL;
+                        ds34pad[i].isfake = 0;
+                        DPRINTF("\t Type: Motion pad (phone) \n");
+#endif
                     } else if (bt_name_starts(hci_buf + 9, "Wireless Controller") ||
                                btkeys_find(bt_keys, bt_keys_count, hci_buf + 3) >= 0) {
                         // paired wirelessly -> can't be a DualShock 3; clones with another name are DualShock 4 too
@@ -1218,6 +1283,7 @@ static void HCI_event_task(int result)
                 }
                 pad = i;
                 mips_memcpy(ds34pad[pad].bdaddr, hci_buf + 2, 6);
+                ds34pad[pad].is_phone = ((hci_buf[9] & 0x1F) == 0x02); // major device class 2 = Phone
                 ds34pad[pad].isfake = 0;
                 if (enable_fake) {
                     ds34pad[pad].isfake = 1;                              // fake ds3
@@ -1610,6 +1676,15 @@ static int L2CAP_event_task(int result, int bytes)
                                 l2cap_connection_request(ds34pad[pad].hci_handle, identifier, interrupt_dcid, L2CAP_PSM_INTR);
                             }
                         } else if ((l2cap_buf[12] | (l2cap_buf[13] << 8)) == interrupt_dcid) {
+#ifdef MOTIONPAD
+                            if (ds34pad[pad].type == WHEEL) { // nothing to enable on a phone
+                                pad_status_set(DS34BT_STATE_RUNNING, pad);
+                                BTLOG("PADEMU BT: pad %d is a motion pad, running\n", pad);
+                                bt_update_page_scan();
+                                ds34pad[pad].btn_delay = 0xFF;
+                                break;
+                            }
+#endif
                             hid_initDS34(pad);
                             if (ds34pad[pad].type == DS3) {
                                 ds34pad[pad].oldled[0] = led_patterns[pad][1];
@@ -1996,6 +2071,12 @@ static int hid_LEDRumbleCommand(u8 *led, u8 lrum, u8 rrum, int pad)
 static void hid_readReport(u8 *data, int bytes, int pad_idx)
 {
     ds34bt_pad_t *pad = &ds34pad[pad_idx];
+#ifdef MOTIONPAD
+    if (pad->type == WHEEL) {
+        wheel_read_report(data, bytes);
+        return;
+    }
+#endif
     if (data[8] == HID_THDR_DATA_INPUT && pad->type == DS5) {
         struct ds4report ds5;
         const u8 *in;
@@ -2177,6 +2258,9 @@ int ds34bt_get_data(u8 *dst, int size, int port)
 
     mips_memcpy(dst, ds34pad[port].data, size);
     ret = ds34pad[port].analog_btn & 1;
+#ifdef MOTIONPAD
+    wheel_overlay(dst, size, port);
+#endif
 
     {
         ds34bt_pad_t *pad = &ds34pad[port];

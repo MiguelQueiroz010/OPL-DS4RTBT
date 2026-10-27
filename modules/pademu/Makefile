@@ -14,6 +14,11 @@ IOP_OBJS_DIR = obj.bt/
 IOP_OBJS += ds34bt.o
 endif
 
+# Phone as a steering wheel over Bluetooth (experimental), see docs/MOTIONPAD.md
+ifeq ($(MOTIONPAD),1)
+IOP_CFLAGS += -DMOTIONPAD
+endif
+
 ifeq ($(VMC),1)
 IOP_CFLAGS += -DVMC
 endif

@@ -8,6 +8,7 @@
 #define DS3 0
 #define DS4 1
 #define DS5 2 // DualSense (PS5)
+#define WHEEL 3 // phone used as a steering wheel (MOTIONPAD builds only)
 
 // DS4 and DualSense share the same Bluetooth connection flow
 #define IS_DS4_LIKE(t) ((t) == DS4 || (t) == DS5)
@@ -37,6 +38,7 @@ typedef struct
     u8 enabled;
     u8 status;
     u8 isfake;
+    u8 is_phone;  // connection request came from a device of the "Phone" class (MOTIONPAD)
     u8 type;      // 0 - ds3, 1 - ds4
     u8 oldled[4]; // rgb for ds4 and blink
     u8 lrum;
