@@ -1,6 +1,6 @@
 # Motion Pad (experimental): phone as a steering wheel over Bluetooth
 
-Status: **prototype, untested on hardware.** Build with `MOTIONPAD=1` (off by default).
+Status: **prototype, untested on hardware.** Enabled by default in the `motionpad-bt` branch (`MOTIONPAD=0` turns it off).
 
 ## Idea
 The phone is *not* a full controller. It only provides the wheel:
@@ -34,7 +34,7 @@ That project is USB tethering + a custom ELF whose source is not public, and it 
 This prototype shares only the idea (phone motion = wheel). No code from it is used.
 
 ## Pairing the phone
-Build with `MOTIONPAD=1`. In the OPL menu: Pad Emulator -> Bluetooth Pads -> **Pair phone (Motion Pad)**.
+In the OPL menu: Pad Emulator -> Bluetooth Pads -> **Pair phone (Motion Pad)**.
 The adapter becomes visible (inquiry + page scan) for about 90 s and accepts Simple Pairing "Just Works".
 On the phone, open the Motion Pad app, scan for Bluetooth devices and pick the PS2. When the link key
 arrives it is saved with the other pad keys (`conf_opl.cfg`) and handed to the in-game driver. After that the
@@ -50,4 +50,4 @@ Code: `ds34bt_pair_phone()` in `modules/ds34bt/iop/ds34bt.c` (RPC 21), `guiGameS
 5. IOP RAM: kept behind a flag because `bt_pademu.irx` is size sensitive.
 
 ## Build
-`make MOTIONPAD=1` (add `DEBUG=1` for the BT log). The GitHub Action can pass the same variable.
+Plain `make` / the normal GitHub workflows already include it in this branch (`MOTIONPAD=0` to exclude). Add `DEBUG=1` for the BT log.

@@ -155,6 +155,11 @@ else
   IGS_FLAGS = IGS=0
 endif
 
+# Motion Pad (phone as steering wheel) is on in this experimental branch; MOTIONPAD=0 turns it off.
+# Exported so the module makefiles (bt_pademu) see it too.
+MOTIONPAD ?= 1
+export MOTIONPAD
+
 ifeq ($(MOTIONPAD),1)
   EE_CFLAGS += -DMOTIONPAD
 endif
