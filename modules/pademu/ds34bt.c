@@ -438,43 +438,6 @@ static void ds2_press(u8 *d, int bit, u8 pressure)
         d[po] = pressure;
 }
 
-#ifdef MOTIONPAD
-// Merge the wheel into the report handed to the game (port = first real pad only)
-static void wheel_overlay(u8 *dst, int size, int port)
-{
-    int i, first = -1;
-
-    for (i = 0; i < MAX_PADS; i++) {
-        if (ds34pad[i].enabled && ds34pad[i].type != WHEEL) {
-            first = i;
-            break;
-        }
-    }
-    if (port != first || size < 2)
-        return;
-    if (wheel_age < WHEEL_STALE_POLLS)
-        wheel_age++;
-    if (wheel_age >= WHEEL_STALE_POLLS)
-        return; // no wheel: leave the real pad alone
-
-    if (size >= 6) {
-        dst[4] = wheel_steer; // left stick X
-    } else if (wheel_steer < 0x50) {
-        ds2_press(dst, 7, 255); // digital mode: D-pad left / right
-    } else if (wheel_steer > 0xB0) {
-        ds2_press(dst, 5, 255);
-    }
-    if (wheel_thr > 16)
-        ds2_press(dst, 14, wheel_thr); // Cross = accelerate (pressure follows the tilt)
-    if (wheel_brk > 16)
-        ds2_press(dst, 15, wheel_brk); // Square = brake / reverse
-    if (wheel_btn & 1)
-        ds2_press(dst, 12, 255); // Triangle
-    if (wheel_btn & 2)
-        ds2_press(dst, 13, 255); // Circle
-}
-#endif
-
 static void pad_apply_remap(u8 *d)
 {
     u16 state = (u16)(d[0] | (d[1] << 8)), pressed = (u16)~state, newp = 0;
@@ -654,6 +617,43 @@ static u8 g_press_emu = 0;
 static u8 enable_fake = 0;
 
 static ds34bt_pad_t ds34pad[MAX_PADS];
+
+#ifdef MOTIONPAD
+// Merge the wheel into the report handed to the game (port = first real pad only)
+static void wheel_overlay(u8 *dst, int size, int port)
+{
+    int i, first = -1;
+
+    for (i = 0; i < MAX_PADS; i++) {
+        if (ds34pad[i].enabled && ds34pad[i].type != WHEEL) {
+            first = i;
+            break;
+        }
+    }
+    if (port != first || size < 2)
+        return;
+    if (wheel_age < WHEEL_STALE_POLLS)
+        wheel_age++;
+    if (wheel_age >= WHEEL_STALE_POLLS)
+        return; // no wheel: leave the real pad alone
+
+    if (size >= 6) {
+        dst[4] = wheel_steer; // left stick X
+    } else if (wheel_steer < 0x50) {
+        ds2_press(dst, 7, 255); // digital mode: D-pad left / right
+    } else if (wheel_steer > 0xB0) {
+        ds2_press(dst, 5, 255);
+    }
+    if (wheel_thr > 16)
+        ds2_press(dst, 14, wheel_thr); // Cross = accelerate (pressure follows the tilt)
+    if (wheel_brk > 16)
+        ds2_press(dst, 15, wheel_brk); // Square = brake / reverse
+    if (wheel_btn & 1)
+        ds2_press(dst, 12, 255); // Triangle
+    if (wheel_btn & 2)
+        ds2_press(dst, 13, 255); // Circle
+}
+#endif
 
 static void hci_event_cb(int resultCode, int bytes, void *arg);
 static void l2cap_event_cb(int resultCode, int bytes, void *arg);
