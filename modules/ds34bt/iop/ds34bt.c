@@ -950,6 +950,12 @@ static int hci_remote_name_found(bt_found_t *dev)
 }
 
 // RPC thread only (own buffer)
+static int hci_rpc_scan_enable(u8 conf)
+{
+    return hci_command_params(hci_rpc_cmd_buf, HCI_OCF_WRITE_SCAN_ENABLE, HCI_OGF_CTRL_BBAND, &conf, 1);
+}
+
+// RPC thread only (own buffer)
 static int hci_inquiry(void)
 {
     static const u8 p[5] = {0x33, 0x8B, 0x9E, // General Inquiry Access Code
@@ -1178,7 +1184,9 @@ static void HCI_event_task(int result)
                     DPRINTF("DS34BT: Inquiry mode status 0x%02X\n", hci_buf[5]);
                     dbg[DBG_INQMODE] = hci_buf[5] + 1;
                 } else if ((hci_buf[3] == HCI_OCF_WRITE_SCAN_ENABLE) && (hci_buf[4] == HCI_OGF_CTRL_BBAND)) {
-                    if (hci_buf[5] == 0) {
+                    if (bt_dev.status & DS34BT_STATE_USB_CONFIGURED) {
+                        // scan mode changed later (phone pairing mode): not part of the init chain
+                    } else if (hci_buf[5] == 0) {
                         dbg[DBG_STAGE] = 7;
                         bt_dev.status |= DS34BT_STATE_USB_CONFIGURED;
                         // Not part of the required init chain: if an adapter never answers it, it stays usable
@@ -1270,6 +1278,12 @@ static void HCI_event_task(int result)
                 if (bt_pair_in_progress() && memcmp(bt_pair_bdaddr, hci_buf + 2, 6) == 0) {
                     mips_memcpy(bt_pair_key, hci_buf + 8, 16);
                     bt_pair_got_key = 1;
+                } else if (bt_pair_state == BT_PAIR_PHONE_WAIT) {
+                    // a phone paired with us (Motion Pad): the key is handed to the menu like any other pairing
+                    mips_memcpy(bt_pair_bdaddr, hci_buf + 2, 6);
+                    mips_memcpy(bt_pair_key, hci_buf + 8, 16);
+                    bt_pair_got_key = 1;
+                    bt_pair_state = BT_PAIR_DONE;
                 }
                 break;
 
@@ -1434,7 +1448,7 @@ static void HCI_event_task(int result)
                 DPRINTF("\t Class = 0x%02X 0x%02X 0x%02X \n", hci_buf[8], hci_buf[9], hci_buf[10]);
                 for (i = 0; i < MAX_PADS; i++) // find free slot
                 {
-                    if (!pad_status_check(DS34BT_STATE_RUNNING, i) && ds34pad[i].enabled) {
+                    if (!pad_status_check(DS34BT_STATE_RUNNING, i) && (ds34pad[i].enabled || bt_pair_state == BT_PAIR_PHONE_WAIT)) {
                         if (i == bt_pair_slot && bt_pair_in_progress()) // busy pairing
                             continue;
                         if (pad_status_check(DS34BT_STATE_CONNECTED, i)) {
@@ -2922,6 +2936,34 @@ int ds34bt_pair(int idx)
     return ret;
 }
 
+// Phone pairing mode (Motion Pad): on = 1 makes the adapter visible and waits for a phone to pair with it,
+// on = 0 goes back to connectable-only. The pairing result is read with ds34bt_get_pair.
+int ds34bt_pair_phone(int on)
+{
+    int ret = 0;
+
+    if (!(bt_dev.status & DS34BT_STATE_USB_CONFIGURED))
+        return 0;
+
+    WaitSema(bt_dev.hid_sema);
+
+    if (on) {
+        if (!bt_pair_in_progress()) {
+            bt_pair_got_key = 0;
+            mips_memset(bt_pair_bdaddr, 0, 6);
+            bt_pair_state = BT_PAIR_PHONE_WAIT;
+            ret = hci_rpc_scan_enable(SCAN_ENABLE_ENINQ_ENPAG) >= 0;
+        }
+    } else if (!bt_pair_in_progress()) {
+        bt_pair_state = BT_PAIR_IDLE;
+        ret = hci_rpc_scan_enable(SCAN_ENABLE_NOINQ_ENPAG) >= 0;
+    }
+
+    SignalSema(bt_dev.hid_sema);
+
+    return ret;
+}
+
 // out: state, bdaddr[6], key[16]
 void ds34bt_get_pair(u8 *data)
 {
@@ -2978,6 +3020,7 @@ static int rpc_buf[64] __attribute((aligned(16)));
 #define DS34BT_GET_INFO_ALL  18
 #define DS34BT_DISCONNECT    19
 #define DS34BT_GET_PAD_ADDR  20
+#define DS34BT_PAIR_PHONE    21
 
 #define DS34BT_BIND_RPC_ID 0x18E3878F
 
@@ -3027,6 +3070,9 @@ void *rpc_sf(int cmd, void *data, int size)
             break;
         case DS34BT_GET_SEARCH:
             ds34bt_get_search((u8 *)data);
+            break;
+        case DS34BT_PAIR_PHONE:
+            *(u8 *)data = ds34bt_pair_phone(*(u8 *)data);
             break;
         case DS34BT_PAIR:
             *(u8 *)data = ds34bt_pair(*(u8 *)data);

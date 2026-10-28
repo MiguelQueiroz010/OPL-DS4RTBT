@@ -658,6 +658,13 @@ struct UIItem diaPadEmuBtPads[] = {
     {UI_SPACER},
     {UI_BUTTON, PADCFG_BTSEARCH, 1, 1, -1, 0, 0, {.label = {"Search", -1}}},
     {UI_BREAK},
+#ifdef MOTIONPAD
+    // Motion Pad (experimental): the phone is the steering wheel, see docs/MOTIONPAD.md
+    {UI_LABEL, PADCFG_BTPHONE_STR, 1, 1, -1, -50, 0, {.label = {"Pair phone (Motion Pad)", -1}}},
+    {UI_SPACER},
+    {UI_BUTTON, PADCFG_BTPHONE, 1, 1, -1, 0, 0, {.label = {"Pair", -1}}},
+    {UI_BREAK},
+#endif
 
     // DualShock 3 plugged in the USB port: copies the adapter address into it
     {UI_LABEL, PADCFG_PAD_MAC_STR, 1, 1, -1, -50, 0, {.label = {"DS3 on USB cable", -1}}},
@@ -677,6 +684,25 @@ struct UIItem diaPadEmuBtPads[] = {
     {UI_LABEL, 0, 1, 1, -1, -50, 0, {.label = {"Adapter information", -1}}},
     {UI_SPACER},
     {UI_BUTTON, PADCFG_BTINFO, 1, 1, _STR_HINT_BTINFO, 0, 0, {.label = {"Open", -1}}},
+    {UI_BREAK},
+
+    {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},
+
+    // end of dialog
+    {UI_TERMINATOR}};
+
+struct UIItem diaPadEmuBtPhone[] = {
+    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"Pair phone (Motion Pad)", -1}}},
+    {UI_SPLITTER},
+
+    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"On the phone: open the Motion Pad app,", -1}}},
+    {UI_BREAK},
+    {UI_LABEL, 0, 1, 1, -1, 0, 0, {.label = {"search for Bluetooth devices and pick the PS2.", -1}}},
+    {UI_BREAK},
+    {UI_BREAK},
+
+    {UI_LABEL, PADCFG_BTPH_STATUS, 1, 1, -1, 0, 0, {.label = {"", -1}}},
+    {UI_BREAK},
     {UI_BREAK},
 
     {UI_OK, 0, 1, 1, -1, 0, 0, {.label = {NULL, _STR_OK}}},

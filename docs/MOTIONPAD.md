@@ -33,10 +33,16 @@ Android sample: `tools/motionpad-android/MotionPadService.kt`.
 That project is USB tethering + a custom ELF whose source is not public, and it needs a physical pad in port 1.
 This prototype shares only the idea (phone motion = wheel). No code from it is used.
 
+## Pairing the phone
+Build with `MOTIONPAD=1`. In the OPL menu: Pad Emulator -> Bluetooth Pads -> **Pair phone (Motion Pad)**.
+The adapter becomes visible (inquiry + page scan) for about 90 s and accepts Simple Pairing "Just Works".
+On the phone, open the Motion Pad app, scan for Bluetooth devices and pick the PS2. When the link key
+arrives it is saved with the other pad keys (`conf_opl.cfg`) and handed to the in-game driver. After that the
+phone connects by itself (tap connect in the app) while a game is running.
+Code: `ds34bt_pair_phone()` in `modules/ds34bt/iop/ds34bt.c` (RPC 21), `guiGameShowBtPhone()` in `src/guigame.c`.
+
 ## Known risks / not done
-1. **Pairing.** The in-game driver only page-scans; it does not run inquiry or answer SSP IO-capability
-   requests. The phone must already be bonded with the dongle (link key present in the pad keys). Pairing
-   from the OPL menu driver (`modules/ds34bt/iop`) still has to be added.
+1. **Pairing is new and untested.** See below; Android may also ask for confirmation on its side.
 2. It uses one pad slot (enable 2 BT pads in Controller Setup); the wheel's own port reports a neutral pad.
 3. Android may refuse a "Phone" HID profile on some vendors' Bluetooth stacks.
 4. Latency and filtering (dead zone, smoothing) need tuning on real hardware; throttle on pitch alone is awkward,

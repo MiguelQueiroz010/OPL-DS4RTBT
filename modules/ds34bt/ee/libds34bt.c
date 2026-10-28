@@ -16,6 +16,7 @@
 #define DS34BT_SEARCH_START  11
 #define DS34BT_GET_SEARCH    12
 #define DS34BT_PAIR          13
+#define DS34BT_PAIR_PHONE    21
 #define DS34BT_GET_PAIR      14
 #define DS34BT_SET_KEY       15
 #define DS34BT_GET_DEBUG     16
@@ -237,6 +238,19 @@ int ds34bt_pair(int index)
     rpcbuf[0] = index;
 
     if (SifCallRpc(&ds34bt, DS34BT_PAIR, 0, rpcbuf, 1, rpcbuf, 1, NULL, NULL) == 0)
+        return rpcbuf[0];
+
+    return 0;
+}
+
+int ds34bt_pair_phone(int on)
+{
+    if (!ds34bt_inited)
+        return 0;
+
+    rpcbuf[0] = on;
+
+    if (SifCallRpc(&ds34bt, DS34BT_PAIR_PHONE, 0, rpcbuf, 1, rpcbuf, 1, NULL, NULL) == 0)
         return rpcbuf[0];
 
     return 0;

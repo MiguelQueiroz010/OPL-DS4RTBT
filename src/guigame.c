@@ -1205,6 +1205,50 @@ static void guiGameShowBtSearch(void)
     }
 }
 
+#ifdef MOTIONPAD
+/*
+ * Motion Pad: pairing a phone. The adapter becomes visible for about a minute; when the phone pairs, its link key is
+ * saved with the others (so the in-game driver accepts the phone later), see docs/MOTIONPAD.md.
+ */
+static char btPhStatus[96];
+static int btPhTimer, btPhDone;
+
+static int guiGameBtPhoneUpdater(int modified)
+{
+    u8 bdaddr[6], key[16];
+    int state;
+
+    if ((++btPhTimer % 15) != 0 || btPhDone)
+        return 0;
+
+    state = ds34bt_get_pair(bdaddr, key);
+    if (state == DS34BT_PAIR_DONE) {
+        guiGameBtKeysSave(bdaddr, key);
+        btPhDone = 1;
+        snprintf(btPhStatus, sizeof(btPhStatus), "Paired: %02X:%02X:%02X:%02X:%02X:%02X", bdaddr[5], bdaddr[4], bdaddr[3], bdaddr[2], bdaddr[1], bdaddr[0]);
+    } else if (btPhTimer > 90 * 60) { // about 90 s
+        btPhDone = 1;
+        snprintf(btPhStatus, sizeof(btPhStatus), "Timed out. Press OK and try again.");
+    }
+    return 0;
+}
+
+static void guiGameShowBtPhone(void)
+{
+    btPhTimer = 0;
+    btPhDone = 0;
+    if (ds34bt_pair_phone(1))
+        snprintf(btPhStatus, sizeof(btPhStatus), "Waiting for the phone...");
+    else {
+        btPhDone = 1;
+        snprintf(btPhStatus, sizeof(btPhStatus), "Bluetooth adapter not ready.");
+    }
+    diaSetLabel(diaPadEmuBtPhone, PADCFG_BTPH_STATUS, btPhStatus);
+    diaExecuteDialog(diaPadEmuBtPhone, -1, 1, &guiGameBtPhoneUpdater);
+    ds34bt_pair_phone(0); // back to connectable only
+}
+#endif
+
 // lightbar colours, shared with the Controller Setup dialog
 static const char *btLedNames[] = {"Default", "Red", "Green", "Blue", "Yellow", "Cyan", "Magenta", "White", "Orange", "Off", "Custom", NULL};
 
@@ -1503,6 +1547,13 @@ static void guiGameShowBtPads(void)
             guiGameShowBtSearch();
             btPadsTimer = 0;
         }
+
+#ifdef MOTIONPAD
+        if (result == PADCFG_BTPHONE) {
+            guiGameShowBtPhone();
+            btPadsTimer = 0;
+        }
+#endif
 
         if (result == PADCFG_PAIR) {
             if (ds3macset && dgmacset) {

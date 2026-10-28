@@ -155,6 +155,10 @@ else
   IGS_FLAGS = IGS=0
 endif
 
+ifeq ($(MOTIONPAD),1)
+  EE_CFLAGS += -DMOTIONPAD
+endif
+
 ifeq ($(PADEMU),1)
   IOP_OBJS += bt_pademu.o usb_pademu.o ds34usb.o ds34bt.o libds34usb.a libds34bt.a
   EE_CFLAGS += -DPADEMU

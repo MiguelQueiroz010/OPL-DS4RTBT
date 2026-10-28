@@ -208,6 +208,7 @@ enum eDS34BTPair {
     BT_PAIR_ENCRYPTING,
     BT_PAIR_DONE,
     BT_PAIR_FAILED,
+    BT_PAIR_PHONE_WAIT, // phone pairing mode: visible, waiting for the phone to pair (Motion Pad)
 };
 
 #define BT_SEARCH_MAX 4  // devices listed by a search

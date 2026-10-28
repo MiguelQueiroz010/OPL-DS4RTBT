@@ -190,6 +190,9 @@ enum UI_ITEMS {
     PADCFG_BTSEARCH,
     PADCFG_BTSEARCH_STR,
     PADCFG_BTS_STATUS,
+    PADCFG_BTPHONE,
+    PADCFG_BTPHONE_STR,
+    PADCFG_BTPH_STATUS,
     PADCFG_BTS_DEV0,
     PADCFG_BTS_DEV1,
     PADCFG_BTS_DEV2,
@@ -263,6 +266,7 @@ extern struct UIItem diaPadEmuConfig[];
 extern struct UIItem diaPadMacroConfig[];
 extern struct UIItem diaPadEmuInfo[];
 extern struct UIItem diaPadEmuBtSearch[];
+extern struct UIItem diaPadEmuBtPhone[];
 extern struct UIItem diaPadEmuBtPads[];
 extern struct UIItem diaPadEmuSetup[];
 extern struct UIItem diaPadEmuRemap[];
