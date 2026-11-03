@@ -8,9 +8,10 @@ report 0x05 over USB), so a clone that works in OPL works here.
 
     pip install hidapi pyusb libusb-package     (the last two only for controllers using a libusb driver)
     python ds4_lightbar.py                  graphical interface (needs tkinter, included with Python on Windows)
+    python ds4_lightbar.py --probe          battery of tests (all report formats, one colour each), saves ds4_probe_log.txt
     python ds4_lightbar.py --list           list the controllers found
     python ds4_lightbar.py --set 255 0 128  set every controller to this colour and exit
-    ... --mode "BT 0x11 (no CRC)"           force one report format (Auto tries them all)
+    ... --mode "0x11 no CRC | WriteFile"       force one format (Auto tries several)
     python ds4_lightbar.py --set 0 0 255 --keep   ... and keep re-sending it (Ctrl+C to stop)
 
 DS4Windows (and Steam) open the controller exclusively and keep the lightbar to themselves. Close them, or
@@ -56,12 +57,14 @@ PRESETS = {
 }
 
 
-def report_bt(r, g, b, small=0, big=0, crc=True):
-    """Bluetooth output report 0x11, 78 bytes: same layout as modules/pademu/ds34bt.c (hid_LEDRumbleCommand)."""
+def report_bt(r, g, b, small=0, big=0, crc=True, hw=0xC4, b2=0x00, flags=0xFF):
+    """Bluetooth output report 0x11, 78 bytes: same layout as modules/pademu/ds34bt.c (hid_LEDRumbleCommand).
+    hw = byte 1 (0x80 HID | 0x40 CRC | poll interval), b2 = byte 2 (DS4Windows sends 0xA0), flags = valid flags."""
     buf = bytearray(78)
     buf[0] = 0x11
-    buf[1] = 0xC4 if crc else 0x84  # HID report (+ CRC32 present), 4 ms poll interval
-    buf[3] = 0xFF  # every valid flag: some clones only apply the colour when all are set
+    buf[1] = hw if crc else (hw & ~0x40)
+    buf[2] = b2
+    buf[3] = flags  # every valid flag: some clones only apply the colour when all are set
     buf[6], buf[7] = small, big
     buf[8], buf[9], buf[10] = r, g, b
     if crc:
@@ -139,47 +142,158 @@ def send_libusb(u, rgb):
         return "libusb error: %s" % e
 
 
-MODES = ["Auto", "BT 0x11 (CRC)", "BT 0x11 (no CRC)", "USB 0x05"]
+def set_output_report_win(path, data):
+    """HidD_SetOutputReport: what DS4Windows uses for Bluetooth controllers (hidapi only has WriteFile)."""
+    if os.name != "nt":
+        return "SetOutputReport: Windows only"
+    import ctypes
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    hd = ctypes.WinDLL("hid", use_last_error=True)
+    k32.CreateFileW.restype = ctypes.c_void_p
+    k32.CreateFileW.argtypes = [ctypes.c_wchar_p, ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p,
+                                ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p]
+    hd.HidD_SetOutputReport.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_uint32]
+    k32.CloseHandle.argtypes = [ctypes.c_void_p]
+    pth = path.decode("utf-8", "replace") if isinstance(path, bytes) else path
+    h = k32.CreateFileW(pth, 0xC0000000, 3, None, 3, 0, None)  # GENERIC_READ|WRITE, share R|W, OPEN_EXISTING
+    if h is None or h == ctypes.c_void_p(-1).value:
+        return "SetOutputReport: cannot open (error %d)" % ctypes.get_last_error()
+    try:
+        ok = hd.HidD_SetOutputReport(h, bytes(data), len(data))
+        return "ok" if ok else "FAILED (Windows error %d)" % ctypes.get_last_error()
+    finally:
+        k32.CloseHandle(h)
+
+
+# name -> report builder. Every Bluetooth shape is tried with both Windows write methods.
+SHAPES = {
+    "0x11 CRC (OPL)": lambda c: report_bt(*c),
+    "0x11 DS4Windows (C4,A0,F7)": lambda c: report_bt(*c, hw=0xC4, b2=0xA0, flags=0xF7),
+    "0x11 DS4Windows (C0,A0,F7)": lambda c: report_bt(*c, hw=0xC0, b2=0xA0, flags=0xF7),
+    "0x11 Linux flags (C4,00,07)": lambda c: report_bt(*c, flags=0x07),
+    "0x11 no CRC": lambda c: report_bt(*c, crc=False),
+    "0x05 USB format": lambda c: report_usb(*c),
+}
+METHODS = ["SetOutputReport", "WriteFile"]
+MODES = ["Auto"] + ["%s | %s" % (sh, m) for sh in SHAPES for m in METHODS]
 
 
 def variants(d, rgb, mode):
-    bt = bus_of(d) == BUS_BT
-    table = {
-        "BT 0x11 (CRC)": lambda: report_bt(*rgb),
-        "BT 0x11 (no CRC)": lambda: report_bt(*rgb, crc=False),
-        "USB 0x05": lambda: report_usb(*rgb),
-    }
+    """[(name, report bytes, method)]"""
+    if mode not in MODES:  # a value saved by an older version
+        mode = "Auto"
     if mode != "Auto":
-        return [(mode, table[mode])]
-    order = ["BT 0x11 (CRC)", "BT 0x11 (no CRC)", "USB 0x05"] if bt else ["USB 0x05", "BT 0x11 (CRC)"]
-    return [(n, table[n]) for n in order]
+        sh, m = mode.split(" | ")
+        return [(mode, SHAPES[sh](rgb), m)]
+    bt = bus_of(d) == BUS_BT
+    shapes = ["0x11 CRC (OPL)", "0x11 DS4Windows (C4,A0,F7)", "0x11 no CRC"] if bt else ["0x05 USB format"]
+    return [("%s | %s" % (sh, m), SHAPES[sh](rgb), m) for sh in shapes for m in METHODS]
+
+
+def write_one(dev, d, name, rep, method):
+    try:
+        if method == "SetOutputReport":
+            return "%s: %s" % (name, set_output_report_win(d["path"], rep))
+        n = dev.write(rep)
+        return "%s: %s" % (name, "ok (%d bytes)" % n if n >= 0 else "FAILED " + str(dev.error()))
+    except Exception as e:  # noqa: BLE001
+        return "%s: error %s" % (name, e)
+
+
+def open_dev(d):
+    dev = hid.device()
+    dev.open_path(d["path"])
+    try:  # a Bluetooth DS4 only switches to its full mode after the calibration feature report is read
+        dev.get_feature_report(0x02, 64)
+    except Exception:  # noqa: BLE001
+        pass
+    return dev
 
 
 def send(d, rgb, mode="Auto"):
-    """Sends the colour. Returns a short text with the result of every report tried ('' is never returned)."""
+    """Sends the colour. Returns a short text with the result of every report tried."""
     if d.get("libusb") is not None:
         return send_libusb(d["libusb"], rgb)
     try:
-        dev = hid.device()
-        dev.open_path(d["path"])
+        dev = open_dev(d)
     except Exception as e:  # noqa: BLE001
         return "cannot open (is DS4Windows / Steam running?): %s" % e
-    out = []
     try:
-        try:  # a Bluetooth DS4 only switches to its full mode after the calibration feature report is read
-            dev.get_feature_report(0x02, 64)
-        except Exception:  # noqa: BLE001
-            pass
-        for name, mk in variants(d, rgb, mode):
-            try:
-                n = dev.write(mk())
-                out.append("%s: %s" % (name, "ok (%d bytes)" % n if n >= 0 else "FAILED " + str(dev.error())))
-            except Exception as e:  # noqa: BLE001
-                out.append("%s: error %s" % (name, e))
+        out = []
+        for name, rep, method in variants(d, rgb, mode):
+            out.append(write_one(dev, d, name, rep, method))
             time.sleep(0.05)
         return " | ".join(out)
     finally:
         dev.close()
+
+
+PROBE_COLOURS = [("RED", (255, 0, 0)), ("GREEN", (0, 255, 0)), ("BLUE", (0, 0, 255)), ("YELLOW", (255, 200, 0)),
+                 ("CYAN", (0, 255, 255)), ("MAGENTA", (255, 0, 255)), ("ORANGE", (255, 90, 0)), ("WHITE", (255, 255, 255))]
+
+
+def probe(delay=3.0):
+    """Battery of tests: every report shape x write method, each with its own colour. Watch the lightbar and note
+    which colour shows up. The whole output is also saved to ds4_probe_log.txt."""
+    log = []
+
+    def say(t=""):
+        print(t)
+        log.append(t)
+
+    pads = [d for d in find_pads() if d.get("libusb") is None]
+    if not pads:
+        say("No HID controller found.")
+    for d in pads:
+        say("=== %s" % label(d))
+        say("path: %s" % d["path"])
+        say("manufacturer=%r product=%r serial=%r" % (d.get("manufacturer_string"), d.get("product_string"), d.get("serial_number")))
+        say("usage_page=%s usage=%s interface=%s release=%s" % (d.get("usage_page"), d.get("usage"), d.get("interface_number"), d.get("release_number")))
+        try:
+            dev = open_dev(d)
+        except Exception as e:  # noqa: BLE001
+            say("cannot open: %s  (close DS4Windows/Steam, check HidHide)" % e)
+            continue
+        try:
+            try:
+                fr = dev.get_feature_report(0x02, 64)
+                say("feature report 0x02: %d bytes" % len(fr))
+            except Exception as e:  # noqa: BLE001
+                say("feature report 0x02: %s" % e)
+            try:
+                dev.set_nonblocking(1)
+                ids, t0 = {}, time.time()
+                while time.time() - t0 < 1.5:
+                    r = dev.read(128)
+                    if r:
+                        ids[r[0]] = (ids.get(r[0], (0, 0))[0] + 1, len(r))
+                    else:
+                        time.sleep(0.01)
+                say("input reports seen (id: count, length): %s" % (ids or "none"))
+            except Exception as e:  # noqa: BLE001
+                say("input read: %s" % e)
+            say("")
+            say("Watch the lightbar. Each step shows a different colour for %.0f s." % delay)
+            step = 0
+            for sh in SHAPES:
+                if bus_of(d) == BUS_BT and sh == "0x05 USB format":
+                    pass  # still tried: some clones ignore the report id
+                for m in METHODS:
+                    cname, rgb = PROBE_COLOURS[step % len(PROBE_COLOURS)]
+                    step += 1
+                    say("[%d] %s | %s  -> %s" % (step, sh, m, cname))
+                    say("      " + write_one(dev, d, "%s | %s" % (sh, m), SHAPES[sh](rgb), m))
+                    time.sleep(delay)
+        finally:
+            dev.close()
+    say("")
+    say("Tell me which step numbers changed the colour (or 'none').")
+    try:
+        with open("ds4_probe_log.txt", "w", encoding="utf-8") as f:
+            f.write("\n".join(log))
+        print("Saved ds4_probe_log.txt in", os.getcwd())
+    except OSError:
+        pass
 
 
 def load_cfg():
@@ -199,6 +313,9 @@ def save_cfg(cfg):
 
 
 def cli(argv):
+    if "--probe" in argv:
+        probe()
+        return 0
     if "--list" in argv:
         pads = find_pads()
         for i, d in enumerate(pads):
@@ -332,6 +449,6 @@ def gui():
 
 
 if __name__ == "__main__":
-    if "--set" in sys.argv or "--list" in sys.argv:
+    if "--set" in sys.argv or "--list" in sys.argv or "--probe" in sys.argv:
         sys.exit(cli(sys.argv))
     gui()
