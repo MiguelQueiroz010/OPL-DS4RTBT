@@ -167,12 +167,12 @@ def set_output_report_win(path, data):
 
 # name -> report builder. Every Bluetooth shape is tried with both Windows write methods.
 SHAPES = {
-    "0x11 CRC (OPL)": lambda c: report_bt(*c),
-    "0x11 DS4Windows (C4,A0,F7)": lambda c: report_bt(*c, hw=0xC4, b2=0xA0, flags=0xF7),
-    "0x11 DS4Windows (C0,A0,F7)": lambda c: report_bt(*c, hw=0xC0, b2=0xA0, flags=0xF7),
-    "0x11 Linux flags (C4,00,07)": lambda c: report_bt(*c, flags=0x07),
-    "0x11 no CRC": lambda c: report_bt(*c, crc=False),
-    "0x05 USB format": lambda c: report_usb(*c),
+    "0x11 CRC (OPL)": lambda c, **k: report_bt(*c, **k),
+    "0x11 DS4Windows (C4,A0,F7)": lambda c, **k: report_bt(*c, hw=0xC4, b2=0xA0, flags=0xF7, **k),
+    "0x11 DS4Windows (C0,A0,F7)": lambda c, **k: report_bt(*c, hw=0xC0, b2=0xA0, flags=0xF7, **k),
+    "0x11 Linux flags (C4,00,07)": lambda c, **k: report_bt(*c, flags=0x07, **k),
+    "0x11 no CRC": lambda c, **k: report_bt(*c, crc=False, **k),
+    "0x05 USB format": lambda c, **k: report_usb(*c, **k),
 }
 METHODS = ["SetOutputReport", "WriteFile"]
 MODES = ["Auto"] + ["%s | %s" % (sh, m) for sh in SHAPES for m in METHODS]
@@ -284,10 +284,21 @@ def probe(delay=3.0):
                     say("[%d] %s | %s  -> %s" % (step, sh, m, cname))
                     say("      " + write_one(dev, d, "%s | %s" % (sh, m), SHAPES[sh](rgb), m))
                     time.sleep(delay)
+            say("")
+            say("Rumble test: the pad should vibrate for about 1 s at each step (is the report processed at all?).")
+            step = 0
+            for sh in SHAPES:
+                for m in METHODS:
+                    step += 1
+                    say("[R%d] %s | %s" % (step, sh, m))
+                    say("      " + write_one(dev, d, "%s | %s" % (sh, m), SHAPES[sh]((255, 255, 255), small=255, big=255), m))
+                    time.sleep(1.2)
+                    write_one(dev, d, "off", SHAPES[sh]((255, 255, 255)), m)
+                    time.sleep(0.8)
         finally:
             dev.close()
     say("")
-    say("Tell me which step numbers changed the colour (or 'none').")
+    say("Tell me which step numbers changed the colour and which R steps vibrated (or 'none').")
     try:
         with open("ds4_probe_log.txt", "w", encoding="utf-8") as f:
             f.write("\n".join(log))
