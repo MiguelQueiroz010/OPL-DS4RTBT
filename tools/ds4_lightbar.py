@@ -10,6 +10,7 @@ report 0x05 over USB), so a clone that works in OPL works here.
     python ds4_lightbar.py                  graphical interface (needs tkinter, included with Python on Windows)
     python ds4_lightbar.py --list           list the controllers found
     python ds4_lightbar.py --set 255 0 128  set every controller to this colour and exit
+    ... --mode "BT 0x11 (no CRC)"           force one report format (Auto tries them all)
     python ds4_lightbar.py --set 0 0 255 --keep   ... and keep re-sending it (Ctrl+C to stop)
 
 DS4Windows (and Steam) open the controller exclusively and keep the lightbar to themselves. Close them, or
@@ -38,16 +39,17 @@ PRESETS = {
 }
 
 
-def report_bt(r, g, b, small=0, big=0):
+def report_bt(r, g, b, small=0, big=0, crc=True):
     """Bluetooth output report 0x11, 78 bytes: same layout as modules/pademu/ds34bt.c (hid_LEDRumbleCommand)."""
     buf = bytearray(78)
     buf[0] = 0x11
-    buf[1] = 0xC4  # HID report + CRC32 present, 4 ms poll interval
+    buf[1] = 0xC4 if crc else 0x84  # HID report (+ CRC32 present), 4 ms poll interval
     buf[3] = 0xFF  # every valid flag: some clones only apply the colour when all are set
     buf[6], buf[7] = small, big
     buf[8], buf[9], buf[10] = r, g, b
-    crc = zlib.crc32(b"\xA2" + bytes(buf[:74])) & 0xFFFFFFFF
-    buf[74:78] = crc.to_bytes(4, "little")
+    if crc:
+        c = zlib.crc32(b"\xA2" + bytes(buf[:74])) & 0xFFFFFFFF
+        buf[74:78] = c.to_bytes(4, "little")
     return bytes(buf)
 
 
@@ -90,18 +92,43 @@ def label(d):
     return "%s  [%s]  %04X:%04X" % (d.get("product_string") or "Controller", kind, d["vendor_id"], d["product_id"])
 
 
-def send(d, rgb):
-    """Returns '' on success, an error text otherwise."""
+MODES = ["Auto", "BT 0x11 (CRC)", "BT 0x11 (no CRC)", "USB 0x05"]
+
+
+def variants(d, rgb, mode):
+    bt = bus_of(d) == BUS_BT
+    table = {
+        "BT 0x11 (CRC)": lambda: report_bt(*rgb),
+        "BT 0x11 (no CRC)": lambda: report_bt(*rgb, crc=False),
+        "USB 0x05": lambda: report_usb(*rgb),
+    }
+    if mode != "Auto":
+        return [(mode, table[mode])]
+    order = ["BT 0x11 (CRC)", "BT 0x11 (no CRC)", "USB 0x05"] if bt else ["USB 0x05", "BT 0x11 (CRC)"]
+    return [(n, table[n]) for n in order]
+
+
+def send(d, rgb, mode="Auto"):
+    """Sends the colour. Returns a short text with the result of every report tried ('' is never returned)."""
     try:
         dev = hid.device()
         dev.open_path(d["path"])
     except Exception as e:  # noqa: BLE001
         return "cannot open (is DS4Windows / Steam running?): %s" % e
+    out = []
     try:
-        rep = report_bt(*rgb) if bus_of(d) == BUS_BT else report_usb(*rgb)
-        if dev.write(rep) < 0:
-            return "write failed: %s" % dev.error()
-        return ""
+        try:  # a Bluetooth DS4 only switches to its full mode after the calibration feature report is read
+            dev.get_feature_report(0x02, 64)
+        except Exception:  # noqa: BLE001
+            pass
+        for name, mk in variants(d, rgb, mode):
+            try:
+                n = dev.write(mk())
+                out.append("%s: %s" % (name, "ok (%d bytes)" % n if n >= 0 else "FAILED " + str(dev.error())))
+            except Exception as e:  # noqa: BLE001
+                out.append("%s: error %s" % (name, e))
+            time.sleep(0.05)
+        return " | ".join(out)
     finally:
         dev.close()
 
@@ -134,13 +161,13 @@ def cli(argv):
     rgb = tuple(max(0, min(255, int(x))) for x in argv[i + 1:i + 4])
     if len(rgb) != 3:
         sys.exit("usage: --set R G B")
+    mode = argv[argv.index("--mode") + 1] if "--mode" in argv else "Auto"
     while True:
         pads = find_pads()
         if not pads:
             print("No controller found.")
         for d in pads:
-            err = send(d, rgb)
-            print(label(d), "->", err or "ok")
+            print(label(d), "->", send(d, rgb, mode))
         if "--keep" not in argv:
             return 0
         time.sleep(2)
@@ -161,6 +188,12 @@ def gui():
 
     lst = tk.Listbox(root, height=5, exportselection=False)
     lst.pack(fill="x", padx=10, pady=(10, 4))
+
+    modevar = tk.StringVar(value=cfg.get("mode", "Auto"))
+    mrow = tk.Frame(root)
+    mrow.pack(fill="x", padx=10)
+    tk.Label(mrow, text="Report:").pack(side="left")
+    ttk.Combobox(mrow, textvariable=modevar, values=MODES, state="readonly", width=18).pack(side="left", padx=6)
 
     swatch = tk.Label(root, text="  ", bg="#8c00ff", height=2)
     swatch.pack(fill="x", padx=10, pady=4)
@@ -184,9 +217,9 @@ def gui():
             return
         colours[key(d)] = rgb
         cfg[label(d)] = list(rgb)
+        cfg["mode"] = modevar.get()
         save_cfg(cfg)
-        err = send(d, rgb)
-        status.set("%s: %s" % (label(d), err or "colour sent"))
+        status.set("%s\n%s" % (label(d), send(d, rgb, modevar.get())))
         show(rgb)
 
     def refresh():
@@ -240,7 +273,7 @@ def gui():
         for d in pads:
             rgb = colours.get(key(d))
             if rgb:
-                send(d, rgb)
+                send(d, rgb, modevar.get())
         root.after(3000, keepalive)
 
     lst.bind("<<ListboxSelect>>", lambda _e: (lambda d: d and cfg.get(label(d)) and show(tuple(cfg[label(d)])))(selected()))
