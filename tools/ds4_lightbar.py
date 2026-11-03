@@ -6,7 +6,7 @@ Sets the lightbar colour of DualShock 4 controllers (and clones) connected by Bl
 It builds the same output report the OPL Bluetooth driver uses (report 0x11 + CRC32 over Bluetooth,
 report 0x05 over USB), so a clone that works in OPL works here.
 
-    pip install hidapi
+    pip install hidapi pyusb libusb-package     (the last two only for controllers using a libusb driver)
     python ds4_lightbar.py                  graphical interface (needs tkinter, included with Python on Windows)
     python ds4_lightbar.py --list           list the controllers found
     python ds4_lightbar.py --set 255 0 128  set every controller to this colour and exit
@@ -26,6 +26,23 @@ try:
     import hid
 except ImportError:
     sys.exit("hidapi is missing. Install it with:  pip install hidapi")
+
+try:  # optional: controllers bound to a libusb/WinUSB driver (DS4Windows' "Wireless Controller" driver) are not HID devices
+    import usb.core
+    import usb.util
+    try:
+        import libusb_package
+        _backend = None
+        try:
+            import usb.backend.libusb1 as _lb
+            _backend = _lb.get_backend(find_library=libusb_package.find_library)
+        except Exception:  # noqa: BLE001
+            _backend = None
+    except ImportError:
+        _backend = None
+except ImportError:
+    usb = None
+    _backend = None
 
 SONY = 0x054C
 KNOWN_PIDS = {0x05C4, 0x09CC, 0x0BA0}  # DS4 v1, DS4 v2, USB wireless adapter
@@ -76,6 +93,19 @@ def find_pads():
         if sony or (is_pad and ("wireless controller" in name.lower() or "ds4" in name.lower())):
             seen.add(path)
             pads.append(d)
+    if usb is not None:  # USB devices without a HID driver
+        try:
+            for u in usb.core.find(find_all=True, backend=_backend) or []:
+                try:
+                    name = usb.util.get_string(u, u.iProduct) if u.iProduct else ""
+                except Exception:  # noqa: BLE001
+                    name = ""
+                if (u.idVendor == SONY and u.idProduct in KNOWN_PIDS) or "wireless controller" in (name or "").lower():
+                    pads.append({"path": "usb:%d:%d" % (u.bus, u.address), "vendor_id": u.idVendor,
+                                 "product_id": u.idProduct, "product_string": name or "Wireless Controller",
+                                 "bus_type": BUS_USB, "libusb": u})
+        except Exception:  # noqa: BLE001
+            pass
     return pads
 
 
@@ -88,8 +118,25 @@ def bus_of(d):
 
 
 def label(d):
-    kind = "Bluetooth" if bus_of(d) == BUS_BT else "USB"
+    kind = "Bluetooth" if bus_of(d) == BUS_BT else ("USB (libusb)" if d.get("libusb") else "USB")
     return "%s  [%s]  %04X:%04X" % (d.get("product_string") or "Controller", kind, d["vendor_id"], d["product_id"])
+
+
+def send_libusb(u, rgb):
+    """USB output report 0x05 on the interrupt OUT endpoint, for a controller using a libusb driver."""
+    try:
+        try:
+            u.set_configuration()
+        except Exception:  # noqa: BLE001
+            pass
+        usb.util.claim_interface(u, 0)
+        try:
+            n = u.write(0x03, report_usb(*rgb)[0:32], timeout=1000)
+            return "libusb 0x05: ok (%d bytes)" % n
+        finally:
+            usb.util.release_interface(u, 0)
+    except Exception as e:  # noqa: BLE001
+        return "libusb error: %s" % e
 
 
 MODES = ["Auto", "BT 0x11 (CRC)", "BT 0x11 (no CRC)", "USB 0x05"]
@@ -110,6 +157,8 @@ def variants(d, rgb, mode):
 
 def send(d, rgb, mode="Auto"):
     """Sends the colour. Returns a short text with the result of every report tried ('' is never returned)."""
+    if d.get("libusb") is not None:
+        return send_libusb(d["libusb"], rgb)
     try:
         dev = hid.device()
         dev.open_path(d["path"])
