@@ -9,6 +9,7 @@ report 0x05 over USB), so a clone that works in OPL works here.
     pip install hidapi pyusb libusb-package     (the last two only for controllers using a libusb driver)
     python ds4_lightbar.py                  graphical interface (needs tkinter, included with Python on Windows)
     python ds4_lightbar.py --probe          battery of tests (all report formats, one colour each), saves ds4_probe_log.txt
+    python ds4_lightbar.py --probe2         LED-only battery (flags, repeated writes, off, other report ids)
     python ds4_lightbar.py --list           list the controllers found
     python ds4_lightbar.py --set 255 0 128  set every controller to this colour and exit
     ... --mode "0x11 no CRC | WriteFile"       force one format (Auto tries several)
@@ -232,6 +233,85 @@ PROBE_COLOURS = [("RED", (255, 0, 0)), ("GREEN", (0, 255, 0)), ("BLUE", (0, 0, 2
                  ("CYAN", (0, 255, 255)), ("MAGENTA", (255, 0, 255)), ("ORANGE", (255, 90, 0)), ("WHITE", (255, 255, 255))]
 
 
+def bt_custom(rgb, length=78, rid=0x11, hw=0xC4, b2=0x00, f0=0xFF, f1=0x00, flash=(0, 0), small=0, big=0):
+    """Free-form Bluetooth output report (CRC32 over 0xA2 + report). Used by --probe2."""
+    buf = bytearray(length)
+    buf[0], buf[1], buf[2], buf[3], buf[4] = rid, hw, b2, f0, f1
+    buf[6], buf[7] = small, big
+    buf[8], buf[9], buf[10] = rgb
+    buf[11], buf[12] = flash
+    c = zlib.crc32(b"\xA2" + bytes(buf[:length - 4])) & 0xFFFFFFFF
+    buf[length - 4:] = c.to_bytes(4, "little")
+    return bytes(buf)
+
+
+def running_programs():
+    """Programs that keep writing to the lightbar (they would overwrite any colour)."""
+    if os.name != "nt":
+        return []
+    try:
+        import subprocess
+        out = subprocess.run(["tasklist"], capture_output=True, text=True, timeout=10).stdout.lower()
+    except Exception:  # noqa: BLE001
+        return []
+    names = ["ds4windows", "steam", "hidhide", "ps4remoteplay", "remoteplay", "joytokey", "reWASD".lower(), "x360ce", "inputmapper", "dualsensex", "dsx"]
+    return sorted({n for n in names if n in out})
+
+
+def probe2():
+    """LED-only battery (WriteFile, the method that makes the pad rumble): flags, repeated writes, off, other report ids."""
+    log = []
+
+    def say(t=""):
+        print(t)
+        log.append(t)
+
+    prog = running_programs()
+    say("Programs that may take over the lightbar: %s" % (", ".join(prog) if prog else "none seen"))
+    pads = [d for d in find_pads() if d.get("libusb") is None]
+    if not pads:
+        say("No HID controller found.")
+    for d in pads:
+        say("=== %s" % label(d))
+        try:
+            dev = open_dev(d)
+        except Exception as e:  # noqa: BLE001
+            say("cannot open: %s" % e)
+            continue
+        try:
+            tests = [
+                ("OFF (0,0,0): does the light turn off?", [bt_custom((0, 0, 0))], 3),
+                ("RED sent 60x over 3 s (a one-shot write may be overridden)", [bt_custom((255, 0, 0))] * 60, 0),
+                ("GREEN, valid_flag1 = 0xFF", [bt_custom((0, 255, 0), f1=0xFF)], 3),
+                ("BLUE, valid_flag0 = 0x02 only (colour only)", [bt_custom((0, 0, 255), f0=0x02)], 3),
+                ("YELLOW, flash on/off = 0xFF/0x00 (steady, long)", [bt_custom((255, 200, 0), flash=(0xFF, 0x00))], 3),
+                ("CYAN, flash on/off = 0x40/0x40 (should blink)", [bt_custom((0, 255, 255), flash=(0x40, 0x40))], 4),
+                ("MAGENTA, hw=0xC0, b2=0xA0, flags=0xF7, flag1=0x04 (DS4Windows)", [bt_custom((255, 0, 255), hw=0xC0, b2=0xA0, f0=0xF7, f1=0x04)], 3),
+                ("ORANGE, report 0x15 (334 bytes)", [bt_custom((255, 90, 0), length=334, rid=0x15)], 3),
+                ("WHITE-DIM (20,20,20): brightness only?", [bt_custom((20, 20, 20))], 3),
+                ("PURE RED 255,0,0 then 255,0,0 with rumble 0 (final check)", [bt_custom((255, 0, 0))], 3),
+            ]
+            for i, (title, reports, wait) in enumerate(tests, 1):
+                say("[L%d] %s" % (i, title))
+                res = ""
+                for rep in reports:
+                    res = write_one(dev, d, "report %02X len %d" % (rep[0], len(rep)), rep, "WriteFile")
+                    if len(reports) > 1:
+                        time.sleep(0.05)
+                say("      " + res)
+                time.sleep(wait)
+        finally:
+            dev.close()
+    say("")
+    say("Tell me which L steps changed the light in any way (turned off, dimmed, blinked, changed colour).")
+    try:
+        with open("ds4_probe2_log.txt", "w", encoding="utf-8") as f:
+            f.write("\n".join(log))
+        print("Saved ds4_probe2_log.txt in", os.getcwd())
+    except OSError:
+        pass
+
+
 def probe(delay=3.0):
     """Battery of tests: every report shape x write method, each with its own colour. Watch the lightbar and note
     which colour shows up. The whole output is also saved to ds4_probe_log.txt."""
@@ -324,6 +404,9 @@ def save_cfg(cfg):
 
 
 def cli(argv):
+    if "--probe2" in argv:
+        probe2()
+        return 0
     if "--probe" in argv:
         probe()
         return 0
@@ -460,6 +543,6 @@ def gui():
 
 
 if __name__ == "__main__":
-    if "--set" in sys.argv or "--list" in sys.argv or "--probe" in sys.argv:
+    if "--set" in sys.argv or "--list" in sys.argv or "--probe" in sys.argv or "--probe2" in sys.argv:
         sys.exit(cli(sys.argv))
     gui()
